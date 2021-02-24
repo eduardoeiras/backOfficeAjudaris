@@ -1,0 +1,42 @@
+.formPesq {
+    padding-left: 2%;
+}
+
+.selectTipo {
+    padding-left: 5%;
+    font-size: 25px;
+    padding-right: 3%;
+}
+
+.selectAnos {
+    padding-left: 5%;
+    font-size: 25px;
+    padding-right: 3%;
+}
+
+.inputPesq {
+    padding-left: 5%;
+}
+
+.divSubmit {
+    padding-left: 2%;
+}
+
+.buttonSubmit {
+    background-color: rgb(31, 180, 39);
+    border-radius: 5px;
+    color: white;
+}
+
+.modal-lg {
+    max-width: 90% !important;
+}
+
+.formAdicionar {
+    padding-left: 3%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    border:1px solid black;
+    border-radius: 12px;
+    margin-right: 3%;
+}
