@@ -41,12 +41,12 @@ class ProjetoController extends Controller
         if($projeto != null) {
             $projeto->nome = $nome;
             $projeto->objetivos = $objetivos;
-            //$projeto->regulamento = $request->regulamento->storeAs('regulamento', 'Regulamento.pdf', 'saves');
+            $projeto->regulamento = $request->urlFicheiro;
             $projeto->publicoAlvo = $publicoAlvo;
             $projeto->observacoes = $observacoes;
 
             $projeto->save();
-
+            
             $user = session()->get("utilizador");
             if($user->tipoUtilizador == 0) {
                 return redirect()->route("dashboardAdmin");
@@ -639,25 +639,5 @@ class ProjetoController extends Controller
         }
         
         return \json_encode($projetosReturn);
-    }
-
-    public function getPdf($id){
-        //buscar projeto e caminho do pdf
-        $projeto = DB::table('projeto')
-                    ->select('projeto.regulamento')
-                    ->where('projeto.id_projeto', $id)
-                    ->first();
-
-        if($projeto != null) {
-            if($projeto->regulamento != null) {
-                echo url($projeto->regulamento);
-            }
-            else {
-                return null;
-            }
-        }
-        else {
-            return null;
-        }
     }
 }

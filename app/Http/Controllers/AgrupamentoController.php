@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use \App\Models\CodPostal;
 use \App\Models\CodPostalRua;
 use DB;
-use Session;
+
 class AgrupamentoController extends Controller
 {
     public function index()

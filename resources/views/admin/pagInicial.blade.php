@@ -126,7 +126,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>
-                                        <input type="file" name="regulamento" class="form-control-file">
+                                        <input type="file" name="regulamento" class="form-control-file" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -140,7 +140,7 @@
                 <div id="edit" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" id="formEditar" action="" enctype="multipart/form-data">
+                            <form method="POST" id="formEditar" enctype="multipart/form-data">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Editar Projeto</h4>
@@ -166,15 +166,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>
-                                        <input type="file" name="regulamento" class="form-control">
+                                        <input type="file" id="edit_regulamento" name="regulamento" class="form-control">
                                     </div>
                                     <input type="hidden" id="editPorjetoId" name="id_projeto" value="">
                                 </div>
-                                <div class="modal-footer">
-                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                                    <input type="submit" class="btn btn-info" value="Guardar Alterações">
-                                </div>
                             </form>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                <input type="submit" class="btn btn-info" value="Guardar Alterações" onclick="submeter()">
+                            </div>
                         </div>
                     </div>
                 </div>

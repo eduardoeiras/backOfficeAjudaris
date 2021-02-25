@@ -25,7 +25,6 @@ function inicializarDataTable() {
 }
 
 function downloadRegulamento(id) {
-    /*
     var url = "projetos/getPdf/" + id;
     $.ajax({
         url: url,
@@ -37,7 +36,6 @@ function downloadRegulamento(id) {
             
         }
     })
-    */
 }
 
 function editarProjeto(id) {
