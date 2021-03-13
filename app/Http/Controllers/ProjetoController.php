@@ -63,7 +63,7 @@ class ProjetoController extends Controller
 
         $projeto->nome = $request->nome;
         $projeto->objetivos = $request->objetivos;
-        //$projeto->regulamento = $request->regulamento->storeAs('regulamento', 'Regulamento.pdf', 'saves');
+        $projeto->regulamento = $request->urlFicheiro;
         $projeto->publicoAlvo = $request->publicoAlvo;
         $projeto->observacoes = $request->observacoes;
 
@@ -128,13 +128,7 @@ class ProjetoController extends Controller
         $projeto = DB::table('projeto')
         ->where('id_projeto', $id)->first();
         if($projeto != null) {
-            $objProjeto = new \stdClass();
-            $objProjeto->id_projeto = $projeto->id_projeto;
-            $objProjeto->nome = $projeto->nome;
-            $objProjeto->objetivos = $projeto->objetivos;
-            $objProjeto->publicoAlvo = $projeto->publicoAlvo;
-            $objProjeto->observacoes = $projeto->observacoes;
-            return response()->json(array('sucesso' => true, 'projeto' => $objProjeto));
+            return response()->json(array('sucesso' => true, 'projeto' => $projeto));
         }
     }
     

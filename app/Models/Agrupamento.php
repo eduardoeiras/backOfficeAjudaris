@@ -14,21 +14,12 @@ class Agrupamento extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome',
-        'telefone',
-        'email',
         'nomeDiretor',
-        'codPostal',
-        'codPostalRua',
-        'numPorta'
+        'id_colaborador'
     ];
 
-    public function codPostal() {
-        return $this->hasOne(CodPostal::class, 'codPostal');
-    }
-
-    public function codPostalRua() {
-        return $this->hasOne(CodPostalRua::class, 'codPostalRua');
+    public function colaborador() {
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 
     public function escolas() {
