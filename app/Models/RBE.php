@@ -15,16 +15,13 @@ class RBE extends Model
 
     protected $fillable = [
         'regiao',
-        'nomeCoordenador',
-        'id_concelho',
-        'disponivel'
     ];
 
     public function projetos() {
         return $this->hasMany(ProjetoRBE::class, 'id_rbe');
     }
 
-    public function concelho() {
-        return $this->hasOne(Concelho::class, 'id_concelho');
+    public function concelhos() {
+        return $this->hasMany(Rbe_concelho::class, 'id_concelho');
     }
 }

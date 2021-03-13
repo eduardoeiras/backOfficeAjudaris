@@ -14,12 +14,9 @@ class EscolaSolidaria extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome',
-        'telefone',
-        'telemovel',
         'contactoAssPais',
         'id_agrupamento',
-        'disponivel'
+        'id_colaborador'
     ];
 
     public function professores() {
@@ -30,7 +27,15 @@ class EscolaSolidaria extends Model
         return $this->hasMany(ProjetoEscola::class, 'id_escolaSolidaria');
     }
 
+    public function historias() {
+        return $this->hasMany(Historia::class, 'id_escolaSolidaria');
+    }
+
     public function agrupamento() {
         return $this->belongsTo(Agrupamento::class, 'id_agrupamento');
+    }
+
+    public function colaborador() {
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }

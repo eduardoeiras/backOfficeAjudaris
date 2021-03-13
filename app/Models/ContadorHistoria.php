@@ -14,15 +14,14 @@ class ContadorHistoria extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome',
-        'email',
-        'telefone',
-        'telemovel',
-        'observacoes',
-        'disponivel'
+        'id_colaborador'
     ];
 
     public function projetos() {
         return $this->hasMany(ProjetoContador::class, 'id_contador', 'id_contadorHistorias');
+    }
+
+    public function colaborador() {
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }

@@ -14,16 +14,15 @@ class EntidadeOficial extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome',
-        'email',
         'entidade',
-        'telefone',
-        'telemovel',
-        'observacoes',
-        'disponivel'
+        'id_colaborador'
     ];
 
     public function projetos() {
         return $this->hasMany(ProjetoEntidade::class, 'id_entidadeOficial');
+    }
+
+    public function colaborador() {
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }

@@ -15,15 +15,14 @@ class IlustradorSolidario extends Model
 
     protected $fillable = [
         'volumeLivro',
-        'disponivel',
-        'nome',
-        'telefone',
-        'telemovel',
-        'email',
-        'observacoes'
+        'id_colaborador'
     ];
 
     public function projetos() {
         return $this->hasMany(ProjetoIlustrador::class, 'id_ilustradorSolidario');
+    }
+
+    public function colaborador() {
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }
