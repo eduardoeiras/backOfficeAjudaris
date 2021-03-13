@@ -60,35 +60,33 @@
                                 </thead>
                                 <tbody id="tableBody">
                                     <?php
-                                        use \App\Http\Controllers\CodPostalController;
-                                        use \App\Http\Controllers\CodPostalRuaController;
+                                    use App\Http\Controllers\ColaboradorController;
                                         if(isset($data)) {
                                             foreach($data as $linha) {
-                                                if($linha->codPostal != null) {
-                                                    $localidade = CodPostalController::getLocalidade($linha->codPostal);
-                                                    $codPostalRua = CodPostalRuaController::getCodPostalRua($linha->codPostalRua);
-                                                    $rua = CodPostalRuaController::getRua($linha->codPostalRua);    
-                                                }
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha->id_agrupamento.'</td>';
-                                                $dados = $dados.'<td>'.$linha->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha->telefone);
-                                                $dados = $dados.verificaNull($linha->email);
-                                                $dados = $dados.verificaNull($linha->nomeDiretor);
-                                                $dados = $dados.verificaNull($rua);
-                                                $dados = $dados.verificaNull($linha->numPorta);
-                                                $dados = $dados.verificaNull($localidade);
-                                                if($linha->codPostal != null && $linha->codPostalRua != null) {
-                                                    $dados = $dados.'<td>'.$linha->codPostal.'-'.$linha->codPostalRua.'</td>';
+                                                $dados = $dados.'<td>'.$linha["agrupamento"]->id_agrupamento.'</td>';
+                                                $dados = $dados.'<td>'.$linha["agrupamento"]->nome.'</td>';
+                                                $dados = $dados.verificaNull($linha["agrupamento"]->telefone);
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["emails"] as $email) {
+                                                    $dados = $dados." ".$email->email;
+                                                }
+                                                $dados = $dados.'</td>';
+                                                $dados = $dados.verificaNull($linha["agrupamento"]->nomeDiretor);
+                                                $dados = $dados.verificaNull($linha["agrupamento"]->rua);
+                                                $dados = $dados.verificaNull($linha["agrupamento"]->numPorta);
+                                                $dados = $dados.verificaNull($linha["agrupamento"]->localidade);
+                                                if($linha["agrupamento"]->codPostal != null && $linha["agrupamento"]->codPostalRua != null) {
+                                                    $dados = $dados.'<td>'.$linha["agrupamento"]->codPostal.'-'.$linha["agrupamento"]->codPostalRua.'</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_agrupamento.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["agrupamento"]->id_agrupamento.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_agrupamento.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["agrupamento"]->id_agrupamento.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                     </td>';
@@ -138,6 +136,13 @@
                                         <input type="text" name="nomeDiretor" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label>Rua</label>
                                         <input type="text" name="rua" class="form-control" maxlength="50">
                                     </div>
@@ -154,9 +159,9 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Primeiros dígitos</label>
-                                        <input type="text" name="codPostal" class="form-control" maxlength="10" required>
+                                        <input type="number" name="codPostal" class="form-control" maxlength="10" required>
                                         <label>Segundos dígitos</label>
-                                        <input type="text" name="codPostalRua" class="form-control" maxlength="6" required>
+                                        <input type="number" name="codPostalRua" class="form-control" maxlength="6" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -193,6 +198,13 @@
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
                                         <input type="text" id="nomeDiretor" name="nomeDiretor" class="form-control" maxlength="70">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label>Rua</label>

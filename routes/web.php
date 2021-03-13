@@ -341,4 +341,6 @@ Route::get('colaborador/gerirUniversidade/getProfessores', 'UniversidadeProfFacu
 Route::get('colaborador/profsFaculdade/getDisponiveisSemEscola/{id}','ProfessorFaculdadeController@getDisponiveisSemEscola')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirUniversidade/add','UniversidadeProfFaculdadeController@store')->middleware(['CheckLogInColaborador']);
 
+Route::get('admin/getLastId', 'ColaboradorController@getLastId');
+
 

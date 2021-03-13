@@ -6,6 +6,8 @@ use App\Models\Agrupamento;
 use Illuminate\Http\Request;
 use \App\Models\CodPostal;
 use \App\Models\CodPostalRua;
+use App\Models\Colaborador;
+use App\Models\Email;
 use DB;
 
 class AgrupamentoController extends Controller
@@ -13,24 +15,48 @@ class AgrupamentoController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $agrupamentos = Agrupamento::all();
+        $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+
+        $resposta = array();
+
+        foreach($agrupamentos as $agrup) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email', 'email.id_email')
+            ->where('email.id_colaborador', '=', $agrup->id_colaborador)
+            ->get();
+            
+            $agrupamento = array(
+                "agrupamento" => $agrup,
+                "emails" => $emails
+            );
+            array_push($resposta, $agrupamento);
+        }
+        
+        
         if($user->tipoUtilizador == 0) {
-            return view('admin/agrupamentos', ['data' => $agrupamentos]);
+            return view('admin/agrupamentos', ['data' => $resposta]);
         }
         else {
-            return view('colaborador/agrupamentos', ['data' => $agrupamentos]);
+            return view('colaborador/agrupamentos', ['data' => $resposta]);
         }
     }
 
     public function store(Request $request)
     {
-        $agrupamento = new Agrupamento();
-        
-        $agrupamento->nome = $request->nome;
-        $agrupamento->telefone = $request->telefone;
-        $agrupamento->email = $request->email;
-        $agrupamento->nomeDiretor = $request->nomeDiretor;
-        $agrupamento->numPorta = $request->numPorta;
+        $colaborador = new Colaborador();
+
+        $colaborador->nome = $request->nome;
+        $colaborador->telefone = $request->telefone;
+        $colaborador->telemovel = $request->telemovel;
+        $colaborador->numPorta = $request->numPorta;
+        $colaborador->disponivel = $request->disponibilidade;
 
         $codPostal = $request->codPostal;
         $codPostalRua = $request->codPostalRua;
@@ -45,17 +71,17 @@ class AgrupamentoController extends Controller
                                         ]);
 
         if($cod_postal != null) {
-            $agrupamento->codPostal = $codPostal; 
+            $colaborador->codPostal = $codPostal; 
         }
         else {
             $novoCodPostal = new CodPostal();
             $novoCodPostal->codPostal = $codPostal;
             $novoCodPostal->localidade = $localidade;
             $novoCodPostal->save();
-            $agrupamento->codPostal = $codPostal;
+            $colaborador->codPostal = $codPostal;
         }
         if($cod_postal_rua->first() != null) {
-            $agrupamento->codPostalRua = $codPostalRua;
+            $colaborador->codPostalRua = $codPostalRua;
         }
         else {
             $novoCodPostalRua = new CodPostalRua();
@@ -63,9 +89,23 @@ class AgrupamentoController extends Controller
             $novoCodPostalRua->codPostalRua = $codPostalRua;
             $novoCodPostalRua->rua = $rua;
             $novoCodPostalRua->save();
-            $agrupamento->codPostalRua = $codPostalRua;
+            $colaborador->codPostalRua = $codPostalRua;
         }
+
+        $colaborador->save();
+
+        $idColab = ColaboradorController::getLastId()[0]->id_colaborador;
+        
+        $email = new Email();
+        $email->email = $request->email;
+        $email->id_colaborador = $idColab;
+        $email->save();
+
+        $agrupamento = new Agrupamento();
+        $agrupamento->nomeDiretor = $request->nomeDiretor;
+        $agrupamento->id_colaborador = $idColab;
         $agrupamento->save();
+        
         
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
@@ -174,11 +214,13 @@ class AgrupamentoController extends Controller
     public function getAgrupamentoPorId($id) {
         
         $agrupamento = DB::table('agrupamento')
-                    ->join('cod_postal', 'agrupamento.codPostal', '=' , 'cod_postal.codPostal')
-                    ->join('cod_postal_rua', 'agrupamento.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-                    ->select('agrupamento.*', 'cod_postal.localidade', 'cod_postal_rua.rua')
+                    ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+                    ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+                    ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+                    ->where('agrupamento.id_agrupamento', '=', \intval($id))
                     ->first();
-                      
+          
         if($agrupamento != null) {
             return response()->json($agrupamento);  
         }
