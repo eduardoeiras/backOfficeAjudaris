@@ -31,4 +31,8 @@ class Colaborador extends Model
     public function codPostalRua() {
         return $this->hasOne(CodPostalRua::class, 'codPostalRua');
     }
+
+    public function comunicacoes() {
+        return $this->hasMany(Comunicacao::class, 'id_colaborador');
+    }
 }

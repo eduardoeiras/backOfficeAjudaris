@@ -17,11 +17,11 @@ class Comunicacao extends Model
         'data',
         'observacoes',
         'numLivros',
-        'id_comunicacao'
+        'id_colaborador'
     ];
 
-    /*public function colaborador() {
+    public function colaborador() {
         return $this->hasOne(Colaborador::class, 'id_colaborador');
-    }*/
+    }
 
 }
