@@ -15,6 +15,7 @@ class RBE extends Model
 
     protected $fillable = [
         'regiao',
+        'id_colaborador'
     ];
 
     public function projetos() {
@@ -23,5 +24,9 @@ class RBE extends Model
 
     public function concelhos() {
         return $this->hasMany(Rbe_concelho::class, 'id_concelho');
+    }
+
+    public function colaborador(){
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }

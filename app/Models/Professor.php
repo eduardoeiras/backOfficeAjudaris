@@ -14,12 +14,8 @@ class Professor extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome',
-        'telefone',
-        'telemovel',
-        'email',
         'id_agrupamento',
-        'disponivel'
+        'id_colaborador'
     ];
 
     public function projetos() {
@@ -38,5 +34,8 @@ class Professor extends Model
         return $this->hasOne(Agrupamento::class, 'id_professor');
     }
 
+    public function colaborador(){
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
+    }
     
 }
