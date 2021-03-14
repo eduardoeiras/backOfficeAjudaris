@@ -1,3 +1,6 @@
+var emailsAdicionadosAdd = [];
+var emailsAdicionadosEdit = [];
+
 $(document).ready(function () {
     inicializarDataTable();
 });
@@ -60,32 +63,53 @@ function adicionarEmail(adicionar) {
     if(adicionar) {
         if($('#emailFormAdd').val() != "") {
             var email = $('#emailFormAdd').val()
-            if(!$(`#emailsFormAdd option[value='${email}']`).length > 0) {
-                linha = `<option value="${email}">${email}</option>`
-                $('#emailsFormAdd').append(linha) 
+            var existe = false;
+            for(item of emailsAdicionadosAdd) {
+                if(item === email) {
+                    existe = true
+                }
             }
+            if(!existe) {
+                emailsAdicionadosAdd.push(email) 
+                let index = emailsAdicionadosAdd.indexOf(email)
+                linha = `<div id="emailAdd_${index}"><input type="checkbox" name="emailsFormAdd" style="display: none;" value="${email}">
+                <label onclick="removerEmail(true,${emailsAdicionadosAdd.indexOf(email)})">${email}</label></div>`
+                $('#emailsAssociadosAdd').append(linha)
+            }
+            
         }
     }
     else {
         if($('#emailFormEdit').val() != "") {
             var email = $('#emailFormEdit').val()
-            if(!$(`#emailsFormEdit option[value='${email}']`).length > 0) {
-                linha = `<option value="${email}">${email}</option>`
-                $('#emailsFormEdit').append(linha) 
+            var existe = false;
+            for(item of emailsAdicionadosEdit) {
+                if(item === email) {
+                    existe = true
+                }
             }
+            if(!existe) {
+               emailsAdicionadosEdit.push(email) 
+               let index = emailsAdicionadosEdit.indexOf(email)
+               linha = `<div id="emailEdit_${index}"><input type="checkbox" name="emailsFormAdd" style="display: none;" value="${email}">
+               <label onclick="removerEmail(false, ${emailsAdicionadosEdit.indexOf(email)})>${email}</label></div>`
+                $('#emailsAssociadosEdit').append(linha)
+            }   
         }
     }
 }
 
-function removerEmail(adicionar) {
+function removerEmail(adicionar, index) {
     if(adicionar) {
         if($('#emailsFormAdd').val() != "") {
-            $('#emailsFormAdd').find('option:selected').remove();
+            emailsAdicionadosAdd.splice(index, 1)
+            $(`#emailAdd_${index}`).remove();
         }
     }
     else {
         if($('#emailsFormEdit').val() != "") {
-            $('#emailsFormEdit').find('option:selected').remove();
+            emailsAdicionadosEdit.splice(index, 1)
+            $(`#emailEdit_${index}`).remove();
         }
     }
 }

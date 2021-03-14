@@ -50,6 +50,7 @@ class AgrupamentoController extends Controller
 
     public function store(Request $request)
     {
+        /*
         $colaborador = new Colaborador();
 
         $colaborador->nome = $request->nome;
@@ -95,8 +96,10 @@ class AgrupamentoController extends Controller
         $colaborador->save();
 
         $idColab = ColaboradorController::getLastId()[0]->id_colaborador;
-        
-        $email = new Email();
+        */
+        $emails = $request->emails;
+        var_dump($emails);
+        /*$email = new Email();
         $email->email = $request->email;
         $email->id_colaborador = $idColab;
         $email->save();
@@ -114,6 +117,7 @@ class AgrupamentoController extends Controller
         else {
             return redirect()->route("agrupamentosColaborador");
         }
+        */
     }
     
     public function update($id ,Request $request)

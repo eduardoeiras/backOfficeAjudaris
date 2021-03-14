@@ -111,7 +111,7 @@
                 <div id="add" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" action="agrupamentos/add">
+                            <form id="formAdd" method="POST">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Adicionar Agrupamento</h4>
@@ -123,15 +123,15 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nomeAdd" name="nome" class="form-control" maxlength="70" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
-                                        <input type="text" name="nomeDiretor" class="form-control" maxlength="70">
+                                        <input type="text" id="nomeDirAdd" name="nomeDiretor" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
-                                        <select name="disponibilidade">
+                                        <select name="disponibilidade" id="disponibilidadeAdd">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>
@@ -141,18 +141,18 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Telefone</label>
-                                        <input type="tel" name="telefone" class="form-control" maxlength="15">
+                                        <input type="tel" id="telefoneAdd" name="telefone" class="form-control" maxlength="15">
                                     </div>
                                     <div class="form-group">
                                         <label>Telemóvel</label>
-                                        <input type="tel" name="telemovel" class="form-control" maxlength="15">
+                                        <input type="tel" id="telemovelAdd" name="telemovel" class="form-control" maxlength="15">
                                     </div>
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
                                             <label>Emails Associados:</label>
-                                            <select id="emailsFormAdd" name="emails" style="margin-top: 10px" class="form-select">
-                                            </select>
-                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email" required>
+                                            <div id="emailsAssociadosAdd">   
+                                            </div>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
                                             <button type="button" class="btn btn-danger float-right" onclick="removerEmail(true)">Remover Email</button>
                                         </div>
@@ -162,26 +162,26 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Número da Porta</label>
-                                        <input type="text" name="numPorta" class="form-control">
+                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label>Rua</label>
-                                        <input type="text" name="rua" class="form-control" maxlength="50">
+                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
                                         <label>Localidade</label>
-                                        <input type="text" name="localidade" class="form-control" maxlength="70" required>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Distrito</label>
-                                        <input type="text" name="distrito" class="form-control" maxlength="70" required>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
                                     </div>
                                     <br>
                                     <div class="form-group">
                                         <label>Primeiros dígitos</label>
-                                        <input type="number" name="codPostal" class="form-control" maxlength="10" required>
+                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
                                         <label>Segundos dígitos</label>
-                                        <input type="number" name="codPostalRua" class="form-control" maxlength="6" required>
+                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -234,9 +234,9 @@
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
                                             <label>Emails Associados:</label>
-                                            <select name="emails" id="emailsFormEdit" style="margin-top: 10px" class="form-select">
-                                            </select>
-                                            <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email" required>
+                                            <div id="emailsAssociadosEdit"> 
+                                            </div>
+                                            <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
                                             <button type="button" class="btn btn-danger float-right" onclick="removerEmail(false)">Remover Email</button>
                                         </div>
