@@ -119,17 +119,11 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações do Agrupamento</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" name="nome" class="form-control" maxlength="70" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Telefone</label>
-                                        <input type="tel" name="telefone" class="form-control" maxlength="15">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Email</label>
-                                        <input type="email" name="email" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
@@ -142,21 +136,47 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
                                     <div class="form-group">
-                                        <label>Rua</label>
-                                        <input type="text" name="rua" class="form-control" maxlength="50">
+                                        <label>Telefone</label>
+                                        <input type="tel" name="telefone" class="form-control" maxlength="15">
                                     </div>
+                                    <div class="form-group">
+                                        <label>Telemóvel</label>
+                                        <input type="tel" name="telemovel" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <select id="emailsFormAdd" name="emails" style="margin-top: 10px" class="form-select">
+                                            </select>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email" required>
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                            <button type="button" class="btn btn-danger float-right" onclick="removerEmail(true)">Remover Email</button>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Número da Porta</label>
                                         <input type="text" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
+                                        <label>Rua</label>
+                                        <input type="text" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
                                         <label>Localidade</label>
                                         <input type="text" name="localidade" class="form-control" maxlength="70" required>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
                                     <br>
-                                    <label style="font-size: 18px">Código Postal</label>
-                                    <br><br>
                                     <div class="form-group">
                                         <label>Primeiros dígitos</label>
                                         <input type="number" name="codPostal" class="form-control" maxlength="10" required>
@@ -183,17 +203,11 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações do Agrupamento</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Telefone</label>
-                                        <input type="tel" id="telefone" name="telefone" class="form-control" maxlength="15">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Email</label>
-                                        <input type="email" id="email" name="email" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
@@ -201,26 +215,51 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
-                                        <select name="disponibilidade">
+                                        <select name="disponibilidade" id="disponibilidade">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Telefone</label>
+                                        <input type="tel" id="telefone" name="telefone" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Telemóvel</label>
+                                        <input type="tel" id="telemovel" name="telemovel" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <select name="emails" id="emailsFormEdit" style="margin-top: 10px" class="form-select">
+                                            </select>
+                                            <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email" required>
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
+                                            <button type="button" class="btn btn-danger float-right" onclick="removerEmail(false)">Remover Email</button>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPorta" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label>Rua</label>
                                         <input type="text" id="rua" name="rua" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
-                                        <label>Número da Porta</label>
-                                        <input type="text" id="numPorta" name="numPorta" class="form-control">
-                                    </div>
-                                    <div class="form-group">
                                         <label>Localidade</label>
                                         <input type="text" id="localidade" name="localidade" class="form-control" maxlength="50" required>
                                     </div>
-                                    <br>
-                                    <label style="font-size: 18px">Código Postal</label>
-                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distrito" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
                                     <div class="form-group">
                                         <label>Primeiros dígitos</label>
                                         <input type="text" id="codPostal" name="codPostal" class="form-control" maxlength="10" required>

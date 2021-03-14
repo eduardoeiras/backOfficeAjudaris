@@ -9,10 +9,10 @@ class ColaboradorController extends Controller
     public static function getEmails($id)
     {
         $emails = DB::table('email')
-        ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->select('email.email', 'email.id_email')
-        ->where('email.id_colaborador', '=', $id)
-        ->get();
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email', 'email.id_email')
+                    ->where('email.id_colaborador', '=', intval($id))
+                    ->get();
         
         if($emails != null) {
            return response()->json($emails); 

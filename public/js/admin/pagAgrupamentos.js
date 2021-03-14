@@ -30,12 +30,17 @@ function editar(id) {
         url: url,
         method: "GET",
         dataType: "json",
-        success: function (agrupamento) {
-            if (agrupamento != null) {
+        success: function (resposta) {
+            if (resposta != null) {
+                agrupamento = resposta[0]
+                $('#emailsFormEdit').empty()
                 url = 'agrupamentos/edit/' + agrupamento.id_agrupamento
                 $('#formEditar').attr('action', url)
                 $('#nome').val(agrupamento.nome)
-                $('#email').val(agrupamento.email)
+                resposta[0].emails.original.forEach(email => {
+                    linha = `<option value="${email.id_email}">${email.email}</option>`
+                    $('#emailsFormEdit').append(linha)
+                });
                 $('#telefone').val(agrupamento.telefone)
                 $('#nomeDiretor').val(agrupamento.nomeDiretor)
                 $('#rua').val(agrupamento.rua)
@@ -49,6 +54,40 @@ function editar(id) {
 
         }
     })
+}
+
+function adicionarEmail(adicionar) {
+    if(adicionar) {
+        if($('#emailFormAdd').val() != "") {
+            var email = $('#emailFormAdd').val()
+            if(!$(`#emailsFormAdd option[value='${email}']`).length > 0) {
+                linha = `<option value="${email}">${email}</option>`
+                $('#emailsFormAdd').append(linha) 
+            }
+        }
+    }
+    else {
+        if($('#emailFormEdit').val() != "") {
+            var email = $('#emailFormEdit').val()
+            if(!$(`#emailsFormEdit option[value='${email}']`).length > 0) {
+                linha = `<option value="${email}">${email}</option>`
+                $('#emailsFormEdit').append(linha) 
+            }
+        }
+    }
+}
+
+function removerEmail(adicionar) {
+    if(adicionar) {
+        if($('#emailsFormAdd').val() != "") {
+            $('#emailsFormAdd').find('option:selected').remove();
+        }
+    }
+    else {
+        if($('#emailsFormEdit').val() != "") {
+            $('#emailsFormEdit').find('option:selected').remove();
+        }
+    }
 }
 
 function remover(id) {
