@@ -111,7 +111,7 @@
                 <div id="add" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form id="formAdd" method="POST">
+                            <form id="formAdd" method="POST" action="agrupamentos/add">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Adicionar Agrupamento</h4>
@@ -154,7 +154,6 @@
                                             </div>
                                             <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
-                                            <button type="button" class="btn btn-danger float-right" onclick="removerEmail(true)">Remover Email</button>
                                         </div>
                                     </div>
                                     <br><br>
@@ -233,12 +232,11 @@
                                     </div>
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
-                                            <label>Emails Associados:</label>
+                                            <label style="font-size: 18px">Emails Associados:</label>
                                             <div id="emailsAssociadosEdit"> 
                                             </div>
                                             <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
-                                            <button type="button" class="btn btn-danger float-right" onclick="removerEmail(false)">Remover Email</button>
                                         </div>
                                     </div>
                                     <br><br>

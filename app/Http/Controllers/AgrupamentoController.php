@@ -50,7 +50,7 @@ class AgrupamentoController extends Controller
 
     public function store(Request $request)
     {
-        /*
+        
         $colaborador = new Colaborador();
 
         $colaborador->nome = $request->nome;
@@ -63,6 +63,7 @@ class AgrupamentoController extends Controller
         $codPostalRua = $request->codPostalRua;
         $rua = $request->rua;
         $localidade = $request->localidade;
+        $distrito = $request->distrito;
         
         $cod_postal = CodPostal::find($codPostal);
         $cod_postal_rua = DB::table('cod_postal_rua')
@@ -72,6 +73,9 @@ class AgrupamentoController extends Controller
                                         ]);
 
         if($cod_postal != null) {
+            $cod_postal->localidade = $localidade;
+            $cod_postal->distrito = $distrito;
+            $cod_postal->save();
             $colaborador->codPostal = $codPostal; 
         }
         else {
@@ -82,6 +86,7 @@ class AgrupamentoController extends Controller
             $colaborador->codPostal = $codPostal;
         }
         if($cod_postal_rua->first() != null) {
+            $cod_postal_rua->update(['rua' => $rua]);
             $colaborador->codPostalRua = $codPostalRua;
         }
         else {
@@ -96,14 +101,15 @@ class AgrupamentoController extends Controller
         $colaborador->save();
 
         $idColab = ColaboradorController::getLastId()[0]->id_colaborador;
-        */
+        
         $emails = $request->emails;
-        var_dump($emails);
-        /*$email = new Email();
-        $email->email = $request->email;
-        $email->id_colaborador = $idColab;
-        $email->save();
-
+        foreach($emails as $email) {
+            $newEmail = new Email();
+            $newEmail->email = $email;
+            $newEmail->id_colaborador = $idColab;
+            $newEmail->save();   
+        }
+        
         $agrupamento = new Agrupamento();
         $agrupamento->nomeDiretor = $request->nomeDiretor;
         $agrupamento->id_colaborador = $idColab;
@@ -117,7 +123,6 @@ class AgrupamentoController extends Controller
         else {
             return redirect()->route("agrupamentosColaborador");
         }
-        */
     }
     
     public function update($id ,Request $request)
@@ -125,13 +130,16 @@ class AgrupamentoController extends Controller
         $id_agrupamento = \intval($id);
         $nome = $request->nome;
         $telefone = $request->telefone;
-        //$emails = $request->emails;
         $nomeDiretor = $request->nomeDiretor;
         $codPostal = $request->codPostal;
         $localidade = $request->localidade;
         $codPostalRua = $request->codPostalRua;
         $numPorta = $request->numPorta;
         $rua = $request->rua;
+        $distrito = $request->distrito;
+
+        $emails = $request->emails;
+        $emailsToDelete = $request->deletedEmails;
 
         $agrupamento = Agrupamento::find($id_agrupamento);
         $colaborador = Colaborador::find($agrupamento->id_colaborador);
@@ -146,10 +154,35 @@ class AgrupamentoController extends Controller
         if($agrupamento != null && $colaborador != null) {
             $colaborador->nome = $nome;
             $colaborador->telefone = $telefone;
-            //$agrupamento->email = $email;
             $agrupamento->nomeDiretor = $nomeDiretor;
             $colaborador->numPorta = $numPorta;
+            
+            if($emails != null) {
+                foreach($emails as $email) {
+                    $existeEmail = ColaboradorController::existeEmail($email, $colaborador->id_colaborador);
+                    if(!$existeEmail) {
+                        $newEmail = new Email();
+                        $newEmail->email = $email;
+                        $newEmail->id_colaborador = $colaborador->id_colaborador;
+                        $newEmail->save();
+                    }  
+                }    
+            }
+            if($emailsToDelete != null) {
+                foreach($emailsToDelete as $email) {
+                    $query = DB::table('email')
+                        ->where('email.email', '=', $email);
+
+                    if($query != null) {
+                        $query->delete();
+                    }  
+                } 
+            }
+            
             if($cod_postal != null) {
+                $cod_postal->localidade = $localidade;
+                $cod_postal->distrito = $distrito;
+                $cod_postal->save();
                 $colaborador->codPostal = $codPostal; 
             }
             else {
@@ -160,6 +193,7 @@ class AgrupamentoController extends Controller
                 $colaborador->codPostal = $codPostal;
             }
             if($cod_postal_rua->first() != null) {
+                $cod_postal_rua->update(['rua' => $rua]);
                 $colaborador->codPostalRua = $codPostalRua;
             }
             else {
@@ -171,6 +205,7 @@ class AgrupamentoController extends Controller
                 $colaborador->codPostalRua = $codPostalRua;
             }
             $colaborador->save();
+            $agrupamento->save();
         }
             
         $user = session()->get("utilizador");
@@ -180,6 +215,7 @@ class AgrupamentoController extends Controller
         else {
             return redirect()->route("agrupamentosColaborador");
         }
+        
     }
     
     public function destroy($id)
@@ -248,6 +284,7 @@ class AgrupamentoController extends Controller
             "localidade" => $codPostal->localidade,
             "codPostal" => $colaborador->codPostal,
             "codPostalRua" => $colaborador->codPostalRua,
+            "distrito" => $codPostal->distrito,
             "emails" => $emails
         );
 
