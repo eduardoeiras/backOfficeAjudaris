@@ -53,7 +53,6 @@ function editar(id) {
                 $('#numPorta').val(agrupamento.numPorta)
                 $('#localidade').val(agrupamento.localidade)
                 $('#distrito').val(agrupamento.distrito)
-                console.log(agrupamento.distrito, agrupamento);
                 $('#codPostal').val(agrupamento.codPostal)
                 $('#codPostalRua').val(agrupamento.codPostalRua)
             }
@@ -88,7 +87,6 @@ function adicionarEmail(adicionar) {
         if($('#emailFormEdit').val() != "") {
             var email = $('#emailFormEdit').val()
             var existe = false;
-            console.log(email, existe);
             for(item of emailsAdicionadosEdit) {
                 if(item === email) {
                     existe = true

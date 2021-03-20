@@ -50,68 +50,29 @@ class AgrupamentoController extends Controller
 
     public function store(Request $request)
     {
-        
-        $colaborador = new Colaborador();
-
-        $colaborador->nome = $request->nome;
-        $colaborador->telefone = $request->telefone;
-        $colaborador->telemovel = $request->telemovel;
-        $colaborador->numPorta = $request->numPorta;
-        $colaborador->disponivel = $request->disponibilidade;
-
+        //Obtenção dos atributos de um colaborador
+        $nome = $request->nome;
+        $telefone = $request->telefone;
+        $telemovel = $request->telemovel;
         $codPostal = $request->codPostal;
-        $codPostalRua = $request->codPostalRua;
-        $rua = $request->rua;
         $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
         $distrito = $request->distrito;
-        
-        $cod_postal = CodPostal::find($codPostal);
-        $cod_postal_rua = DB::table('cod_postal_rua')
-                                    ->where([
-                                        ['cod_postal_rua.codPostal', '=', $codPostal],
-                                        ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
-                                        ]);
-
-        if($cod_postal != null) {
-            $cod_postal->localidade = $localidade;
-            $cod_postal->distrito = $distrito;
-            $cod_postal->save();
-            $colaborador->codPostal = $codPostal; 
-        }
-        else {
-            $novoCodPostal = new CodPostal();
-            $novoCodPostal->codPostal = $codPostal;
-            $novoCodPostal->localidade = $localidade;
-            $novoCodPostal->save();
-            $colaborador->codPostal = $codPostal;
-        }
-        if($cod_postal_rua->first() != null) {
-            $cod_postal_rua->update(['rua' => $rua]);
-            $colaborador->codPostalRua = $codPostalRua;
-        }
-        else {
-            $novoCodPostalRua = new CodPostalRua();
-            $novoCodPostalRua->codPostal = $codPostal;
-            $novoCodPostalRua->codPostalRua = $codPostalRua;
-            $novoCodPostalRua->rua = $rua;
-            $novoCodPostalRua->save();
-            $colaborador->codPostalRua = $codPostalRua;
-        }
-
-        $colaborador->save();
-
-        $idColab = ColaboradorController::getLastId()[0]->id_colaborador;
-        
+        $disponibilidade = $request->disponibilidade;
         $emails = $request->emails;
-        foreach($emails as $email) {
-            $newEmail = new Email();
-            $newEmail->email = $email;
-            $newEmail->id_colaborador = $idColab;
-            $newEmail->save();   
-        }
+
+        //Obtenção do atributo do agrupamento
+        $nomeDiretor = $request->nomeDiretor;
+
+        //Obtenção do id do colaborador criado
+        $idColab = ColaboradorController::create($nome, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
+        $rua, $localidade, $distrito, $emails);
         
+        //Criação do registo na tabela agrupamento com o id do colaborador criado
         $agrupamento = new Agrupamento();
-        $agrupamento->nomeDiretor = $request->nomeDiretor;
+        $agrupamento->nomeDiretor = $nomeDiretor;
         $agrupamento->id_colaborador = $idColab;
         $agrupamento->save();
         
@@ -127,87 +88,35 @@ class AgrupamentoController extends Controller
     
     public function update($id ,Request $request)
     {
+        //Obtenção de todos os dados do request
         $id_agrupamento = \intval($id);
         $nome = $request->nome;
         $telefone = $request->telefone;
-        $nomeDiretor = $request->nomeDiretor;
+        $telemovel = $request->telemovel;
         $codPostal = $request->codPostal;
+        $disponibilidade = $request->disponibilidade;
         $localidade = $request->localidade;
         $codPostalRua = $request->codPostalRua;
         $numPorta = $request->numPorta;
         $rua = $request->rua;
         $distrito = $request->distrito;
-
         $emails = $request->emails;
         $emailsToDelete = $request->deletedEmails;
-
-        $agrupamento = Agrupamento::find($id_agrupamento);
-        $colaborador = Colaborador::find($agrupamento->id_colaborador);
-
-        $cod_postal = CodPostal::find($codPostal);
-        $cod_postal_rua = DB::table('cod_postal_rua')
-                                    ->where([
-                                        ['cod_postal_rua.codPostal', '=', $codPostal],
-                                        ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
-                                        ]);
         
-        if($agrupamento != null && $colaborador != null) {
-            $colaborador->nome = $nome;
-            $colaborador->telefone = $telefone;
-            $agrupamento->nomeDiretor = $nomeDiretor;
-            $colaborador->numPorta = $numPorta;
-            
-            if($emails != null) {
-                foreach($emails as $email) {
-                    $existeEmail = ColaboradorController::existeEmail($email, $colaborador->id_colaborador);
-                    if(!$existeEmail) {
-                        $newEmail = new Email();
-                        $newEmail->email = $email;
-                        $newEmail->id_colaborador = $colaborador->id_colaborador;
-                        $newEmail->save();
-                    }  
-                }    
-            }
-            if($emailsToDelete != null) {
-                foreach($emailsToDelete as $email) {
-                    $query = DB::table('email')
-                        ->where('email.email', '=', $email);
-
-                    if($query != null) {
-                        $query->delete();
-                    }  
-                } 
-            }
-            
-            if($cod_postal != null) {
-                $cod_postal->localidade = $localidade;
-                $cod_postal->distrito = $distrito;
-                $cod_postal->save();
-                $colaborador->codPostal = $codPostal; 
-            }
-            else {
-                $novoCodPostal = new CodPostal();
-                $novoCodPostal->codPostal = $codPostal;
-                $novoCodPostal->localidade = $localidade;
-                $novoCodPostal->save();
-                $colaborador->codPostal = $codPostal;
-            }
-            if($cod_postal_rua->first() != null) {
-                $cod_postal_rua->update(['rua' => $rua]);
-                $colaborador->codPostalRua = $codPostalRua;
-            }
-            else {
-                $novoCodPostalRua = new CodPostalRua();
-                $novoCodPostalRua->codPostal = $codPostal;
-                $novoCodPostalRua->codPostalRua = $codPostalRua;
-                $novoCodPostalRua->rua = $rua;
-                $novoCodPostalRua->save();
-                $colaborador->codPostalRua = $codPostalRua;
-            }
-            $colaborador->save();
-            $agrupamento->save();
+        //Obtenção do nome do diretor do request e do agrupamento
+        $nomeDiretor = $request->nomeDiretor;
+        $agrupamento = Agrupamento::find($id_agrupamento);
+        
+        //Chamar a função de update do registo do colaborador associado ao agrupamento, neste caso
+        ColaboradorController::update($agrupamento->id_colaborador, $nome, $telemovel, $telefone, $numPorta,
+        $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
+        
+        //Update do nome do diretor no registo da tabela agrupamento
+        if($agrupamento != null) {
+            $agrupamento->nomeDiretor = $nomeDiretor;  
+            $agrupamento->save(); 
         }
-            
+         
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
             return redirect()->route("agrupamentos");
