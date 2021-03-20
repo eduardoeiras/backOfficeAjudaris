@@ -91,9 +91,27 @@ class ColaboradorController extends Controller
             
             ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
             ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
-            
+
             $colaborador->save();
         }
+    }
+
+    public static function delete($idAgrupamento) {
+        $colaborador = Colaborador::find($idAgrupamento);
+        if($colaborador->codPostal != null){
+            $colaborador->codPostal = null;
+        }
+        if($colaborador->codPostalRua != null){
+            $colaborador->codPostalRua = null;    
+        }
+        $colaborador->save();
+        if($colaborador->comunicacoes()->first() != null) {
+            $colaborador->comunicacoes()->where('id_colaborador', $idAgrupamento)->delete();
+        }
+        if($colaborador->emails()->first() != null) {
+            $colaborador->emails()->where('id_colaborador', $idAgrupamento)->delete();
+        } 
+        $colaborador->delete();
     }
 
     public static function getEmails($id)

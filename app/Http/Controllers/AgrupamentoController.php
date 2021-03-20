@@ -130,20 +130,7 @@ class AgrupamentoController extends Controller
     public function destroy($id)
     {
         $agrupamento = Agrupamento::find($id);
-        $colaborador = Colaborador::find($agrupamento->id_colaborador);
-        if($colaborador->codPostal != null){
-            $colaborador->codPostal = null;
-        }
-        if($colaborador->codPostalRua != null){
-            $colaborador->codPostalRua = null;    
-        }
-        $colaborador->save();
-        if($colaborador->comunicacoes()->first() != null) {
-            $colaborador->comunicacoes()->where('id_colaborador', $agrupamento->id_colaborador)->delete();
-        }
-        if($colaborador->emails()->first() != null) {
-            $colaborador->emails()->where('id_colaborador', $agrupamento->id_colaborador)->delete();
-        }
+        ColaboradorController::delete($id);
         if($agrupamento->escolas()->first() != null) {
             $agrupamento->escolas()->where('id_agrupamento', $id)->delete();
         }
@@ -151,7 +138,6 @@ class AgrupamentoController extends Controller
             $agrupamento->professores()->where('id_agrupamento', $id)->delete();
         }
         $agrupamento->delete();
-        $colaborador->delete();
 
         return redirect()->route("agrupamentos");
     }
