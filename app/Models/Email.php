@@ -10,7 +10,7 @@ class Email extends Model
     use HasFactory;
 
     protected $table = 'email';
-    public $primaryKey = 'id_email';
+    public $primaryKey = 'email';
     public $timestamps = false;
 
     protected $fillable = [

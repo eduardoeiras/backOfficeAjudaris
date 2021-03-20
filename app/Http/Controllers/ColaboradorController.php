@@ -12,7 +12,7 @@ class ColaboradorController extends Controller
     {
         $emails = DB::table('email')
                     ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-                    ->select('email.email', 'email.id_email')
+                    ->select('email.email')
                     ->where('email.id_colaborador', '=', intval($id))
                     ->get();
         

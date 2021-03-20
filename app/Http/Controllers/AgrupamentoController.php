@@ -28,7 +28,7 @@ class AgrupamentoController extends Controller
         foreach($agrupamentos as $agrup) {
             $emails = DB::table('email')
             ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email', 'email.id_email')
+            ->select('email.email')
             ->where('email.id_colaborador', '=', $agrup->id_colaborador)
             ->get();
             
