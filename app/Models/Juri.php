@@ -14,14 +14,15 @@ class Juri extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome',
-        'email',
-        'telefone',
-        'telemovel',
-        'disponivel'
+        'tipoJuri',
+        'id_colaborador'
     ];
 
     public function projetos() {
         return $this->hasMany(ProjetoJuri::class, 'id_juri');
+    }
+    
+    public function colaborador(){
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }

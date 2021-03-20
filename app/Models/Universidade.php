@@ -16,11 +16,7 @@ class Universidade extends Model
     protected $fillable = [
         'curso',
         'tipo',
-        'nome',
-        'telefone',
-        'telemovel',
-        'email',
-        'disponivel'
+        'id_colaborador'
     ];
 
     public function projetos() {
@@ -29,5 +25,9 @@ class Universidade extends Model
 
     public function professores() {
         return $this->hasMany(UniversidadeProfFaculdade::class, 'id_universidade');
+    }
+
+    public function colaborador(){
+        return $this->hasOne(Colaborador::class, 'id_colaborador');
     }
 }
