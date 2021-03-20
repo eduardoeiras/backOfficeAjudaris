@@ -10,7 +10,28 @@ class JuriController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $juris = Juri::all();
+        $juris = DB::table(DB::raw('juri', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'juri.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('juri.id_juri', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+
+
+        foreach($juris as $jur){
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $jur->id_colaborador)
+            ->get();
+            
+            $juri = array(
+                "juri" => $jur,
+                "emails" => $emails
+            );
+            array_push($resposta, $juri);
+        }
         if($user->tipoUtilizador == 0) {
             return view('admin/juris', ['data' => $juris]);
         }

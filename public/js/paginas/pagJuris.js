@@ -30,16 +30,28 @@ function editar(id) {
         url: url,
         method: "GET",
         dataType: "json",
-        success: function (juri) {
-            if (juri != null) {
+        success: function (resposta) {
+            if (resposta != null) {
                 url = 'juris/edit/' + juri.id_juri
                 $('#formEditar').attr('action', url)
                 $('#nome').val(juri.nome)
                 $('#telefone').val(juri.telefone)
                 $('#telemovel').val(juri.telemovel)
-                $('#email').val(juri.email)
                 var disp = juri.disponivel
                 $('#disponibilidade').val(disp.toString())
+                juri.emails.original.forEach(linha => {
+                    emailsAdicionadosEdit.push(linha.email)
+                    let index = emailsAdicionadosEdit.indexOf(linha.email)
+                    linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
+                    <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
+                    $('#emailsAssociadosEdit').append(linha)
+                });
+                $('#rua').val(juri.rua)
+                $('#numPorta').val(juri.numPorta)
+                $('#localidade').val(juri.localidade)
+                $('#distrito').val(juri.distrito)
+                $('#codPostal').val(juri.codPostal)
+                $('#codPostalRua').val(juri.codPostalRua)
             }
         },
         error: function (error) {
