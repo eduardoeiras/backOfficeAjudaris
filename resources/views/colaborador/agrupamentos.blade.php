@@ -135,6 +135,13 @@
                                         <input type="text" name="nomeDiretor" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label>Rua</label>
                                         <input type="text" name="rua" class="form-control" maxlength="50">
                                     </div>
@@ -190,6 +197,13 @@
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
                                         <input type="text" id="nomeDiretor" name="nomeDiretor" class="form-control" maxlength="70">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label>Rua</label>

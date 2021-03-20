@@ -2,9 +2,10 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\Models\Colaborador;
+use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class AgrupamentoTeste extends TestCase
 {
     /**
      * A basic test example.
@@ -13,6 +14,13 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
+
+        $colaborador = new Colaborador();
+        $colaborador->nome = "Teste";
+        $colaborador->save();
+
+        echo $colaborador->id;
+
         $this->assertTrue(true);
     }
 }

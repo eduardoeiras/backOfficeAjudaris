@@ -35,4 +35,8 @@ class Colaborador extends Model
     public function comunicacoes() {
         return $this->hasMany(Comunicacao::class, 'id_colaborador');
     }
+
+    public function emails() {
+        return $this->hasMany(Email::class, 'id_colaborador');
+    }
 }

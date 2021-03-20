@@ -63,8 +63,8 @@ Route::post('admin/escolas/edit/{id}', 'EscolaSolidariaController@update')->midd
 Route::post('admin/escolas/add', 'EscolaSolidariaController@store')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/agrupamentos','AgrupamentoController@index')->name("agrupamentos")->middleware(['checkLogInAdmin']);
-Route::get('admin/agrupamentos/getAll', 'AgrupamentoController@getAll')->middleware(['checkLogInAdmin']);
-Route::get('admin/agrupamentos/getAllComLocalidade', 'AgrupamentoController@getAllComLocalidade')->middleware(['checkLogInAdmin']);
+//Route::get('admin/agrupamentos/getAll', 'AgrupamentoController@getAll')->middleware(['checkLogInAdmin']);
+//Route::get('admin/agrupamentos/getAllComLocalidade', 'AgrupamentoController@getAllComLocalidade')->middleware(['checkLogInAdmin']);
 Route::get('admin/agrupamentos/getPorId/{id}', 'AgrupamentoController@getAgrupamentoPorId')->middleware(['checkLogInAdmin']);
 Route::post('admin/agrupamentos/delete/{id}', 'AgrupamentoController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/agrupamentos/edit/{id}', 'AgrupamentoController@update')->middleware(['checkLogInAdmin']);
@@ -231,8 +231,8 @@ Route::post('colaborador/escolas/edit/{id}', 'EscolaSolidariaController@update')
 Route::post('colaborador/escolas/add', 'EscolaSolidariaController@store')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/agrupamentos','AgrupamentoController@index')->name("agrupamentosColaborador")->middleware(['CheckLogInColaborador']);
-Route::get('colaborador/agrupamentos/getAll', 'AgrupamentoController@getAll')->middleware(['CheckLogInColaborador']);
-Route::get('colaborador/agrupamentos/getAllComLocalidade', 'AgrupamentoController@getAllComLocalidade')->middleware(['CheckLogInColaborador']);
+//Route::get('colaborador/agrupamentos/getAll', 'AgrupamentoController@getAll')->middleware(['CheckLogInColaborador']);
+//Route::get('colaborador/agrupamentos/getAllComLocalidade', 'AgrupamentoController@getAllComLocalidade')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/agrupamentos/getPorId/{id}', 'AgrupamentoController@getAgrupamentoPorId')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/agrupamentos/edit/{id}', 'AgrupamentoController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/agrupamentos/add', 'AgrupamentoController@store')->middleware(['CheckLogInColaborador']);
@@ -340,5 +340,7 @@ Route::get('colaborador/gerirUniversidade{id}', 'UniversidadeController@gerirPro
 Route::get('colaborador/gerirUniversidade/getProfessores', 'UniversidadeProfFaculdadeController@getProfessores')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/profsFaculdade/getDisponiveisSemEscola/{id}','ProfessorFaculdadeController@getDisponiveisSemEscola')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirUniversidade/add','UniversidadeProfFaculdadeController@store')->middleware(['CheckLogInColaborador']);
+
+Route::get('admin/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['checkLogInAdmin']);
 
 
