@@ -33,7 +33,7 @@ class AgrupamentoController extends Controller
             ->get();
             
             $agrupamento = array(
-                "agrupamento" => $agrup,
+                "entidade" => $agrup,
                 "emails" => $emails
             );
             array_push($resposta, $agrupamento);
@@ -52,6 +52,7 @@ class AgrupamentoController extends Controller
     {
         //Obtenção dos atributos de um colaborador
         $nome = $request->nome;
+        $observacoes = $request->observacoes;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
         $codPostal = $request->codPostal;
@@ -67,7 +68,7 @@ class AgrupamentoController extends Controller
         $nomeDiretor = $request->nomeDiretor;
 
         //Obtenção do id do colaborador criado
-        $idColab = ColaboradorController::create($nome, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
+        $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
         $rua, $localidade, $distrito, $emails);
         
         //Criação do registo na tabela agrupamento com o id do colaborador criado
@@ -91,6 +92,7 @@ class AgrupamentoController extends Controller
         //Obtenção de todos os dados do request
         $id_agrupamento = \intval($id);
         $nome = $request->nome;
+        $observacoes = $request->observacoes;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
         $codPostal = $request->codPostal;
@@ -106,13 +108,12 @@ class AgrupamentoController extends Controller
         //Obtenção do nome do diretor do request e do agrupamento
         $nomeDiretor = $request->nomeDiretor;
         $agrupamento = Agrupamento::find($id_agrupamento);
-        
-        //Chamar a função de update do registo do colaborador associado ao agrupamento, neste caso
-        ColaboradorController::update($agrupamento->id_colaborador, $nome, $telemovel, $telefone, $numPorta,
-        $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
-        
-        //Update do nome do diretor no registo da tabela agrupamento
         if($agrupamento != null) {
+            //Chamar a função de update do registo do colaborador associado ao agrupamento, neste caso
+            ColaboradorController::update($agrupamento->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
+            $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
+        
+            //Update do nome do diretor no registo da tabela agrupamento
             $agrupamento->nomeDiretor = $nomeDiretor;  
             $agrupamento->save(); 
         }
@@ -130,15 +131,18 @@ class AgrupamentoController extends Controller
     public function destroy($id)
     {
         $agrupamento = Agrupamento::find($id);
-        ColaboradorController::delete($id);
-        if($agrupamento->escolas()->first() != null) {
-            $agrupamento->escolas()->where('id_agrupamento', $id)->delete();
+        if($agrupamento != null) {
+            $idColaborador = $agrupamento->id_colaborador;
+            if($agrupamento->escolas()->first() != null) {
+                $agrupamento->escolas()->where('id_agrupamento', $id)->delete();
+            }
+            if($agrupamento->professores()->first() != null) {
+                $agrupamento->professores()->where('id_agrupamento', $id)->delete();
+            }
+            $agrupamento->delete();   
+            ColaboradorController::delete($idColaborador);
         }
-        if($agrupamento->professores()->first() != null) {
-            $agrupamento->professores()->where('id_agrupamento', $id)->delete();
-        }
-        $agrupamento->delete();
-
+        
         return redirect()->route("agrupamentos");
     }
 
@@ -173,6 +177,9 @@ class AgrupamentoController extends Controller
             "id_agrupamento" => $agrup->id_agrupamento,
             "nome" => $colaborador->nome,
             "telefone" => $colaborador->telefone,
+            "telemovel" => $colaborador->telemovel,
+            "disponivel" => $colaborador->disponivel,
+            "observacoes" => $colaborador->observacoes,
             "nomeDiretor" => $agrup->nomeDiretor,
             "rua" => $codPostalRua->rua,
             "numPorta" => $colaborador->numPorta,

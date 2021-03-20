@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CodPostal;
+use App\Models\Colaborador;
 use App\Models\ContadorHistoria;
 use Illuminate\Http\Request;
 use DB;
@@ -11,26 +13,57 @@ class ContadorHistoriaController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $contadorHistorias = ContadorHistoria::all();
+        $contadoresHistorias = DB::table(DB::raw('contador_historias', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'contador_historias.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('contador_historias.id_contadorHistorias', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+
+        $resposta = array();
+
+        foreach($contadoresHistorias as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+            
+            $contador = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $contador);
+        }
         if($user->tipoUtilizador == 0) {
-            return view('admin/contadores', ['data' => $contadorHistorias]);
+            return view('admin/contadores', ['data' => $resposta]);
         }
         else {
-            return view('colaborador/contadores', ['data' => $contadorHistorias]);
+            return view('colaborador/contadores', ['data' => $resposta]);
         }
     }
 
     public function store(Request $request)
     {
+        $nome = $request->nome;
+        $observacoes = $request->obs;
+        $telefone = $request->telefone;
+        $telemovel = $request->telemovel;
+        $codPostal = $request->codPostal;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $disponibilidade = $request->disponibilidade;
+        $emails = $request->emails;
+
+        $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
+        $rua, $localidade, $distrito, $emails);
+        
         $contadorHistoria = new ContadorHistoria();
-
-        $contadorHistoria->nome = $request->nome;
-        $contadorHistoria->email = $request->email;
-        $contadorHistoria->telefone = $request->telefone;
-        $contadorHistoria->telemovel = $request->telemovel;
-        $contadorHistoria->disponivel = $request->disponibilidade;
-        $contadorHistoria->observacoes = $request->obs;
-
+        $contadorHistoria->id_colaborador = $idColab;
         $contadorHistoria->save();
         
         $user = session()->get("utilizador");
@@ -45,51 +78,84 @@ class ContadorHistoriaController extends Controller
     public function update($id, Request $request)
     {
         $id_contadorHistorias = \intval($id);
-        $disponivel = $request->disponibilidade;
         $nome = $request->nome;
+        $observacoes = $request->obs;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
-        $email = $request->email;
-        $observacoes = $request->obs;
+        $codPostal = $request->codPostal;
+        $disponibilidade = $request->disponibilidade;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $emails = $request->emails;
+        $emailsToDelete = $request->deletedEmails;
         
         $contador = ContadorHistoria::find($id_contadorHistorias);
         if($contador != null) {
-            $contador->disponivel = $disponivel;
-            $contador->nome = $nome;
-            $contador->telefone = $telefone;
-            $contador->telemovel = $telemovel;
-            $contador->email = $email;
-            $contador->observacoes = $observacoes; 
-
-            $contador->save();
-            
-            $user = session()->get("utilizador");
-            if($user->tipoUtilizador == 0) {
-                return redirect()->route("contadores");
-            }
-            else {
-                return redirect()->route("contadoresColaborador");
-            }
+            ColaboradorController::update($contador->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
+            $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
+        } 
+        $user = session()->get("utilizador");
+        if($user->tipoUtilizador == 0) {
+            return redirect()->route("contadores");
+        }
+        else {
+            return redirect()->route("contadoresColaborador");
         }
     }
 
     public function destroy($id)
     {
         $contador = ContadorHistoria::find($id);
-        if($contador->projetos()->first() != null) {
-            $contador->projetos()->where('id_contador', $id)->delete();
+        if($contador != null) {
+            $idColaborador = $contador->id_colaborador;
+            if($contador->projetos()->first() != null) {
+                $contador->projetos()->where('id_contador', $id)->delete();
+            }
+            $contador->delete();
+            ColaboradorController::delete($idColaborador);
         }
-        $contador->delete();
+        
 
         return redirect()->route("contadores");
  
     }
 
     public function getContadorPorId($id) {
+        $contador = ContadorHistoria::find($id);
+        $colaborador = Colaborador::find($contador->id_colaborador);
+        $codPostal = CodPostal::find($colaborador->codPostal);
+        $codPostalRua = DB::table('cod_postal_rua')
+            ->where([
+                ['cod_postal_rua.codPostal', '=', $colaborador->codPostal],
+                ['cod_postal_rua.codPostalRua', '=', $colaborador->codPostalRua],
+                ])->first();
         
-        $contador = DB::table('contador_historias')->where('id_contadorHistorias', $id)->first();
+        $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
+
+        $contador = array(
+            "id_contadorHistorias" => $contador->id_contadorHistorias,
+            "nome" => $colaborador->nome,
+            "telefone" => $colaborador->telefone,
+            "telemovel" => $colaborador->telemovel,
+            "disponivel" => $colaborador->disponivel,
+            "observacoes" => $colaborador->observacoes,
+            "rua" => $codPostalRua->rua,
+            "numPorta" => $colaborador->numPorta,
+            "localidade" => $codPostal->localidade,
+            "codPostal" => $colaborador->codPostal,
+            "codPostalRua" => $colaborador->codPostalRua,
+            "distrito" => $codPostal->distrito,
+            "emails" => $emails
+        );
+        
+        $resposta = array();
+        array_push($resposta, $contador);
+
         if($contador != null) {
-            return response()->json($contador);  
+            return response()->json($resposta);  
         }
         else {
             return null;
@@ -99,7 +165,7 @@ class ContadorHistoriaController extends Controller
 
     public function getDisponiveis() {
         $contadores = DB::table('contador_historias')
-                    ->select('contador_historias.id_contadorHistorias', 'contador_historias.telemovel', 'contador_historias.telefone', 'contador_historias.email', 'contador_historias.nome')
+                    ->select('contador_historias.id_contadorHistorias', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.email', 'colaborador.nome')
                     ->where([
                         ['contador_historias.disponivel', '=', 0]
                         ])

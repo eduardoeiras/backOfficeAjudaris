@@ -46,14 +46,14 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Nome</th>
                                         <th>Telefone</th>
-                                        <th>Email</th>
+                                        <th>Telemovel</th>
+                                        <th>Emails</th>
                                         <th>Nome do Diretor</th>
+                                        <th>Localidade</th>
                                         <th>Rua</th>
                                         <th>Número da Porta</th>
-                                        <th>Localidade</th>
                                         <th>Código Postal</th>
                                         <th>Opções</th>
                                     </tr>
@@ -64,29 +64,29 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["agrupamento"]->id_agrupamento.'</td>';
-                                                $dados = $dados.'<td>'.$linha["agrupamento"]->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha["agrupamento"]->telefone);
+                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
                                                 $dados = $dados.'<td>';
                                                 foreach ($linha["emails"] as $email) {
                                                     $dados = $dados." ".$email->email;
                                                 }
                                                 $dados = $dados.'</td>';
-                                                $dados = $dados.verificaNull($linha["agrupamento"]->nomeDiretor);
-                                                $dados = $dados.verificaNull($linha["agrupamento"]->rua);
-                                                $dados = $dados.verificaNull($linha["agrupamento"]->numPorta);
-                                                $dados = $dados.verificaNull($linha["agrupamento"]->localidade);
-                                                if($linha["agrupamento"]->codPostal != null && $linha["agrupamento"]->codPostalRua != null) {
-                                                    $dados = $dados.'<td>'.$linha["agrupamento"]->codPostal.'-'.$linha["agrupamento"]->codPostalRua.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->nomeDiretor);
+                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
+                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
+                                                $dados = $dados.verificaNull($linha["entidade"]->numPorta);
+                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
+                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["agrupamento"]->id_agrupamento.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_agrupamento.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["agrupamento"]->id_agrupamento.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_agrupamento.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                     </td>';
@@ -299,6 +299,7 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/edicaoEmails.js') }}"></script>
     <script src="{{ asset('js/admin/pagAgrupamentos.js') }}"></script>
 </body>
 

@@ -11,7 +11,7 @@ use DB;
 class ColaboradorController extends Controller
 {
 
-    public static function create($nome, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal,
+    public static function create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal,
     $codPostalRua, $rua, $localidade, $distrito, $emails) {
         $colaborador = new Colaborador();
 
@@ -20,12 +20,7 @@ class ColaboradorController extends Controller
         $colaborador->telemovel = $telemovel;
         $colaborador->numPorta = $numPorta;
         $colaborador->disponivel = $disponibilidade;
-
-        $codPostal = $codPostal;
-        $codPostalRua = $codPostalRua;
-        $rua = $rua;
-        $localidade = $localidade;
-        $distrito = $distrito;
+        $colaborador->observacoes = $observacoes;
         
         $cod_postal = CodPostal::find($codPostal);
         $cod_postal_rua = DB::table('cod_postal_rua')
@@ -41,17 +36,20 @@ class ColaboradorController extends Controller
 
         $idColab = ColaboradorController::getLastId()[0]->id_colaborador;
         
-        foreach($emails as $email) {
-            $newEmail = new Email();
-            $newEmail->email = $email;
-            $newEmail->id_colaborador = $idColab;
-            $newEmail->save();   
+        if($emails != null) {
+            foreach($emails as $email) {
+                $newEmail = new Email();
+                $newEmail->email = $email;
+                $newEmail->id_colaborador = $idColab;
+                $newEmail->save();   
+            }    
         }
+        
 
         return $idColab;
     }
 
-    public static function update($idColaborador, $nome, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal,
+    public static function update($idColaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal,
     $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete) {
         $colaborador = Colaborador::find($idColaborador);
 
@@ -63,9 +61,12 @@ class ColaboradorController extends Controller
                                         ]);
 
         if($colaborador != null) {
-            $colaborador->nome = $nome;
             $colaborador->telefone = $telefone;
+            $colaborador->telemovel = $telemovel;
+            $colaborador->disponivel = $disponibilidade;
+            $colaborador->nome = $nome;
             $colaborador->numPorta = $numPorta;
+            $colaborador->observacoes = $observacoes;
             
             if($emails != null) {
                 foreach($emails as $email) {
@@ -96,8 +97,8 @@ class ColaboradorController extends Controller
         }
     }
 
-    public static function delete($idAgrupamento) {
-        $colaborador = Colaborador::find($idAgrupamento);
+    public static function delete($idColaborador) {
+        $colaborador = Colaborador::find($idColaborador);
         if($colaborador->codPostal != null){
             $colaborador->codPostal = null;
         }
@@ -106,10 +107,10 @@ class ColaboradorController extends Controller
         }
         $colaborador->save();
         if($colaborador->comunicacoes()->first() != null) {
-            $colaborador->comunicacoes()->where('id_colaborador', $idAgrupamento)->delete();
+            $colaborador->comunicacoes()->where('id_colaborador', $idColaborador)->delete();
         }
         if($colaborador->emails()->first() != null) {
-            $colaborador->emails()->where('id_colaborador', $idAgrupamento)->delete();
+            $colaborador->emails()->where('id_colaborador', $idColaborador)->delete();
         } 
         $colaborador->delete();
     }
@@ -168,6 +169,7 @@ class ColaboradorController extends Controller
             $novoCodPostal = new CodPostal();
             $novoCodPostal->codPostal = $codPostal;
             $novoCodPostal->localidade = $localidade;
+            $cod_postal->distrito = $distrito;
             $novoCodPostal->save();
             $colaborador->codPostal = $codPostal;
         }
