@@ -172,5 +172,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/admin/pagConcelhos.js') }}"></script>
+<script src="{{ asset('js/paginas/pagConcelhos.js') }}"></script>
 </html>

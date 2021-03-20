@@ -209,7 +209,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/admin/pagJuris.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagJuris.js') }}"></script>
 </body>
 
 </html>

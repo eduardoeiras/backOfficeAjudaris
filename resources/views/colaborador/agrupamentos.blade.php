@@ -60,35 +60,32 @@
                                 </thead>
                                 <tbody id="tableBody">
                                     <?php
-                                        use \App\Http\Controllers\CodPostalController;
-                                        use \App\Http\Controllers\CodPostalRuaController;
                                         if(isset($data)) {
                                             foreach($data as $linha) {
-                                                if($linha->codPostal != null) {
-                                                    $localidade = CodPostalController::getLocalidade($linha->codPostal);
-                                                    $codPostalRua = CodPostalRuaController::getCodPostalRua($linha->codPostalRua);
-                                                    $rua = CodPostalRuaController::getRua($linha->codPostalRua);    
-                                                }
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha->id_agrupamento.'</td>';
-                                                $dados = $dados.'<td>'.$linha->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha->telefone);
-                                                $dados = $dados.verificaNull($linha->email);
-                                                $dados = $dados.verificaNull($linha->nomeDiretor);
-                                                $dados = $dados.verificaNull($rua);
-                                                $dados = $dados.verificaNull($linha->numPorta);
-                                                $dados = $dados.verificaNull($localidade);
-                                                if($linha->codPostal != null && $linha->codPostalRua != null) {
-                                                    $dados = $dados.'<td>'.$linha->codPostal.'-'.$linha->codPostalRua.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["emails"] as $email) {
+                                                    $dados = $dados." ".$email->email;
+                                                }
+                                                $dados = $dados.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->nomeDiretor);
+                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
+                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
+                                                $dados = $dados.verificaNull($linha["entidade"]->numPorta);
+                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
+                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_agrupamento.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_agrupamento.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                    </td>';
+                                                        </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;
                                             }
@@ -239,7 +236,8 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/colaborador/pagAgrupamentos.js') }}"></script>
+    <script src="{{ asset('js/edicaoEmails.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagAgrupamentos.js') }}"></script>
 </body>
 
 </html>

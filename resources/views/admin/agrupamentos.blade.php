@@ -60,7 +60,6 @@
                                 </thead>
                                 <tbody id="tableBody">
                                     <?php
-                                    use App\Http\Controllers\ColaboradorController;
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
@@ -300,7 +299,7 @@
     </div>
     </div>
     <script src="{{ asset('js/edicaoEmails.js') }}"></script>
-    <script src="{{ asset('js/admin/pagAgrupamentos.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagAgrupamentos.js') }}"></script>
 </body>
 
 </html>

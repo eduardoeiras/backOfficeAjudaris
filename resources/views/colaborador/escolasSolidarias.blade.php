@@ -239,5 +239,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/colaborador/pagEscolasSolidarias.js') }}"></script>
+<script src="{{ asset('js/paginas/pagEscolasSolidarias.js') }}"></script>
 </html>

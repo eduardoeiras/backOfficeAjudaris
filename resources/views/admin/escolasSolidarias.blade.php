@@ -264,5 +264,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/admin/pagEscolasSolidarias.js') }}"></script>
+<script src="{{ asset('js/paginas/pagEscolasSolidarias.js') }}"></script>
 </html>

@@ -143,7 +143,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/colaborador/pagFormacoes.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagFormacoes.js') }}"></script>
 </body>
 
 </html>

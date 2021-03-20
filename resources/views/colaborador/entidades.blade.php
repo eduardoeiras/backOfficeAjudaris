@@ -204,7 +204,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/admin/pagEntidades.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagEntidades.js') }}"></script>
 </body>
 
 </html>

@@ -168,7 +168,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/admin/pagFormacoes.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagFormacoes.js') }}"></script>
 </body>
 
 </html>

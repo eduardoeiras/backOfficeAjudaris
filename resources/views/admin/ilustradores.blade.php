@@ -229,7 +229,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/admin/pagIlustradores.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagIlustradores.js') }}"></script>
 </body>
 
 </html>

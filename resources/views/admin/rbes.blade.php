@@ -206,5 +206,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/admin/pagRbes.js') }}"></script>
+<script src="{{ asset('js/paginas/pagRbes.js') }}"></script>
 </html>

@@ -302,7 +302,7 @@
     </div>
     </div>
     <script src="{{ asset('js/edicaoEmails.js') }}"></script>
-    <script src="{{ asset('js/admin/pagContadores.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagContadores.js') }}"></script>
 </body>
 
 </html>

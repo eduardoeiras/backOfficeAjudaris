@@ -181,5 +181,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/colaborador/pagRbes.js') }}"></script>
+<script src="{{ asset('js/paginas/pagRbes.js') }}"></script>
 </html>

@@ -119,5 +119,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/colaborador/pagGerirProfessores.js') }}"></script>
+<script src="{{ asset('js/paginas/pagGerirProfessores.js') }}"></script>
 </html>

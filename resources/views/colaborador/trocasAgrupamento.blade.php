@@ -154,7 +154,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/colaborador/pagTrocasAgrupamento.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagTrocasAgrupamento.js') }}"></script>
 </body>
 
 </html>

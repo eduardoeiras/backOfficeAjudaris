@@ -179,7 +179,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/colaborador/pagInicial.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagInicial.js') }}"></script>
 </body>
 
 </html>

@@ -231,7 +231,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/admin/pagUniversidades.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagUniversidades.js') }}"></script>
 </body>
 
 </html>

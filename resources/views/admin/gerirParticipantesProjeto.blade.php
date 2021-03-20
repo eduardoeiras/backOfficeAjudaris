@@ -230,5 +230,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/admin/pagGerirProjeto.js') }}"></script>
+<script src="{{ asset('js/paginas/pagGerirProjeto.js') }}"></script>
 </html>

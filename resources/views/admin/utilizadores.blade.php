@@ -221,7 +221,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/admin/pagUtilizadores.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagUtilizadores.js') }}"></script>
 </body>
 
 </html>

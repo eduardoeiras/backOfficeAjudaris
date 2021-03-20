@@ -194,7 +194,7 @@
         </div>
     </div>
     </div>
-    <script src="{{ asset('js/colaborador/pagContadores.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagContadores.js') }}"></script>
 </body>
 
 </html>
