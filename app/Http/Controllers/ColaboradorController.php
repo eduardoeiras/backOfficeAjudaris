@@ -169,7 +169,7 @@ class ColaboradorController extends Controller
             $novoCodPostal = new CodPostal();
             $novoCodPostal->codPostal = $codPostal;
             $novoCodPostal->localidade = $localidade;
-            $cod_postal->distrito = $distrito;
+            $novoCodPostal->distrito = $distrito;
             $novoCodPostal->save();
             $colaborador->codPostal = $codPostal;
         }

@@ -53,7 +53,6 @@
                                         <th>Nome do Diretor</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
-                                        <th>Número da Porta</th>
                                         <th>Código Postal</th>
                                         <th>Opções</th>
                                     </tr>
@@ -74,7 +73,6 @@
                                                 $dados = $dados.verificaNull($linha["entidade"]->nomeDiretor);
                                                 $dados = $dados.verificaNull($linha["entidade"]->localidade);
                                                 $dados = $dados.verificaNull($linha["entidade"]->rua);
-                                                $dados = $dados.verificaNull($linha["entidade"]->numPorta);
                                                 if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
                                                     $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
                                                 }
