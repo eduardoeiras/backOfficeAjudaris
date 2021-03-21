@@ -119,7 +119,7 @@
                                 </div>
                                 <div class="modal-body">
                                 <div class="modal-body">
-                                    <label style="font-size: 18px">Informações do Agrupamento</label>
+                                    <label style="font-size: 18px">Informações do Juri</label>
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
@@ -193,7 +193,7 @@
                             <form method="POST" action="" id="formEditar">
                                 @csrf
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Editar Contador de Histórias</h4>
+                                    <h4 class="modal-title">Editar Juri</h4>
                                     <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
                                 </div>
@@ -291,6 +291,7 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/edicaoEmails.js') }}"></script>
     <script src="{{ asset('js/paginas/pagJuris.js') }}"></script>
 </body>
 

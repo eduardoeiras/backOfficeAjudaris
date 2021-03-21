@@ -18,6 +18,7 @@ class JuriController extends Controller
         ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
         ->get();
 
+        $resposta = array();
 
         foreach($juris as $jur){
             $emails = DB::table('email')
@@ -27,7 +28,7 @@ class JuriController extends Controller
             ->get();
             
             $juri = array(
-                "juri" => $jur,
+                "entidade" => $jur,
                 "emails" => $emails
             );
             array_push($resposta, $juri);
@@ -42,14 +43,26 @@ class JuriController extends Controller
 
     public function store(Request $request)
     {
+        //Obtenção dos atributos de um colaborador
+        $nome = $request->nome;
+        $observacoes = $request->observacoes;
+        $telefone = $request->telefone;
+        $telemovel = $request->telemovel;
+        $codPostal = $request->codPostal;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $disponibilidade = $request->disponibilidade;
+        $emails = $request->emails;
+
+        //Obtenção do id do colaborador criado
+        $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
+        $rua, $localidade, $distrito, $emails);
+
         $juris = new Juri();
-
-        $juris->nome = $request->nome;
-        $juris->email = $request->email;
-        $juris->telefone = $request->telefone;
-        $juris->telemovel = $request->telemovel;
-        $juris->disponivel = $request->disponibilidade;
-
+        $juris->id_colaborador = $idColab;
         $juris->save();
 
         $user = session()->get("utilizador");
