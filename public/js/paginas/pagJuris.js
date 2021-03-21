@@ -32,11 +32,13 @@ function editar(id) {
         dataType: "json",
         success: function (resposta) {
             if (resposta != null) {
+                juri = resposta[0]
+                $('#emailsAssociadosEdit').empty()
                 url = 'juris/edit/' + juri.id_juri
                 $('#formEditar').attr('action', url)
                 $('#nome').val(juri.nome)
-                $('#telefone').val(juri.telefone)
                 $('#telemovel').val(juri.telemovel)
+                $('#telefone').val(juri.telefone)
                 var disp = juri.disponivel
                 $('#disponibilidade').val(disp.toString())
                 juri.emails.original.forEach(linha => {
@@ -46,12 +48,12 @@ function editar(id) {
                     <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
                     $('#emailsAssociadosEdit').append(linha)
                 });
+                $('#localidade').val(juri.localidade)
                 $('#rua').val(juri.rua)
                 $('#numPorta').val(juri.numPorta)
-                $('#localidade').val(juri.localidade)
-                $('#distrito').val(juri.distrito)
                 $('#codPostal').val(juri.codPostal)
                 $('#codPostalRua').val(juri.codPostalRua)
+                $('#distrito').val(juri.distrito)
             }
         },
         error: function (error) {

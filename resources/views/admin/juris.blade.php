@@ -68,7 +68,11 @@
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
                                                 $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
-                                                $dados = $dados.verificaNull($linha["entidade"]->email);
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["emails"] as $email) {
+                                                    $dados = $dados." ".$email->email;
+                                                }
+                                                $dados = $dados.'</td>';
                                                 if($linha->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
