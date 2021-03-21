@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Juri;
 use Illuminate\Http\Request;
+use App\Models\Colaborador;
+use \App\Models\CodPostalRua;
 use DB;
 class JuriController extends Controller
 {
@@ -33,6 +35,7 @@ class JuriController extends Controller
             );
             array_push($resposta, $juri);
         }
+        
         if($user->tipoUtilizador == 0) {
             return view('admin/juris', ['data' => $juris]);
         }
@@ -77,22 +80,27 @@ class JuriController extends Controller
     public function update($id, Request $request)
     {
         $id_juri = \intval($id);
-        $disponivel = $request->disponibilidade;
         $nome = $request->nome;
+        $observacoes = $request->observacoes;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
-        $email = $request->email;
+        $codPostal = $request->codPostal;
+        $disponibilidade = $request->disponibilidade;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $emails = $request->emails;
+        $emailsToDelete = $request->deletedEmails;
         
         $juri = Juri::find($id_juri);
         if($juri != null) {
-            $juri->disponivel = $disponivel;
-            $juri->nome = $nome;
-            $juri->telefone = $telefone;
-            $juri->telemovel = $telemovel;
-            $juri->email = $email;
+            ColaboradorController::update($juri->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
+            $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
 
             $juri->save();
-            
+        }
             $user = session()->get("utilizador");
             if($user->tipoUtilizador == 0) {
                 return redirect()->route("juris");
@@ -100,26 +108,59 @@ class JuriController extends Controller
             else {
                 return redirect()->route("jurisColaborador");
             }
-        }
+        
     }
 
     public function destroy($id)
     {
         $juri = Juri::find($id);
-        if($juri->projetos()->first() != null) {
-            $juri->projetos()->where('id_juri', $id)->delete();
+        if($juri != null) {
+            $idColaborador = $juri->id_colaborador;
+            if($juri->projetos()->first() != null) {
+                $juri->projetos()->where('id_juri', $id)->delete();
+            }
+            $juri->delete();
+            ColaboradorController::delete($idColaborador);
         }
-        $juri->delete();
         
         return redirect()->route("juris");
 
     }
 
     public function getJuriPorId($id) {
+
+        $jur = Juri::find($id);
+        $colaborador = Colaborador::find($jur->id_colaborador);
+        $codPostal = CodPostal::find($colaborador->codPostal);
+        $codPostalRua = DB::table('cod_postal_rua')
+            ->where([
+                ['cod_postal_rua.codPostal', '=', $colaborador->codPostal],
+                ['cod_postal_rua.codPostalRua', '=', $colaborador->codPostalRua],
+                ])->first();
+
+        $emails = ColaboradorController::getEmails($colaborador->id_colaborador);        
         
-        $juri = DB::table('juri')->where('id_juri', $id)->first();
+        $juri = array(
+            "id_juri" => $jur->id_juri,
+            "nome" => $colaborador->nome,
+            "telefone" => $colaborador->telefone,
+            "telemovel" => $colaborador->telemovel,
+            "disponivel" => $colaborador->disponivel,
+            "observacoes" => $colaborador->observacoes,
+            "rua" => $codPostalRua->rua,
+            "numPorta" => $colaborador->numPorta,
+            "localidade" => $codPostal->localidade,
+            "codPostal" => $colaborador->codPostal,
+            "codPostalRua" => $colaborador->codPostalRua,
+            "distrito" => $codPostal->distrito,
+            "emails" => $emails
+        );
+
+        $resposta = array();
+        array_push($resposta, $juri);
+        
         if($juri != null) {
-            return response()->json($juri);  
+            return response()->json($resposta);  
         }
         else {
             return null;
