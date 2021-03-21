@@ -15,6 +15,7 @@ class Agrupamento extends Model
 
     protected $fillable = [
         'nomeDiretor',
+        'nif',
         'id_colaborador'
     ];
 

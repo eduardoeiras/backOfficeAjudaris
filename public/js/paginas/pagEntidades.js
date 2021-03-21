@@ -38,6 +38,7 @@ function editar(id) {
                 $('#formEditar').attr('action', url)
                 $('#nome').val(entidade.nome)
                 $('#entidade').val(entidade.entidade)
+                $('#nif').val(entidade.nif)
                 $('#disponibilidade').val(entidade.disponivel.toString())
                 $('#observacoes').val(entidade.observacoes)
                 $('#telefone').val(entidade.telefone)

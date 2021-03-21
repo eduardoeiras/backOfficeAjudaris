@@ -37,6 +37,7 @@ function editar(id) {
                 url = 'agrupamentos/edit/' + agrupamento.id_agrupamento
                 $('#formEditar').attr('action', url)
                 $('#nome').val(agrupamento.nome)
+                $('#nif').val(agrupamento.nif)
                 agrupamento.emails.original.forEach(linha => {
                     emailsAdicionadosEdit.push(linha.email)
                     let index = emailsAdicionadosEdit.indexOf(linha.email)
@@ -45,6 +46,7 @@ function editar(id) {
                     $('#emailsAssociadosEdit').append(linha)
                 });
                 $('#telefone').val(agrupamento.telefone)
+                $('#telemovel').val(agrupamento.telemovel)
                 $('#nomeDiretor').val(agrupamento.nomeDiretor)
                 $('#rua').val(agrupamento.rua)
                 $('#numPorta').val(agrupamento.numPorta)

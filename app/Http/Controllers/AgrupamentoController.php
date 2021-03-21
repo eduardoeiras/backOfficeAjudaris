@@ -19,7 +19,7 @@ class AgrupamentoController extends Controller
         ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
         ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
         ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'agrupamento.nif', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
         ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
         ->get();
 
@@ -66,6 +66,7 @@ class AgrupamentoController extends Controller
 
         //Obtenção do atributo do agrupamento
         $nomeDiretor = $request->nomeDiretor;
+        $nif = $request->nif;
 
         //Obtenção do id do colaborador criado
         $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
@@ -74,6 +75,7 @@ class AgrupamentoController extends Controller
         //Criação do registo na tabela agrupamento com o id do colaborador criado
         $agrupamento = new Agrupamento();
         $agrupamento->nomeDiretor = $nomeDiretor;
+        $agrupamento->nif = $nif;
         $agrupamento->id_colaborador = $idColab;
         $agrupamento->save();
         
@@ -107,6 +109,7 @@ class AgrupamentoController extends Controller
         
         //Obtenção do nome do diretor do request e do agrupamento
         $nomeDiretor = $request->nomeDiretor;
+        $nif = $request->nif;
         $agrupamento = Agrupamento::find($id_agrupamento);
         if($agrupamento != null) {
             //Chamar a função de update do registo do colaborador associado ao agrupamento, neste caso
@@ -114,7 +117,8 @@ class AgrupamentoController extends Controller
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
         
             //Update do nome do diretor no registo da tabela agrupamento
-            $agrupamento->nomeDiretor = $nomeDiretor;  
+            $agrupamento->nomeDiretor = $nomeDiretor;
+            $agrupamento->nif = $nif;  
             $agrupamento->save(); 
         }
          
@@ -148,8 +152,9 @@ class AgrupamentoController extends Controller
 
     public static function getNomeAgrupamentoPorId($id) {
         
-        $agrupamento = DB::table('colaborador')
+        $agrupamento = DB::table(DB::raw('agrupamento', 'colaborador'))
             ->join('colaborador', 'agrupamento.id_colaborador', 'colaborador.id_colaborador')
+            ->select('agrupamento.id_agrupamento', 'colaborador.nome')
             ->where('id_agrupamento', $id)->first();
         if($agrupamento != null) {
             return $agrupamento->nome;  
@@ -181,6 +186,7 @@ class AgrupamentoController extends Controller
             "disponivel" => $colaborador->disponivel,
             "observacoes" => $colaborador->observacoes,
             "nomeDiretor" => $agrup->nomeDiretor,
+            "nif" => $agrup->nif,
             "rua" => $codPostalRua->rua,
             "numPorta" => $colaborador->numPorta,
             "localidade" => $codPostal->localidade,
@@ -213,15 +219,16 @@ class AgrupamentoController extends Controller
             return null;
         }
         
-    }
-
+    }*/
+    
     public function getAllComLocalidade() {
-        $agrupamentos = DB::table('agrupamento')
-                ->join('cod_postal', 'agrupamento.codPostal', '=', 'cod_postal.codPostal')
-                ->select('agrupamento.id_agrupamento', 'agrupamento.nome' , 'agrupamento.telefone', 'agrupamento.telefone',
-                 'agrupamento.email', 'agrupamento.nomeDiretor', 'agrupamento.codPostal', 'agrupamento.codPostalRua',
-                 'agrupamento.numPorta', 'cod_postal.localidade')
-                ->get();
+        $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'colaborador.nome', 'cod_postal.localidade', 'cod_postal.distrito')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
                 
         
         if($agrupamentos != null) {
@@ -230,6 +237,6 @@ class AgrupamentoController extends Controller
         else {
             return null;
         }
-    }*/
+    }
     
 }

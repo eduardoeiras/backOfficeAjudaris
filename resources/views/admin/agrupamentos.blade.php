@@ -47,8 +47,8 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
-                                        <th>Telefone</th>
                                         <th>Telemovel</th>
+                                        <th>Telefone</th>
                                         <th>Emails</th>
                                         <th>Nome do Diretor</th>
                                         <th>Localidade</th>
@@ -63,8 +63,8 @@
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.'<td>';
                                                 foreach ($linha["emails"] as $email) {
                                                     $dados = $dados." ".$email->email;
@@ -125,6 +125,10 @@
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
                                         <input type="text" id="nomeDirAdd" name="nomeDiretor" class="form-control" maxlength="70">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Número de Identificação Fiscal (NIF)</label>
+                                        <input type="text" id="nifAdd" name="nif" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
@@ -208,6 +212,10 @@
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
                                         <input type="text" id="nomeDiretor" name="nomeDiretor" class="form-control" maxlength="70">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Número de Identificação Fiscal (NIF)</label>
+                                        <input type="text" id="nif" name="nif" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>

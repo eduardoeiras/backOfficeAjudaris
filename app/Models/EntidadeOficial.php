@@ -15,6 +15,7 @@ class EntidadeOficial extends Model
 
     protected $fillable = [
         'entidade',
+        'nif',
         'id_colaborador'
     ];
 

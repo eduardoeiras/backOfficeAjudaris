@@ -133,6 +133,10 @@
                                         <input type="text" name="entidade" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
+                                        <label>Número de Identificação Fiscal (NIF)</label>
+                                        <input type="text" id="nifAdd" name="nif" class="form-control" maxlength="70">
+                                    </div>
+                                    <div class="form-group">
                                         <label>Disponibilidade</label>
                                         <select name="disponibilidade">
                                             <option value="0">Disponivel</option>
@@ -217,6 +221,10 @@
                                     <div class="form-group">
                                         <label>Entidade</label>
                                         <input type="text" id="entidade" name="entidade" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Número de Identificação Fiscal (NIF)</label>
+                                        <input type="text" id="nif" name="nif" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>

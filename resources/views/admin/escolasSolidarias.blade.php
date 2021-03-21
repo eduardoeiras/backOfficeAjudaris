@@ -47,13 +47,16 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Nome</th>
                                         <th>Telefone</th>
                                         <th>Telemóvel</th>
                                         <th>Contacto da Associação de Pais</th>
-                                        <th>Agrupamento</th>
+                                        <th>Emails</th>
                                         <th>Disponibilidade</th>
+                                        <th>Agrupamento</th>
+                                        <th>Localidade</th>
+                                        <th>Rua</th>
+                                        <th>Código Postal</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>
@@ -63,27 +66,38 @@
                                         use \App\Http\Controllers\CodPostalController;
                                         if(isset($data)) {
                                             foreach($data as $linha) {
-                                                $nomeAgrupamento = AgrupamentoController::getNomeAgrupamentoPorId($linha->id_agrupamento);
-                                                $localidade = CodPostalController::getLocalidade($linha->codPostal);
+                                                $nomeAgrupamento = AgrupamentoController::getNomeAgrupamentoPorId($linha["entidade"]->id_agrupamento);
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha->id_escolaSolidaria.'</td>';
-                                                $dados = $dados.'<td>'.$linha->nome.'</td>';
-                                                $dados = $dados.'<td>'.$linha->telefone.'</td>';
-                                                $dados = $dados.'<td>'.$linha->telemovel.'</td>';
-                                                $dados = $dados.'<td>'.$linha->contactoAssPais.'</td>';
-                                                $dados = $dados.'<td>'.$nomeAgrupamento.'</td>';
-                                                if($linha->disponivel == 0) {
+                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
+                                                $dados = $dados.verificaNull($linha["entidade"]->contactoAssPais);
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["emails"] as $email) {
+                                                    $dados = $dados." ".$email->email;
+                                                }
+                                                $dados = $dados.'</td>';
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td>Indisponível</td>';    
                                                 }
-                                                $url = 'gerirEscola'.$linha->id_escolaSolidaria;
+                                                $dados = $dados.'<td>'.$nomeAgrupamento.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
+                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
+                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
+                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
+                                                }
+                                                else {
+                                                    $dados = $dados.'<td> --- </td>';
+                                                }
+                                                $url = 'gerirEscola'.$linha["entidade"]->id_escolaSolidaria;
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_escolaSolidaria.', '.$localidade.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_escolaSolidaria.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_escolaSolidaria.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_escolaSolidaria.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                         <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
@@ -117,10 +131,25 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações da Escola Solidária</label>
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" name="nome" class="form-control" maxlength="70" required>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade" class="form-control">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Telefone</label>
                                         <input type="tel" name="telefone" class="form-control" maxlength="15">
@@ -134,16 +163,47 @@
                                         <input type="tel" name="contactoAssPais" class="form-control" maxlength="15">
                                     </div>
                                     <div class="form-group">
-                                        <label>Agrupamento:</label>
-                                        <input type="text" value="" id="nomeAgrupamentoAdd" name="nomeAgrupamento" class="form-control" readonly>
-                                        <input type="hidden" value="" id="agrupamentoAdd" name="agrupamento">
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <div id="emailsAssociadosAdd">   
+                                            </div>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label>Disponibilidade</label>
-                                        <select name="disponibilidade" class="form-control">
-                                            <option value="0">Disponivel</option>
-                                            <option value="1">Indisponivel</option>
-                                        </select>
+                                        <label>Rua</label>
+                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Localidade</label>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label>Primeiros dígitos</label>
+                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <label>Segundos dígitos</label>
+                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Agrupamento</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Agrupamento Associado:</label>
+                                        <input type="text" value="" id="nomeAgrupamentoAdd" name="nomeAgrupamento" class="form-control" readonly>
+                                        <input type="hidden" value="" id="agrupamentoAdd" name="agrupamento">
                                     </div>
                                     <div class="form-group">
                                     <div>
@@ -163,7 +223,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
@@ -184,10 +244,25 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações da Entidade Oficial</label>
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select id="disponibilidade" name="disponibilidade" class="form-control">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Telefone</label>
                                         <input type="tel" id="telefone"  name="telefone" class="form-control" maxlength="15">
@@ -201,12 +276,42 @@
                                         <input type="tel" id="contactoAssPais" name="contactoAssPais" class="form-control" maxlength="15">
                                     </div>
                                     <div class="form-group">
-                                        <label>Disponibilidade</label>
-                                        <select id="disponibilidade" name="disponibilidade" class="form-control">
-                                            <option value="0">Disponivel</option>
-                                            <option value="1">Indisponivel</option>
-                                        </select>
+                                        <div style="padding-top: 5px">
+                                            <label style="font-size: 18px">Emails Associados:</label>
+                                            <div id="emailsAssociadosEdit"> 
+                                            </div>
+                                            <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
+                                        </div>
                                     </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPorta" name="numPorta" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Rua</label>
+                                        <input type="text" id="rua" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Localidade</label>
+                                        <input type="text" id="localidade" name="localidade" class="form-control" maxlength="50" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distrito" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Primeiros dígitos</label>
+                                        <input type="text" id="codPostal" name="codPostal" class="form-control" maxlength="10" required>
+                                        <label>Segundos dígitos</label>
+                                        <input type="text" id="codPostalRua" name="codPostalRua" class="form-control" maxlength="6" required>
+                                    </div>
+                                    <br><br>
+                                    <label style="font-size: 18px">Agrupamento</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Agrupamento:</label>
                                         <input type="text" value="" id="nomeAgrupamento" name="nomeAgrupamento" class="form-control" readonly>
@@ -263,6 +368,7 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/edicaoEmails.js') }}"></script>
+    <script src="{{ asset('js/paginas/pagEscolasSolidarias.js') }}"></script>
 </body>
-<script src="{{ asset('js/paginas/pagEscolasSolidarias.js') }}"></script>
 </html>

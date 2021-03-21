@@ -18,7 +18,7 @@ class EntidadeOficialController extends Controller
         ->join('colaborador', 'entidade_oficial.id_colaborador', '=' , 'colaborador.id_colaborador')
         ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
         ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('entidade_oficial.id_entidadeOficial', 'entidade_oficial.entidade', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->select('entidade_oficial.id_entidadeOficial', 'entidade_oficial.entidade', 'entidade_oficial.nif', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
         ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
         ->get();
 
@@ -61,12 +61,14 @@ class EntidadeOficialController extends Controller
         $emails = $request->emails;
 
         $entidade = $request->entidade;
+        $nif = $request->nif;
 
         $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
         $rua, $localidade, $distrito, $emails);
         
         $entOficial = new EntidadeOficial();
         $entOficial->entidade = $entidade;
+        $entOficial->nif = $nif;
         $entOficial->id_colaborador = $idColab;
         $entOficial->save();
 
@@ -97,12 +99,13 @@ class EntidadeOficialController extends Controller
         $emailsToDelete = $request->deletedEmails;
 
         $entidade = $request->entidade;
+        $nif = $request->nif;
 
         $entOficial = EntidadeOficial::find($id_entidadeOficial);
         if($entOficial != null){
-            ColaboradorController::update($agrupamento->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
+            ColaboradorController::update($entOficial->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
-            
+            $entOficial->nif = $nif;
             $entOficial->entidade = $entidade;
             $entOficial->save();
         }
@@ -153,6 +156,7 @@ class EntidadeOficialController extends Controller
             "disponivel" => $colaborador->disponivel,
             "observacoes" => $colaborador->observacoes,
             "entidade" => $entidade->entidade,
+            "nif" => $entidade->nif,
             "rua" => $codPostalRua->rua,
             "numPorta" => $colaborador->numPorta,
             "localidade" => $codPostal->localidade,

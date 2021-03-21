@@ -2,38 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CodPostal;
+use App\Models\Colaborador;
 use App\Models\EscolaSolidaria;
 use Illuminate\Http\Request;
 use DB;
-use Session;
 use App\Models\EscolaSolidariaProf;
 
 class EscolaSolidariaController extends Controller
 {
     public function index()
     {
-        $escsolidarias = EscolaSolidaria::all();
-
         $user = session()->get("utilizador");
+
+        $escolas = DB::table(DB::raw('escola_solidaria', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'escola_solidaria.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('escola_solidaria.id_escolaSolidaria', 'escola_solidaria.contactoAssPais', 'escola_solidaria.id_agrupamento',
+         'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+
+        $resposta = array();
+
+        foreach($escolas as $escola) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $escola->id_colaborador)
+            ->get();
+            
+            $ent = array(
+                "entidade" => $escola,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
+
         if($user->tipoUtilizador == 0) {
-            return view('admin/escolasSolidarias', ['data' => $escsolidarias]);
+            return view('admin/escolasSolidarias', ['data' => $resposta]);
         }
         else {
-            return view('colaborador/escolasSolidarias', ['data' => $escsolidarias]);
+            return view('colaborador/escolasSolidarias', ['data' => $resposta]);
         }
     }
 
     public function store(Request $request)
     {
+        $nome = $request->nome;
+        $observacoes = $request->observacoes;
+        $telefone = $request->telefone;
+        $telemovel = $request->telemovel;
+        $codPostal = $request->codPostal;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $disponibilidade = $request->disponibilidade;
+        $emails = $request->emails;
+        
+        $contAssPais = $request->contactoAssPais;
+        $id_agrupamento = $request->agrupamento;
+
+        $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
+        $rua, $localidade, $distrito, $emails);
+        
         $escsolidarias = new EscolaSolidaria();
-
-        $escsolidarias->nome = $request->nome;
-        $escsolidarias->telefone = $request->telefone;
-        $escsolidarias->telemovel = $request->telemovel;
-        $escsolidarias->contactoAssPais = $request->contactoAssPais;
-        $escsolidarias->id_agrupamento = $request->agrupamento;
-        $escsolidarias->disponivel = $request->disponibilidade;
-
+        $escsolidarias->contactoAssPais = $contAssPais;
+        $escsolidarias->id_agrupamento = $id_agrupamento;
+        $escsolidarias->id_colaborador = $idColab;
         $escsolidarias->save();
 
         $user = session()->get("utilizador");
@@ -49,53 +88,94 @@ class EscolaSolidariaController extends Controller
     {
         $id_escola = \intval($id);
         $nome = $request->nome;
+        $observacoes = $request->observacoes;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
+        $codPostal = $request->codPostal;
+        $disponibilidade = $request->disponibilidade;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $emails = $request->emails;
+        $emailsToDelete = $request->deletedEmails;
+        
         $contactoAssPais = $request->contactoAssPais;
         $id_agrupamento = $request->agrupamento;
-        $disponibilidade = $request->disponibilidade;
 
         $escola = EscolaSolidaria::find($id_escola);
         if($escola != null) {
-            $escola->nome = $nome;
-            $escola->telefone = $telefone;
-            $escola->telemovel = $telemovel;
+            ColaboradorController::update($escola->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
+            $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
             $escola->contactoAssPais = $contactoAssPais;
             $escola->id_agrupamento = $id_agrupamento;
-            $escola->disponivel = $disponibilidade;
-
             $escola->save();
-            
-            $user = session()->get("utilizador");
-            if($user->tipoUtilizador == 0) {
-                return redirect()->route("escolas");
-            }
-            else {
-                return redirect()->route("escolasColaborador");
-            }
+        }
+        $user = session()->get("utilizador");
+        if($user->tipoUtilizador == 0) {
+            return redirect()->route("escolas");
+        }
+        else {
+            return redirect()->route("escolasColaborador");
         }
     }
 
     public function destroy($id)
     {
         $escola = EscolaSolidaria::find($id);
-        if($escola->professores()->first() != null) {
-            return redirect()->route("escolas");
+        if($escola != null) {
+            $idColaborador = $escola->id_colaborador;
+            if($escola->professores()->first() != null) {
+                return redirect()->route("escolas");
+            }
+            if($escola->projetos()->first() != null) {
+                $escola->projetos()->where('id_escolaSolidaria', $id)->delete();
+            }
+            $escola->delete();
+            ColaboradorController::delete($idColaborador);    
         }
-        if($escola->projetos()->first() != null) {
-            $escola->projetos()->where('id_escolaSolidaria', $id)->delete();
-        }
-        $escola->delete();
-        
         return redirect()->route("escolas");
-
     }
 
     public function getEscolaPorId($id) {
+
+        $escola = EscolaSolidaria::find($id);
+        $colaborador = Colaborador::find($escola->id_colaborador);
+
+        $codPostal = CodPostal::find($colaborador->codPostal);
+        $codPostalRua = DB::table('cod_postal_rua')
+            ->where([
+                ['cod_postal_rua.codPostal', '=', $colaborador->codPostal],
+                ['cod_postal_rua.codPostalRua', '=', $colaborador->codPostalRua],
+                ])->first();
         
-        $escola = DB::table('escola_solidaria')->where('id_escolaSolidaria', $id)->first();
-        if($escola != null) {
-            return response()->json($escola);  
+        $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
+
+        $escolaSolidaria = array(
+            "id_escolaSolidaria" => $escola->id_escolaSolidaria,
+            "nome" => $colaborador->nome,
+            "telefone" => $colaborador->telefone,
+            "telemovel" => $colaborador->telemovel,
+            "disponivel" => $colaborador->disponivel,
+            "observacoes" => $colaborador->observacoes,
+            "contactoAssPais" => $escola->contactoAssPais,
+            "rua" => $codPostalRua->rua,
+            "numPorta" => $colaborador->numPorta,
+            "localidade" => $codPostal->localidade,
+            "codPostal" => $colaborador->codPostal,
+            "codPostalRua" => $colaborador->codPostalRua,
+            "distrito" => $codPostal->distrito,
+            "emails" => $emails,
+            "id_agrupamento" => $escola->id_agrupamento
+        );
+
+        $resposta = array();
+        array_push($resposta, $escolaSolidaria);
+        
+        
+        if($escolaSolidaria != null) {
+            return response()->json($resposta);  
         }
         else {
             return null;
@@ -145,8 +225,11 @@ class EscolaSolidariaController extends Controller
     }
 
     public function getNomeEscolaPorId($id) {
-        $escola = EscolaSolidaria::find($id);
-        $nome = null;
+        $escola = DB::table('colaborador')
+            ->join('colaborador', 'escola_solidaria.id_colaborador', 'colaborador.id_colaborador')
+            ->where('id_agrupamento', $id)->first();
+        
+            $nome = null;
 
         if($escola != null) {
             $nome = $escola->nome;
@@ -162,8 +245,6 @@ class EscolaSolidariaController extends Controller
         $novaAssoc->id_professor = $request->id_professor;
 
         $novaAssoc->save();
-
-        $nomeEscola = self::getNomeEscolaPorId($request->id_escola);
 
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
