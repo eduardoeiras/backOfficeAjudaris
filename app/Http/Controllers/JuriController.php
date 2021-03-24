@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Juri;
 use Illuminate\Http\Request;
 use App\Models\Colaborador;
-use \App\Models\CodPostalRua;
+use \App\Models\CodPostal;
 use DB;
 class JuriController extends Controller
 {
@@ -37,10 +37,10 @@ class JuriController extends Controller
         }
         
         if($user->tipoUtilizador == 0) {
-            return view('admin/juris', ['data' => $juris]);
+            return view('admin/juris', ['data' => $resposta]);
         }
         else {
-            return view('colaborador/juris', ['data' => $juris]);
+            return view('colaborador/juris', ['data' => $resposta]);
         }
     }
 
@@ -147,7 +147,7 @@ class JuriController extends Controller
             "telemovel" => $colaborador->telemovel,
             "disponivel" => $colaborador->disponivel,
             "observacoes" => $colaborador->observacoes,
-            "rua" => $codPostalRua->rua,
+            //"rua" => $codPostalRua->rua,
             "numPorta" => $colaborador->numPorta,
             "localidade" => $codPostal->localidade,
             "codPostal" => $colaborador->codPostal,
