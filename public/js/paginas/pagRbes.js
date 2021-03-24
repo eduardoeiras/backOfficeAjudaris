@@ -32,8 +32,10 @@ function editar(id) {
         url: url,
         method: "GET",
         dataType: "json",
-        success: function (rbe) {
-            if (rbe != null) {
+        success: function (resposta) {
+            if (resposta != null) {
+                rbe = resposta[0]
+                $('#emailsAssociadosEdit').empty()
                 url = 'rbes/edit/' + rbe.id_rbe
                 $('#formEditar').attr('action', url)
                 $('#regiao').val(rbe.regiao)
@@ -43,6 +45,22 @@ function editar(id) {
                 $('#concelho').val(concelho)
                 var disp = rbe.disponivel
                 $('#disponibilidade').val(disp.toString())
+                rbe.emails.original.forEach(linha => {
+                    emailsAdicionadosEdit.push(linha.email)
+                    let index = emailsAdicionadosEdit.indexOf(linha.email)
+                    linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
+                    <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
+                    $('#emailsAssociadosEdit').append(linha)
+                });
+                $('#telefone').val(rbe.telefone)
+                $('#telemovel').val(rbe.telemovel)
+                $('#nomeDiretor').val(rbe.nomeDiretor)
+                $('#rua').val(rbe.rua)
+                $('#numPorta').val(rbe.numPorta)
+                $('#localidade').val(rbe.localidade)
+                $('#distrito').val(rbe.distrito)
+                $('#codPostal').val(rbe.codPostal)
+                $('#codPostalRua').val(rbe.codPostalRua)
             }
         },
         error: function (error) {

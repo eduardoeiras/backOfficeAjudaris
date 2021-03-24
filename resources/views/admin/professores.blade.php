@@ -291,6 +291,7 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/edicaoEmails.js') }}"></script>
     <script src="{{ asset('js/paginas/pagProfessores.js') }}"></script>
 </body>
 
