@@ -46,15 +46,13 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Nome</th>
                                         <th>Telemovel</th>
                                         <th>Telefone</th>
-                                        <th>Email</th>
+                                        <th>Emails</th>
                                         <th>Disponibilidade</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
-                                        <th>Número da Porta</th>
                                         <th>Código Postal</th>
                                         <th>Opções</th>
                                     </tr>
@@ -64,21 +62,22 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->id_juri.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.'<td>';
                                                 foreach ($linha["emails"] as $email) {
                                                     $dados = $dados." ".$email->email;
                                                 }
                                                 $dados = $dados.'</td>';
-                                                if($linha->disponivel == 0) {
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td>Indisponível</td>';    
                                                 }
+                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
+                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
                                                 if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
                                                     $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
                                                 }
@@ -86,10 +85,10 @@
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_juri.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_juri.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_juri.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_juri.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                     </td>';
@@ -121,7 +120,6 @@
                                     <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
                                 </div>
-                                <div class="modal-body">
                                 <div class="modal-body">
                                     <label style="font-size: 18px">Informações do Juri</label>
                                     <br><br>

@@ -50,7 +50,7 @@
                                         <th>Número identificador</th>
                                         <th>Região</th>
                                         <th>Nome do Coordenador</th>
-                                        <th>Concelho</th>
+                                        <!--<th>Concelhos</th>-->
                                         <th>Disponibilidade</th>
                                         <th>Telemovel</th>
                                         <th>Telefone</th>
@@ -66,13 +66,12 @@
                                         use \App\Http\Controllers\ConcelhoController;
                                         if(isset($data)) {
                                             foreach($data as $linha) {
-                                                $nomeConcelho = ConcelhoController::getNomePorId($linha->id_concelho);
                                                 $dados = '<tr>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->id_rbe.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->regiao.'</td>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->nomeCoordenador.'</td>';
-                                                $dados = $dados.'<td>'.$nomeConcelho.'</td>';
-                                                if($linha->disponivel == 0) {
+                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
+                                                //$dados = $dados.'<td>'.$nomeConcelho.'</td>';
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
@@ -94,10 +93,10 @@
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_rbe.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_rbe.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_rbe.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_rbe.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                     </td>';

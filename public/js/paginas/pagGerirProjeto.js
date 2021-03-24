@@ -281,7 +281,6 @@ function criarLinha(elemento, tipo) {
 }
 
 function remover(id_elemento, id_projeto, ano, tipo) {
-    console.log(id_elemento, id_projeto, ano, tipo);
     switch (tipo) {
         case 'entidade':
             var urlDelete = 'projetoEntidade/delete/' + id_elemento + "-" + id_projeto + "-" + ano
@@ -329,37 +328,6 @@ function verificaNull(valor) {
     else {
         return '<td> --- </td>';
     }
-}
-
-function realizarPesquisa() {
-    let tipo = $('#tipos').val();
-    let anoSelecionado = $('#anos').val();
-    let pesq = $('#pesquisa').val();
-    if (pesq == "") {
-        pesq = null;
-    }
-    let urlPesq = 'gerirProjeto/pesquisaParticipantes/' + tipo + '-' + anoSelecionado + '-' + pesq;
-    $.ajax({
-        url: urlPesq,
-        method: "GET",
-        dataType: "json",
-        success: function (response) {
-            $("#tableBody").empty();
-            id_projeto = response.id_projeto
-            ano = response.ano
-            carregarEntidades(response)
-            carregarEscolas(response)
-            carregarContadores(response)
-            carregarIlustradores(response)
-            carregarJuris(response)
-            carregarProfessores(response)
-            carregarProfsFac(response)
-            carregarRbe(response)
-            carregarUniversidade(response)
-        },
-        error: function (error) {
-        }
-    })
 }
 
 $("#menu-toggle").click(function (e) {

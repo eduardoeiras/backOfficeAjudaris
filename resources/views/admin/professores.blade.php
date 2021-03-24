@@ -46,11 +46,10 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Nome</th>
                                         <th>Telefone</th>
                                         <th>Telemovel</th>
-                                        <th>Email</th>
+                                        <th>Emails</th>
                                         <th>Disponibilidade</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
@@ -63,7 +62,6 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->id_professor.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
                                                 $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
@@ -72,7 +70,7 @@
                                                     $dados = $dados." ".$email->email;
                                                 }
                                                 $dados = $dados.'</td>';
-                                                if($linha->disponivel == 0) {
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
@@ -87,10 +85,10 @@
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_professor.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_professor.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_professor.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_professor.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                     </td>';

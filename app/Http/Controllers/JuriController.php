@@ -147,7 +147,7 @@ class JuriController extends Controller
             "telemovel" => $colaborador->telemovel,
             "disponivel" => $colaborador->disponivel,
             "observacoes" => $colaborador->observacoes,
-            //"rua" => $codPostalRua->rua,
+            "rua" => $codPostalRua->rua,
             "numPorta" => $colaborador->numPorta,
             "localidade" => $codPostal->localidade,
             "codPostal" => $colaborador->codPostal,

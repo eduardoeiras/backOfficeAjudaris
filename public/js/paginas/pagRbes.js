@@ -39,7 +39,7 @@ function editar(id) {
                 url = 'rbes/edit/' + rbe.id_rbe
                 $('#formEditar').attr('action', url)
                 $('#regiao').val(rbe.regiao)
-                $('#nome').val(rbe.nomeCoordenador)
+                $('#nome').val(rbe.nome)
                 carregarConcelhos(false)
                 var concelho = rbe.id_concelho
                 $('#concelho').val(concelho)

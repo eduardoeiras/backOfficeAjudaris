@@ -327,6 +327,18 @@ Route::post('colaborador/projetoProfessor/add', 'ProjetoProfessorController@stor
 Route::get('colaborador/cargosProfessor/getAll', 'CargoProfController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/cargosProfessor/getPorIdProfessor/{id}-{id_projeto}-{ano}', 'CargoProfController@getPorIdProf')->middleware(['CheckLogInColaborador']);
 
+//ROUTES PARA A REMOÇÃO DE ASSOCIAÇÕES AOS PROJETOS
+
+Route::post('colaborador/projetoEscola/delete/{id}-{id_projeto}-{ano}', 'ProjetoEscolaController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoIlustrador/delete/{id}-{id_projeto}-{ano}', 'ProjetoIlustradorController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoContador/delete/{id}-{id_projeto}-{ano}', 'ProjetoContadorController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoEntidade/delete/{id}-{id_projeto}-{ano}', 'ProjetoEntidadeController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoJuri/delete/{id}-{id_projeto}-{ano}', 'ProjetoJuriController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoRbe/delete/{id}-{id_projeto}-{ano}', 'ProjetoRBEController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoUniversidade/delete/{id}-{id_projeto}-{ano}', 'ProjetoUniversidadeController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoProfFac/delete/{id}-{id_projeto}-{ano}', 'ProjetoProfessorFaculController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoProfessor/delete/{id}-{id_projeto}-{ano}', 'ProjetoProfessorController@destroy')->middleware(['CheckLogInColaborador']);
+
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS ESCOLAS
 
 Route::get('colaborador/gerirEscola{id}', 'EscolaSolidariaController@gerirEscola')->name("gerirEscolaColaborador")->middleware(['CheckLogInColaborador']);

@@ -13,7 +13,7 @@ class ProjetoEntidadeController extends Controller
     {
         $projentidade = new ProjetoEntidade();
 
-        $projentidade->id_projeto = $request->intval($request->$id_projeto);
+        $projentidade->id_projeto = $request->intval($request->id_projeto);
         $projentidade->id_entidadeOficial = intval($request->id_elemento);
         $projentidade->anoParticipacao = intval($request->anoParticipacao);
 
@@ -39,8 +39,15 @@ class ProjetoEntidadeController extends Controller
         if($linha->first() != null) {
             $linha->delete(); 
         }
-
-        return redirect()->route("gerirProjeto", ['id' => intval($id_projeto)]);
+        
+        $user = session()->get("utilizador");
+        if($user->tipoUtilizador == 0) {
+            return redirect()->route("gerirProjeto", ['id' => intval($id_projeto)]); 
+        }
+        else {
+            return redirect()->route("gerirProjetoColaborador", ['id' => intval($id_projeto)]);    
+        }
+        
     }
 
     public function verificaAssociacao($id, $id_projeto, $ano)

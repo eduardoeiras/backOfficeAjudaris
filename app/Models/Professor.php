@@ -31,7 +31,7 @@ class Professor extends Model
     }
 
     public function agrupamento() {
-        return $this->hasOne(Agrupamento::class, 'id_professor');
+        return $this->hasOne(Agrupamento::class, 'id_agrupamento');
     }
 
     public function colaborador(){

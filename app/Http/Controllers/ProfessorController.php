@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CodPostal;
 use App\Models\Colaborador;
 use App\Models\Professor;
 use Illuminate\Http\Request;
