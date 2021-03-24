@@ -180,16 +180,16 @@ class UtilizadorController extends Controller
     }
 
     public function gerirProjetosUser($id) {
-        $user = Utilizador::find($id);
-        if($user != null) {
+        $utilizador = Utilizador::find($id);
+        if($utilizador != null) {
             \session(['id_utilizador' => $id]);
 
             $user = session()->get("utilizador");
             if($user->tipoUtilizador == 0) {
-                return view('admin/gerirProjetosUtilizador', ['title' => 'Utilizador: '.$user->nomeUtilizador]); 
+                return view('admin/gerirProjetosUtilizador', ['title' => 'Utilizador: '.$utilizador->nomeUtilizador]); 
             }
             else {
-                return view('colaborador/gerirProjetosUtilizador', ['title' => 'Utilizador: '.$user->nomeUtilizador]); 
+                return view('colaborador/gerirProjetosUtilizador', ['title' => 'Utilizador: '.$utilizador->nomeUtilizador]); 
             }  
         }
     }

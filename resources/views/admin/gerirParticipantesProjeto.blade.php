@@ -8,13 +8,11 @@
     <link rel="stylesheet" href="{{ asset('fonts/font-roboto-varela-round.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/material_icons.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('fonts/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/utilizadores.css') }}">
     <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/simple-sidebar.css') }}" rel="stylesheet">
     <link href="{{asset('css/sideBarImg.css')}}" rel="stylesheet">
-    <link href="{{asset('css/form-pesquisa.css')}}" rel="stylesheet">
     <link type="text/css" href="{{asset('css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <script src="{{asset('js/jquery-3.5.1.min.js')}}"></script>
     <script src="{{asset('js/popper.min.js')}}"></script>
@@ -35,47 +33,6 @@
                     echo '<h1 style="padding: 3%">'.$title.'</h1>';
                 }
             ?>
-            <div class="span8 form-inline formPesq">
-                <label class="selectTipo">Filtrar tabela por:</label>
-                <select name="tipoParticipante" id="tipos">
-                    <optgroup label="Tipo de Participante">
-                        <option value="todos">Todos</option>
-                        <option value="ilustrador_solidario">Ilustradores Solidários</option>
-                        <option value="contador_historias">Contador de Histórias</option>
-                        <option value="entidade_oficial">Entidade Oficial</option>
-                        <option value="escola_solidaria">Escola Solidária</option>
-                        <option value="juri">Juri</option>
-                        <option value="professor">Professor</option>
-                        <option value="professor_faculdade">Professor de Faculdade</option>
-                        <option value="rbe">Rede de Bibliotecas Escolares (RBE)</option>
-                        <option value="universidade">Universidade</option>
-                    </optgroup>
-                </select>
-                <label class="selectAnos" for="ano">Anos:</label>
-                <select name="ano" id="anos">
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                    <option value="2018">2018</option>
-                    <option value="2017">2017</option>
-                    <option value="2016">2016</option>
-                    <option value="2015">2015</option>
-                    <option value="2014">2014</option>
-                    <option value="2013">2013</option>
-                    <option value="2012">2012</option>
-                    <option value="2011">2011</option>
-                    <option value="2010">2010</option>
-                    <option value="2009">2009</option>
-                    <option value="2008">2008</option>
-                    <option value="2007">2007</option>
-                    <option value="2006">2006</option>
-                </select>
-                <div class="inputPesq">
-                    <input type="text" name="pesquisa" id="pesquisa" class="span1">
-                </div>
-                <div class="divSubmit">
-                    <button class="buttonSubmit" onclick="realizarPesquisa()">Pesquisar</button>
-                </div>
-            </div>
             <div class="container-fluid">
                 <div class="tabelasCrud">
                     <div class="table-responsive">
@@ -91,7 +48,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped table-hover">
+                            <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
@@ -101,6 +58,8 @@
                                         <th>Regiao</th>
                                         <th>Tipo de Participante</th>
                                         <th>Cargo</th>
+                                        <th>Ano de Participação</th>
+                                        <th>Opções</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">

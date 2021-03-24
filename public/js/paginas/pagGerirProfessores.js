@@ -13,8 +13,9 @@ $(document).ready(function () {
         method: "GET",
         dataType: "json",
         success: function (response) {
+            console.log(response);
             if (response != null && response.length > 0) {
-                carregarProfessores(response)
+                //carregarProfessores(response[0])
             }
             inicializarDataTable('#tabelaProfsAssociados')
         },
@@ -57,7 +58,9 @@ function criarLinha(elemento) {
     linha = linha + `<td>${elemento.nome}</td>`
     linha = linha + verificaNull(elemento.telefone)
     linha = linha + verificaNull(elemento.telemovel)
-    linha = linha + verificaNull(elemento.email)
+    linha = linha + "<td>"
+    
+    linha = linha + "</td>"
     linha = linha + `<td>
         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professor}, ${id_escola})">
         <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>

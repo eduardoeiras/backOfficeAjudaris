@@ -244,7 +244,7 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <label style="font-size: 18px">Informações da Entidade Oficial</label>
+                                    <label style="font-size: 18px">Informações da Escola Solidária</label>
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>

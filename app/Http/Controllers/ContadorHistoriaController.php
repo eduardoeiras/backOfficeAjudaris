@@ -165,9 +165,10 @@ class ContadorHistoriaController extends Controller
 
     public function getDisponiveis() {
         $contadores = DB::table('contador_historias')
+                    ->join('colaborador', 'contador_historias.id_colaborador', '=', 'colaborador.id_colaborador')
                     ->select('contador_historias.id_contadorHistorias', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.email', 'colaborador.nome')
                     ->where([
-                        ['contador_historias.disponivel', '=', 0]
+                        ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();  
     

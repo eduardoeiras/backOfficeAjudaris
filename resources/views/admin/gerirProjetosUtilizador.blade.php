@@ -136,5 +136,5 @@
     </div>
     </div>
 </body>
-<script src="{{ asset('js/paginas/pagGerirProjetosUser.js') }}"></script>
+<script src="{{ asset('js/paginas/admin/pagGerirProjetosUser.js') }}"></script>
 </html>

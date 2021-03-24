@@ -216,13 +216,25 @@ class ProfessorController extends Controller
         $profsSemEscola = array();
         
         $profs = DB::table('professor')
-                    ->select('professor.id_professor', 'professor.telemovel', 'professor.telefone', 'professor.email', 'professor.nome')
+                    ->join('colaborador', 'professor.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('professor.id_professor', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome')
                     ->get();
 
         foreach($profs as $professor) {
             $existe = self::existeAssociacao($professor->id_professor, $id_escola);
             if($existe == false) {
-                array_push($profsSemEscola, $professor);
+                $emails = DB::table('email')
+                ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                ->select('email.email')
+                ->where('email.id_colaborador', '=', $professor->id_colaborador)
+                ->get();
+                
+                $prof = array(
+                    "entidade" => $professor,
+                    "emails" => $emails
+                );
+
+                array_push($profsSemEscola, $prof);
             }
         }
         

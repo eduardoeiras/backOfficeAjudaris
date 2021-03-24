@@ -12,9 +12,9 @@ $(document).ready(function () {
         method: "GET",
         dataType: "json",
         success: function (response) {
+            console.log(response);
             id_projeto = response.id_projeto
             ano = response.ano
-            carregarAnos()
             carregarEntidades(response)
             carregarContadores(response)
             carregarEscolas(response)
@@ -24,6 +24,7 @@ $(document).ready(function () {
             carregarProfsFac(response)
             carregarRbe(response)
             carregarUniversidade(response)
+            inicializarDataTableParticipantes();
         },
         error: function (error) {
         }
@@ -36,19 +37,21 @@ $(document).ready(function () {
     })
 });
 
-function carregarAnos() {
-    let numIteracoes = ano - 2020;
-    let i = 1;
-    let opcoes = "";
-    let novoAno = ano
-    while (i <= numIteracoes) {
-        opcoes = opcoes + `<option value="${novoAno}">${novoAno}</option>`;
-        novoAno = novoAno - 1
-        i++;
-    }
-
-    $('#anos').prepend(opcoes);
-    $("#anos").val(ano);
+function inicializarDataTableParticipantes() {
+    $('#tabelaDados').DataTable({
+        "language": {
+            "sSearch": "Pesquisar",
+            "lengthMenu": "Mostrar _MENU_ registos por página",
+            "zeroRecords": "Nehum registo encontrado!",
+            "info": "A mostrar a página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nehuns registos disponíveis!",
+            "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "paginate": {
+                "previous": "Anterior",
+                "next": "Seguinte"
+            }
+        }
+    });
 }
 
 function carregarEntidades(response) {
@@ -152,56 +155,61 @@ function criarLinha(elemento, tipo) {
             case 'entidade':
                 linha = linha + `<td>Entidade Oficial</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_entidadeOficial}, 
                             ${id_projeto}, ${ano}, \'entidade\')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
-                    <td>`
+                    </td>`
                 linha = linha + '</tr>'
                 break;
             case 'contador':
                 linha = linha + `<td>Contador</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_contadorHistorias}, 
                             ${id_projeto}, ${ano}, \'contador\')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
-                    <td>`
+                    </td>`
                 linha = linha + '</tr>'
                 break;
             case 'escola':
                 linha = linha + `<td>Escola Solidária</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_escolaSolidaria}, 
                                     ${id_projeto}, ${ano}, \'escola\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
                 linha = linha + '</tr>'
                 break;
             case 'ilustrador':
                 linha = linha + `<td>Ilustrador Solidário</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_ilustradorSolidario}, 
                                     ${id_projeto}, ${ano}, \'ilustrador\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
                 linha = linha + '</tr>'
                 break;
             case 'juri':
                 linha = linha + `<td>Juri</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_juri}, 
                                     ${id_projeto}, ${ano}, \'juri\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
                 linha = linha + '</tr>'
                 break;
             case 'professor':
@@ -213,12 +221,13 @@ function criarLinha(elemento, tipo) {
                     success: function (response) {
                         linha = linha + `<td>Professor</td>`
                         linha = linha + `<td>${response.nomeCargo}</td>`
+                        linha = linha + `<td>${ano}</td>`
                         linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professor}, 
                                     ${id_projeto}, ${ano}, \'professor\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
                         linha = linha + '</tr>'
                         $('#tableBody').append(linha)
                     },
@@ -227,23 +236,25 @@ function criarLinha(elemento, tipo) {
             case 'profFacul':
                 linha = linha + `<td>Professor de Faculdade</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professorFaculdade}, 
                                     ${id_projeto}, ${ano}, \'profFacul\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
                 linha = linha + '</tr>'
                 break;
             case 'universidade':
                 linha = linha + `<td>Universidade</td>`
                 linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_universidade}, 
                                     ${id_projeto}, ${ano}, \'universidade\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
                 linha = linha + '</tr>'
                 break;
         }
@@ -256,12 +267,13 @@ function criarLinha(elemento, tipo) {
         linha = linha + `<td>${elemento.regiao}</td>`
         linha = linha + `<td>RBE</td>`
         linha = linha + `<td>Participante</td>`
+        linha = linha + `<td>${ano}</td>`
         linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_rbe}, 
                                     ${id_projeto}, ${ano}, \'rbe\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
-                            <td>`
+                            </td>`
         linha = linha + '</tr>'
     }
 

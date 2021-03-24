@@ -179,9 +179,10 @@ class EntidadeOficialController extends Controller
 
     public function getDisponiveis() {
         $entidades = DB::table('entidade_oficial')
-                    ->select('entidade_oficial.id_entidadeOficial', 'entidade_oficial.telefone', 'entidade_oficial.telemovel', 'entidade_oficial.email', 'entidade_oficial.nome')
+                    ->join('colaborador', 'entidade_oficial.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('entidade_oficial.id_entidadeOficial', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
                     ->where([
-                        ['entidade_oficial.disponivel', '=', 0]
+                        ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();  
     

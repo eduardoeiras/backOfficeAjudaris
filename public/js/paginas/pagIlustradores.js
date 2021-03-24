@@ -30,18 +30,31 @@ function editar(id) {
         url: url,
         method: "GET",
         dataType: "json",
-        success: function (ilustrador) {
-            if (ilustrador != null) {
+        success: function (resposta) {
+            if (resposta != null) {
+                ilustrador = resposta[0]
+                $('#emailsAssociadosEdit').empty()
                 url = 'ilustradores/edit/' + ilustrador.id_ilustradorSolidario
                 $('#formEditar').attr('action', url)
                 $('#nome').val(ilustrador.nome)
                 $('#telefone').val(ilustrador.telefone)
                 $('#telemovel').val(ilustrador.telemovel)
-                $('#email').val(ilustrador.email)
+                $('#disponibilidade').val(ilustrador.disponivel.toString())
                 $('#volumeLivro').val(ilustrador.volumeLivro)
-                var disp = ilustrador.disponivel
-                $('#disponibilidade').val(disp.toString())
                 $('#observacoes').val(ilustrador.observacoes)
+                ilustrador.emails.original.forEach(linha => {
+                    emailsAdicionadosEdit.push(linha.email)
+                    let index = emailsAdicionadosEdit.indexOf(linha.email)
+                    linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
+                    <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
+                    $('#emailsAssociadosEdit').append(linha)
+                });
+                $('#numPorta').val(ilustrador.numPorta)
+                $('#rua').val(ilustrador.rua)
+                $('#localidade').val(ilustrador.localidade)
+                $('#distrito').val(ilustrador.distrito)
+                $('#codPostal').val(ilustrador.codPostal)
+                $('#codPostalRua').val(ilustrador.codPostalRua)
             }
         },
         error: function (error) {
