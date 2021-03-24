@@ -185,9 +185,10 @@ class EscolaSolidariaController extends Controller
 
     public function getDisponiveis() {
         $ilustradores = DB::table('escola_solidaria')
-                    ->select('escola_solidaria.id_escolaSolidaria', 'escola_solidaria.telefone', 'escola_solidaria.telemovel', 'escola_solidaria.nome')
+                    ->join('colaborador', 'escola_solidaria.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('escola_solidaria.id_escolaSolidaria', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome')
                     ->where([
-                        ['escola_solidaria.disponivel', '=', 0]
+                        ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();  
     
@@ -214,14 +215,31 @@ class EscolaSolidariaController extends Controller
         
         $professores = DB::table('professor')
                         ->join('escola_professor', 'professor.id_professor', '=', 'escola_professor.id_professor')
-                        ->select('professor.id_professor' , 'professor.nome', 'professor.telefone', 'professor.telemovel', 'professor.email')
+                        ->join('colaborador', 'professor.id_colaborador', '=', 'colaborador.id_colaborador')
+                        ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel')
                         ->where([
                             ['escola_professor.id_escola', '=', $id]
                             ])
                         ->get();
+        
+        $resposta = array();
+
+        foreach($professores as $professor) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $professor->id_colaborador)
+            ->get();
+            
+            $prof = array(
+                "entidade" => $professor,
+                "emails" => $emails
+            );
+            array_push($resposta, $prof);
+        }
 
 
-        return response()->json($professores);  
+        return response()->json($resposta);  
     }
 
     public function getNomeEscolaPorId($id) {
