@@ -30,8 +30,10 @@ function editar(id) {
         url: url,
         method: "GET",
         dataType: "json",
-        success: function (uni) {
-            if (uni != null) {
+        success: function (resposta) {
+            if (resposta != null) {
+                uni = resposta[0]
+                $('#emailsAssociadosEdit').empty()
                 url = 'universidades/edit/' + uni.id_universidade
                 $('#formEditar').attr('action', url)
                 $('#curso').val(uni.curso)
@@ -39,9 +41,21 @@ function editar(id) {
                 $('#nome').val(uni.nome)
                 $('#telefone').val(uni.telefone)
                 $('#telemovel').val(uni.telemovel)
-                $('#email').val(uni.email)
+                uni.emails.original.forEach(linha => {
+                    emailsAdicionadosEdit.push(linha.email)
+                    let index = emailsAdicionadosEdit.indexOf(linha.email)
+                    linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
+                    <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
+                    $('#emailsAssociadosEdit').append(linha)
+                });
                 var disp = uni.disponivel
                 $('#disponibilidade').val(disp.toString())
+                $('#rua').val(uni.rua)
+                $('#numPorta').val(uni.numPorta)
+                $('#localidade').val(uni.localidade)
+                $('#distrito').val(uni.distrito)
+                $('#codPostal').val(uni.codPostal)
+                $('#codPostalRua').val(uni.codPostalRua)
             }
         },
         error: function (error) {

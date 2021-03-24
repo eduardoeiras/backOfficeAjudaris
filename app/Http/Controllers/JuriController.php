@@ -169,13 +169,14 @@ class JuriController extends Controller
     }
 
     public function getDisponiveis() {
-        $juris = DB::table('juri')
-                    ->select('juri.id_juri', 'juri.telemovel', 'juri.telefone', 'juri.nome')
+        $entidades = DB::table('juri')
+                    ->join('colaborador', 'juri.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('juri.id_juri', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
                     ->where([
-                        ['juri.disponivel', '=', 0]
+                        ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();  
     
-        return \json_encode($juris);
+        return \json_encode($entidades);
     }
 }

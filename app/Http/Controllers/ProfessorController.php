@@ -182,6 +182,18 @@ class ProfessorController extends Controller
         
     }
 
+    public function getDisponiveis() {
+        $entidades = DB::table('professor')
+                    ->join('colaborador', 'professor.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('professor.id_professor', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
+                    ->where([
+                        ['colaborador.disponivel', '=', 0]
+                        ])
+                    ->get();  
+    
+        return \json_encode($entidades);
+    }
+
     public function getNumProfs() {
 
         $professor = Professor::all();

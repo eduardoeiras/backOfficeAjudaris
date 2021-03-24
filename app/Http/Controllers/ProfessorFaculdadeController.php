@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfessorFaculdade;
 use Illuminate\Http\Request;
+use \App\Models\CodPostal;
+use \App\Models\CodPostalRua;
+use App\Models\Colaborador;
+use App\Models\Email;
 use DB;
 use Session;
 use Auth;
@@ -13,28 +17,62 @@ class ProfessorFaculdadeController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $profacul = ProfessorFaculdade::all();
+        $profacul = DB::table(DB::raw('professor_faculdade', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'professor_faculdade.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('professor_faculdade.id_professorFaculdade', 'professor_faculdade.cargo', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+
+        $resposta = array();
+
+        foreach($profacul as $pf) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $pf->id_colaborador)
+            ->get();
+            
+            $profefacul = array(
+                "entidade" => $pf,
+                "emails" => $emails
+            );
+            array_push($resposta, $profefacul);
+        }
+
         if($user->tipoUtilizador == 0) {
-            return view('admin\profs_faculdade', ['data' => $profacul]);
+            return view('admin\profs_faculdade', ['data' => $resposta]);
         }
         else {
-            return view('colaborador\profs_faculdade', ['data' => $profacul]);
+            return view('colaborador\profs_faculdade', ['data' => $resposta]);
         }
         
     }
 
     public function store(Request $request)
     {
+        //Obtenção dos atributos de um colaborador
+        $nome = $request->nome;
+        $observacoes = $request->observacoes;
+        $telefone = $request->telefone;
+        $telemovel = $request->telemovel;
+        $codPostal = $request->codPostal;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $disponibilidade = $request->disponibilidade;
+        $emails = $request->emails;
+        
+        $cargo = $request->cargo;
+
+        $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
+        $rua, $localidade, $distrito, $emails);
+
         $profacul = new ProfessorFaculdade();
-
-        $profacul->cargo = $request->cargo;
-        $profacul->nome = $request->nome;
-        $profacul->telefone = $request->telefone;
-        $profacul->telemovel = $request->telemovel;
-        $profacul->email = $request->email;
-        $profacul->observacoes = $request->observacoes;
-        $profacul->disponivel = $request->disponibilidade;
-
+        $profacul->cargo = $cargo;
         $profacul->save();
 
         $user = session()->get("utilizador");
@@ -50,45 +88,54 @@ class ProfessorFaculdadeController extends Controller
     public function update($id, Request $request)
     {
         $id_profacul = \intval($id);
-        $cargo = $request->cargo;
         $nome = $request->nome;
+        $observacoes = $request->observacoes;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
-        $email = $request->email;
-        $observacoes = $request->observacoes;
+        $codPostal = $request->codPostal;
         $disponibilidade = $request->disponibilidade;
-        
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $emails = $request->emails;
+        $emailsToDelete = $request->deletedEmails;
+        $cargo = $request->cargo;
+
         $prof = ProfessorFaculdade::find($id_profacul);
         if($prof != null) {
+            ColaboradorController::update($prof->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
+            $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
+            
             $prof->cargo = $cargo;
-            $prof->nome = $nome;
-            $prof->telefone = $telefone;
-            $prof->telemovel = $telemovel;
-            $prof->email = $email;
-            $prof->observacoes = $observacoes;
-            $prof->disponivel = $disponibilidade;
-
             $prof->save();
-            $user = session()->get("utilizador");
-            if($user->tipoUtilizador == 0) {
-                return redirect()->route("profsFaculdade");
-            }
-            else {
-                return redirect()->route("profsFaculdadeColaborador");
-            }
+        }    
+        
+        $user = session()->get("utilizador");
+        if($user->tipoUtilizador == 0) {
+            return redirect()->route("profsFaculdade");
         }
+        else {
+            return redirect()->route("profsFaculdadeColaborador");
+        }
+        
     }
 
     public function destroy($id)
     {
         $profacul = ProfessorFaculdade::find($id);
-        if($profacul->projetos()->first() != null) {
-            $profacul->projetos()->where('id_professorFaculdade', $id)->delete();
+        if($profacul != null){
+            $idColaborador = $profacul->id_colaborador;
+            if($profacul->projetos()->first() != null) {
+                $profacul->projetos()->where('id_professorFaculdade', $id)->delete();
+            }
+            if($profacul->universidades()->first() != null) {
+                $profacul->universidades()->where('id_professorFaculdade', $id)->delete();
+            } 
+            $profacul->delete();
+            ColaboradorController::delete($idColaborador);
         }
-        if($profacul->universidades()->first() != null) {
-            $profacul->universidades()->where('id_professorFaculdade', $id)->delete();
-        } 
-        $profacul->delete();
         
 
         return redirect()->route("profsFaculdade");
@@ -96,9 +143,39 @@ class ProfessorFaculdadeController extends Controller
 
     public function getProfPorId($id) {
         
-        $profacul = DB::table('professor_faculdade')->where('id_professorFaculdade', $id)->first();
+        $profacul = ProfessorFaculdade::find($id);
+        $colaborador = Colaborador::find($profacul->id_colaborador);
+        $codPostal = CodPostal::find($colaborador->codPostal);
+        $codPostalRua = DB::table('cod_postal_rua')
+            ->where([
+                ['cod_postal_rua.codPostal', '=', $colaborador->codPostal],
+                ['cod_postal_rua.codPostalRua', '=', $colaborador->codPostalRua],
+                ])->first();
+        
+        $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
+
+        $profaculd = array(
+            "id_profacul" => $profacul->id_profacul,
+            "nome" => $colaborador->nome,
+            "telefone" => $colaborador->telefone,
+            "telemovel" => $colaborador->telemovel,
+            "disponivel" => $colaborador->disponivel,
+            "observacoes" => $colaborador->observacoes,
+            "cargo" => $profacul->nomeDiretor,
+            "rua" => $codPostalRua->rua,
+            "numPorta" => $colaborador->numPorta,
+            "localidade" => $codPostal->localidade,
+            "codPostal" => $colaborador->codPostal,
+            "codPostalRua" => $colaborador->codPostalRua,
+            "distrito" => $codPostal->distrito,
+            "emails" => $emails
+        );
+
+        $resposta = array();
+        array_push($resposta, $profaculd);
+
         if($profacul != null) {
-            return response()->json($profacul);  
+            return response()->json($resposta);  
         }
         else {
             return null;
@@ -107,14 +184,15 @@ class ProfessorFaculdadeController extends Controller
     }
 
     public function getDisponiveis() {
-        $professores = DB::table('professor_faculdade')
-                    ->select('professor_faculdade.id_professorFaculdade', 'professor_faculdade.telemovel', 'professor_faculdade.telefone', 'professor_faculdade.nome')
+        $entidades = DB::table('professor_faculdade')
+                    ->join('colaborador', 'professor_faculdade.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('professor_faculdade.id_professorFaculdade', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
                     ->where([
-                        ['professor_faculdade.disponivel', '=', 0]
+                        ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();  
     
-        return \json_encode($professores);
+        return \json_encode($entidades);
     }
 
     public function existeAssociacao($id_professor, $id_universidade) {
