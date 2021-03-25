@@ -54,7 +54,7 @@ class ProfessorFaculdadeController extends Controller
     {
         //Obtenção dos atributos de um colaborador
         $nome = $request->nome;
-        $observacoes = $request->observacoes;
+        $observacoes = $request->obs;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
         $codPostal = $request->codPostal;
@@ -73,6 +73,7 @@ class ProfessorFaculdadeController extends Controller
 
         $profacul = new ProfessorFaculdade();
         $profacul->cargo = $cargo;
+        $profacul->id_colaborador = $idColab;
         $profacul->save();
 
         $user = session()->get("utilizador");
@@ -89,7 +90,7 @@ class ProfessorFaculdadeController extends Controller
     {
         $id_profacul = \intval($id);
         $nome = $request->nome;
-        $observacoes = $request->observacoes;
+        $observacoes = $request->obs;
         $telefone = $request->telefone;
         $telemovel = $request->telemovel;
         $codPostal = $request->codPostal;
@@ -102,16 +103,14 @@ class ProfessorFaculdadeController extends Controller
         $emails = $request->emails;
         $emailsToDelete = $request->deletedEmails;
         $cargo = $request->cargo;
-
+        
         $prof = ProfessorFaculdade::find($id_profacul);
         if($prof != null) {
             ColaboradorController::update($prof->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
-            
             $prof->cargo = $cargo;
             $prof->save();
         }    
-        
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
             return redirect()->route("profsFaculdade");
@@ -119,7 +118,6 @@ class ProfessorFaculdadeController extends Controller
         else {
             return redirect()->route("profsFaculdadeColaborador");
         }
-        
     }
 
     public function destroy($id)
@@ -155,13 +153,13 @@ class ProfessorFaculdadeController extends Controller
         $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
 
         $profaculd = array(
-            "id_profacul" => $profacul->id_profacul,
+            "id_professorFaculdade" => $profacul->id_professorFaculdade,
             "nome" => $colaborador->nome,
             "telefone" => $colaborador->telefone,
             "telemovel" => $colaborador->telemovel,
             "disponivel" => $colaborador->disponivel,
             "observacoes" => $colaborador->observacoes,
-            "cargo" => $profacul->nomeDiretor,
+            "cargo" => $profacul->cargo,
             "rua" => $codPostalRua->rua,
             "numPorta" => $colaborador->numPorta,
             "localidade" => $codPostal->localidade,

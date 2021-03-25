@@ -46,13 +46,12 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Tipo</th>
                                         <th>Nome</th>
                                         <th>Curso</th>
                                         <th>Telefone</th>
                                         <th>Telemóvel</th>
-                                        <th>Email</th>
+                                        <th>Emails</th>
                                         <th>Disponibilidade</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
@@ -65,9 +64,8 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->id_universidade.'</td>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->tipo.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->tipo.'</td>';
                                                 $dados = $dados.verificaNull($linha["entidade"]->curso);
                                                 $dados = $dados.verificaNull($linha["entidade"]->telefone);
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
@@ -75,7 +73,7 @@
                                                 foreach ($linha["emails"] as $email) {
                                                     $dados = $dados." ".$email->email;
                                                 }
-                                                if($linha->disponivel == 0) {
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
@@ -89,12 +87,12 @@
                                                 else {
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
-                                                $url = 'gerirUniversidade'.$linha->id_universidade;
+                                                $url = 'gerirUniversidade'.$linha["entidade"]->id_universidade;
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_universidade.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_universidade.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_universidade.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_universidade.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                         <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
@@ -154,11 +152,11 @@
                                     </div>
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
-                                            <label style="font-size: 18px">Emails Associados:</label>
-                                            <div id="emailsAssociadosEdit"> 
+                                            <label>Emails Associados:</label>
+                                            <div id="emailsAssociadosAdd">   
                                             </div>
-                                            <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
-                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
                                         </div>
                                     </div>
                                     <div class="form-group">

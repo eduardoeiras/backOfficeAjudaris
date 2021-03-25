@@ -46,13 +46,11 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Nome</th>
                                         <th>Cargo</th>
                                         <th>Telemovel</th>
                                         <th>Telefone</th>
-                                        <th>Email</th>
-                                        <th>Observações</th>
+                                        <th>Emails</th>
                                         <th>Disponibilidade</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
@@ -65,7 +63,6 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->id_professorFaculdade.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->cargo.'</td>';
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
@@ -75,8 +72,7 @@
                                                     $dados = $dados." ".$email->email;
                                                 }
                                                 $dados = $dados.'</td>';
-                                                $dados = $dados.verificaNull($linha["entidade"]->observacoes);
-                                                if($linha->disponivel == 0) {
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
@@ -91,10 +87,10 @@
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_professorFaculdade.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_professorFaculdade.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_professorFaculdade.')"><i
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_professorFaculdade.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                     </td>';

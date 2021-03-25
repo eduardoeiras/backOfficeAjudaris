@@ -35,6 +35,7 @@ function editar(id) {
                 profFacul = resposta[0]
                 $('#emailsAssociadosEdit').empty()
                 url = 'profsFaculdade/edit/' + profFacul.id_professorFaculdade
+                console.log(url);
                 $('#formEditar').attr('action', url)
                 $('#nome').val(profFacul.nome)
                 $('#cargo').val(profFacul.cargo)
@@ -47,15 +48,14 @@ function editar(id) {
                     <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
                     $('#emailsAssociadosEdit').append(linha)
                 });
-                var disp = profFacul.disponivel
-                $('#disponibilidade').val(disp.toString())
+                $('#disponibilidade').val(profFacul.disponivel.toString())
                 $('#observacoes').val(profFacul.observacoes)
-                $('#rua').val(agrupamento.rua)
-                $('#numPorta').val(agrupamento.numPorta)
-                $('#localidade').val(agrupamento.localidade)
-                $('#distrito').val(agrupamento.distrito)
-                $('#codPostal').val(agrupamento.codPostal)
-                $('#codPostalRua').val(agrupamento.codPostalRua)
+                $('#rua').val(profFacul.rua)
+                $('#numPorta').val(profFacul.numPorta)
+                $('#localidade').val(profFacul.localidade)
+                $('#distrito').val(profFacul.distrito)
+                $('#codPostal').val(profFacul.codPostal)
+                $('#codPostalRua').val(profFacul.codPostalRua)
             }
         },
         error: function (error) {
