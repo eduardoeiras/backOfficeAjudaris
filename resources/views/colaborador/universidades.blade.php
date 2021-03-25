@@ -54,6 +54,9 @@
                                         <th>Telemóvel</th>
                                         <th>Email</th>
                                         <th>Disponibilidade</th>
+                                        <th>Localidade</th>
+                                        <th>Rua</th>
+                                        <th>Código Postal</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>
@@ -62,18 +65,30 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha->id_universidade.'</td>';
-                                                $dados = $dados.'<td>'.$linha->tipo.'</td>';
-                                                $dados = $dados.'<td>'.$linha->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha->curso);
-                                                $dados = $dados.verificaNull($linha->telefone);
-                                                $dados = $dados.verificaNull($linha->telemovel);
-                                                $dados = $dados.verificaNull($linha->email);
+                                                $dados = $dados.'<td>'.$linha["entidade"]->id_universidade.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->tipo.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->curso);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["emails"] as $email) {
+                                                    $dados = $dados." ".$email->email;
+                                                }
+                                                $dados = $dados.'</td>';
                                                 if($linha->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td>Indisponível</td>';    
+                                                }
+                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
+                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
+                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
+                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
+                                                }
+                                                else {
+                                                    $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $url = 'gerirUniversidade'.$linha->id_universidade;
                                                 $dados = $dados.'<td>
@@ -111,6 +126,8 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações da Universidade</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" name="nome" class="form-control" placeholder="Nome da universidade" maxlength="70" required>
@@ -124,6 +141,15 @@
                                         <input type="text" name="curso" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
+                                    <div class="form-group">
                                         <label>Telefone</label>
                                         <input type="tel" name="telefone" class="form-control" maxlength="15">
                                     </div>
@@ -132,15 +158,38 @@
                                         <input type="tel" name="telemovel" class="form-control" maxlength="15">
                                     </div>
                                     <div class="form-group">
-                                        <label>Email</label>
-                                        <input type="email" name="email" class="form-control" maxlength="50">
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <div id="emailsAssociadosAdd">   
+                                            </div>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label>Disponibilidade</label>
-                                        <select name="disponibilidade">
-                                            <option value="0">Disponivel</option>
-                                            <option value="1">Indisponivel</option>
-                                        </select>
+                                        <label>Rua</label>
+                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Localidade</label>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label>Primeiros dígitos</label>
+                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <label>Segundos dígitos</label>
+                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -162,6 +211,8 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações da Agrupamento</label>
+                                    <br><br>
                                 <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome da universidade" maxlength="70" required>
@@ -175,6 +226,15 @@
                                         <input type="text" id="curso" name="curso" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade" id="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
+                                    <div class="form-group">
                                         <label>Telefone</label>
                                         <input type="tel" id="telefone" name="telefone" class="form-control" maxlength="15">
                                     </div>
@@ -183,15 +243,38 @@
                                         <input type="tel" id="telemovel" name="telemovel" class="form-control" maxlength="15">
                                     </div>
                                     <div class="form-group">
-                                        <label>Email</label>
-                                        <input type="email" id="email" name="email" class="form-control" maxlength="50"> 
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <div id="emailsAssociadosAdd">   
+                                            </div>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label>Disponibilidade</label>
-                                        <select name="disponibilidade" id="disponibilidade">
-                                            <option value="0">Disponivel</option>
-                                            <option value="1">Indisponivel</option>
-                                        </select>
+                                        <label>Rua</label>
+                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Localidade</label>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label>Primeiros dígitos</label>
+                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <label>Segundos dígitos</label>
+                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -206,6 +289,7 @@
         </div>
     </div>
     </div>
+    <script src="{{ asset('js/edicaoEmails.js') }}"></script>
     <script src="{{ asset('js/paginas/pagUniversidades.js') }}"></script>
 </body>
 

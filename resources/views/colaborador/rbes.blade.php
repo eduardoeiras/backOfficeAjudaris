@@ -52,6 +52,12 @@
                                         <th>Nome do Coordenador</th>
                                         <th>Concelho</th>
                                         <th>Disponibilidade</th>
+                                        <th>Telemovel</th>
+                                        <th>Telefone</th>
+                                        <th>Emails</th>
+                                        <th>Localidade</th>
+                                        <th>Rua</th>
+                                        <th>Código Postal</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>
@@ -62,15 +68,30 @@
                                             foreach($data as $linha) {
                                                 $nomeConcelho = ConcelhoController::getNomePorId($linha->id_concelho);
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha->id_rbe.'</td>';
-                                                $dados = $dados.'<td>'.$linha->regiao.'</td>';
-                                                $dados = $dados.'<td>'.$linha->nomeCoordenador.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->id_rbe.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->regiao.'</td>';
+                                                $dados = $dados.'<td>'.$linha["entidade"]->nomeCoordenador.'</td>';
                                                 $dados = $dados.'<td>'.$nomeConcelho.'</td>';
                                                 if($linha->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
                                                     $dados = $dados.'<td>Indisponível</td>';    
+                                                }
+                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
+                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["emails"] as $email) {
+                                                    $dados = $dados." ".$email->email;
+                                                }
+                                                $dados = $dados.'</td>';
+                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
+                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
+                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
+                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
+                                                }
+                                                else {
+                                                    $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
                                                         <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_rbe.')"><i
@@ -106,6 +127,8 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações da Rede de Bibliotecas Escolares</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Região</label>
                                         <input type="text" name="regiao" class="form-control" maxlength="70" required>
@@ -125,6 +148,50 @@
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>
+                                    </div>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Telefone</label>
+                                        <input type="tel" id="telefoneAdd" name="telefone" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Telemóvel</label>
+                                        <input type="tel" id="telemovelAdd" name="telemovel" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <div id="emailsAssociadosAdd">   
+                                            </div>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Rua</label>
+                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Localidade</label>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label>Primeiros dígitos</label>
+                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <label>Segundos dígitos</label>
+                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -146,6 +213,8 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
+                                    <label style="font-size: 18px">Informações da Rede de Bibliotecas Escolares</label>
+                                    <br><br>
                                     <div class="form-group">
                                         <label>Região</label>
                                         <input type="text" id="regiao" name="regiao" class="form-control" maxlength="70" required>
@@ -167,6 +236,50 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <label style="font-size: 18px">Contactos</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Telefone</label>
+                                        <input type="tel" id="telefoneAdd" name="telefone" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Telemóvel</label>
+                                        <input type="tel" id="telemovelAdd" name="telemovel" class="form-control" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="padding-top: 5px">
+                                            <label>Emails Associados:</label>
+                                            <div id="emailsAssociadosAdd">   
+                                            </div>
+                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                        </div>
+                                    </div>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br><br>
+                                    <div class="form-group">
+                                        <label>Número da Porta</label>
+                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Rua</label>
+                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Localidade</label>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Distrito</label>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                    </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label>Primeiros dígitos</label>
+                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <label>Segundos dígitos</label>
+                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
@@ -181,5 +294,6 @@
     </div>
     </div>
 </body>
+<script src="{{ asset('js/edicaoEmails.js') }}"></script>
 <script src="{{ asset('js/paginas/pagRbes.js') }}"></script>
 </html>
