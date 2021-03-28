@@ -137,6 +137,10 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
                                     <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
@@ -223,6 +227,10 @@
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
                                     </div>
                                     <br><br>
                                     <label style="font-size: 18px">Contactos</label>

@@ -171,12 +171,27 @@ class JuriController extends Controller
     public function getDisponiveis() {
         $entidades = DB::table('juri')
                     ->join('colaborador', 'juri.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('juri.id_juri', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
+                    ->select('juri.id_juri as id', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+        
+        $resposta = array();
+        foreach($entidades as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }    
     
-        return \json_encode($entidades);
+        return \json_encode($resposta);
     }
 }

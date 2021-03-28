@@ -194,6 +194,24 @@ class ProjetoController extends Controller
         return $data;
     }
 
+    public function construirEntidadesComEmails($entidades) {
+        $resposta = array();
+                foreach($entidades as $ent) {
+                    $emails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', $ent->id_colaborador)
+                    ->get();
+                            
+                    $entidade = array(
+                        "entidade" => $ent,
+                        "emails" => $emails
+                    );
+                    array_push($resposta, $entidade);
+                }
+        return $resposta;  
+    }
+
     public function getEntidadesDoProjeto($id_projeto, $ano)
     {
             $entidades = DB::table('entidade_oficial')
@@ -205,8 +223,14 @@ class ProjetoController extends Controller
                             ['projeto_entidade.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
-                        ->get();    
-        return $entidades;
+                        ->get();
+            
+            $resposta = array();
+            if($entidades != null && count($entidades) > 0) {
+                $resposta = self::construirEntidadesComEmails($entidades);    
+            }
+            
+        return $resposta;
     }
 
     public function getEscolasDoProjeto($id_projeto, $ano)
@@ -221,7 +245,13 @@ class ProjetoController extends Controller
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $escolas;
+            
+            $resposta = array();
+            if($escolas != null && count($escolas) > 0) {
+                $resposta = self::construirEntidadesComEmails($escolas);    
+            }
+            
+        return $resposta;
     }
 
     public function getIlustradoresDoProjeto($id_projeto, $ano)
@@ -229,14 +259,20 @@ class ProjetoController extends Controller
             $ilustradores = DB::table('ilustrador_solidario')
                         ->join('projeto_ilustrador', 'ilustrador_solidario.id_ilustradorSolidario', '=', 'projeto_ilustrador.id_ilustradorSolidario')
                         ->join('colaborador', 'ilustrador_solidario.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('ilustrador_solidario.id_ilustradorSolidario' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_ilustrador.anoParticipacao')
+                        ->select('ilustrador_solidario.id_ilustradorSolidario' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_ilustrador.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_ilustrador.id_projeto', '=', $id_projeto],
                             ['projeto_ilustrador.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $ilustradores;
+
+            $resposta = array();
+            if($ilustradores != null && count($ilustradores) > 0) {
+                $resposta = self::construirEntidadesComEmails($ilustradores);    
+            }
+            
+        return $resposta;
     }
 
     public function getContadoresDoProjeto($id_projeto, $ano)
@@ -244,14 +280,20 @@ class ProjetoController extends Controller
             $contadores = DB::table('contador_historias')
                     ->join('projeto_contador', 'contador_historias.id_contadorHistorias', '=', 'projeto_contador.id_contador')
                     ->join('colaborador', 'contador_historias.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('contador_historias.id_contadorHistorias' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_contador.anoParticipacao')
+                    ->select('contador_historias.id_contadorHistorias' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_contador.anoParticipacao', 'colaborador.id_colaborador')
                     ->where([
                         ['projeto_contador.id_projeto', '=', $id_projeto],
                         ['projeto_contador.anoParticipacao', '=', $ano],
                         ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();
-        return $contadores;
+
+            $resposta = array();
+            if($contadores != null && count($contadores) > 0) {
+                $resposta = self::construirEntidadesComEmails($contadores);    
+            } 
+            
+        return $resposta;
     }
 
     public function getJurisDoProjeto($id_projeto, $ano)
@@ -259,14 +301,21 @@ class ProjetoController extends Controller
             $juris = DB::table('juri')
                         ->join('projeto_juri', 'juri.id_juri', '=', 'projeto_juri.id_juri')
                         ->join('colaborador', 'juri.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('juri.id_juri' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_juri.anoParticipacao')
+                        ->select('juri.id_juri' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_juri.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_juri.id_projeto', '=', $id_projeto],
                             ['projeto_juri.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $juris;
+
+            $resposta = array();
+            if($juris != null && count($juris) > 0) {
+                $resposta = self::construirEntidadesComEmails($juris);
+            }
+
+            
+        return $resposta;
     }
 
     public function getProfessoresDoProjeto($id_projeto, $ano)
@@ -274,14 +323,20 @@ class ProjetoController extends Controller
             $professores = DB::table('professor')
                         ->join('projeto_professor', 'professor.id_professor', '=', 'projeto_professor.id_professor')
                         ->join('colaborador', 'professor.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_professor.anoParticipacao')
+                        ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_professor.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_professor.id_projeto', '=', $id_projeto],
                             ['projeto_professor.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $professores;
+
+            $resposta = array();
+            if($professores != null && count($professores) > 0) {
+                $resposta = self::construirEntidadesComEmails($professores);    
+            }
+
+        return $resposta;
     }
 
     public function getProfessoresFacDoProjeto($id_projeto, $ano)
@@ -289,14 +344,21 @@ class ProjetoController extends Controller
             $profsFac = DB::table('professor_faculdade')
                         ->join('projeto_prof_faculdade', 'professor_faculdade.id_professorFaculdade', '=', 'projeto_prof_faculdade.id_professorFaculdade')
                         ->join('colaborador', 'professor_faculdade.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('professor_faculdade.id_professorFaculdade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_prof_faculdade.anoParticipacao')
+                        ->select('professor_faculdade.id_professorFaculdade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_prof_faculdade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_prof_faculdade.id_projeto', '=', $id_projeto],
                             ['projeto_prof_faculdade.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $profsFac;
+            
+            $resposta = array();
+            if($profsFac != null && count($profsFac) > 0) {
+                $resposta = self::construirEntidadesComEmails($profsFac);   
+            }
+
+        
+        return $resposta;
     }
 
     public function getRbesDoProjeto($id_projeto, $ano)
@@ -304,14 +366,20 @@ class ProjetoController extends Controller
             $rbes = DB::table('rbe')
                         ->join('projeto_rbe', 'rbe.id_rbe', '=', 'projeto_rbe.id_rbe')
                         ->join('colaborador', 'rbe.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('rbe.id_rbe' , 'colaborador.nome', 'rbe.regiao', 'projeto_rbe.anoParticipacao')
+                        ->select('rbe.id_rbe' , 'colaborador.nome', 'rbe.regiao', 'projeto_rbe.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_rbe.id_projeto', '=', $id_projeto],
                             ['projeto_rbe.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $rbes;
+
+            $resposta = array();
+            if($rbes != null && count($rbes) > 0) {
+                $resposta = self::construirEntidadesComEmails($rbes);
+            }
+                        
+        return $resposta;
     }
 
     public function getUniversidadesDoProjeto($id_projeto, $ano)
@@ -319,85 +387,20 @@ class ProjetoController extends Controller
             $universidades = DB::table('universidade')
                         ->join('projeto_universidade', 'universidade.id_universidade', '=', 'projeto_universidade.id_universidade')
                         ->join('colaborador', 'universidade.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('universidade.id_universidade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_universidade.anoParticipacao')
+                        ->select('universidade.id_universidade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_universidade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_universidade.id_projeto', '=', $id_projeto],
                             ['projeto_universidade.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
-        return $universidades;
-    }
-
-    public function participantesPesq($tipo, $ano) {
-        $id = \session('id_projeto');
-
-        if($tipo != 'todos') {
-            $data = self::criarRespostaPesquisa($id, $ano, $tipo);
-        }
-        else {
-            $data = self::criarRespostaParticipantes($id, $ano);    
-        }
-
-        return json_encode($data);
-    }
-
-    public function criarRespostaPesquisa($id_projeto, $anoAtual, $tipo) {
-        $entidades = null;
-        $escolas = null;
-        $ilustradores = null;
-        $contadores = null;
-        $juris = null;
-        $professores = null;
-        $profsFacul = null;
-        $rbes = null;
-        $universidades = null;
-
-        switch($tipo) {
-            case 'ilustrador_solidario':
-                $ilustradores = self::getIlustradoresDoProjeto($id_projeto, $anoAtual);        
-            break;
-            case 'contador_historias':
-                $contadores = self::getContadoresDoProjeto($id_projeto, $anoAtual);    
-            break;
-            case 'entidade_oficial':
-                $entidades = self::getEntidadesDoProjeto($id_projeto, $anoAtual);
-            break;
-            case 'escola_solidaria':
-                $escolas = self::getEscolasDoProjeto($id_projeto, $anoAtual);
-            break;
-            case 'juri':
-                $juris = self::getJurisDoProjeto($id_projeto, $anoAtual);
-            break;
-            case 'professor':
-                $professores = self::getProfessoresDoProjeto($id_projeto, $anoAtual);
-            break;
-            case 'professor_faculdade':
-                $profsFacul = self::getProfessoresFacDoProjeto($id_projeto, $anoAtual);
-            break;
-            case 'rbe':
-                $rbes = self::getRbesDoProjeto($id_projeto, $anoAtual);
-            break;
-            case 'universidade':
-                $universidades = self::getUniversidadesDoProjeto($id_projeto, $anoAtual);
-            break;
-        }
-        
-        $data = array(
-            'id_projeto' => $id_projeto,
-            'ano' => $anoAtual,
-            'entidades' => $entidades,
-            'escolas' => $escolas,
-            'ilustradores' => $ilustradores,
-            'contadores' => $contadores,
-            'juris' => $juris,
-            'professores' => $professores,
-            'profsFac' => $profsFacul,
-            'rbes' => $rbes,
-            'universidades' =>$universidades
-        );
-
-        return $data;
+            
+            $resposta = array();
+            if($universidades != null && count($universidades) > 0) {
+                $resposta = self::construirEntidadesComEmails($universidades);   
+            }
+            
+        return $resposta;
     }
 
     public function existeAssociacao($id_utilizador, $id_projeto) {

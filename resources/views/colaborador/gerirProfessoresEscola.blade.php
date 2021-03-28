@@ -59,6 +59,7 @@
                                         <th>Telefone</th>
                                         <th>Telemóvel</th>
                                         <th>Email</th>
+                                        <th>Opções</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
@@ -109,6 +110,28 @@
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" id="adicionar" class="btn btn-success" value="Adicionar">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="delete" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="" id="formDelete">
+                                @csrf
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Remover Participante</h4>
+                                    <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem a certeza que deseja remover o participante?</p>
+                                    <p class="text-warning"><small>Esta ação não pode ser retrocedida.</small></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                    <input type="submit" class="btn btn-danger" value="Remover">
                                 </div>
                             </form>
                         </div>

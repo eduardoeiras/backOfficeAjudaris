@@ -52,13 +52,19 @@ function carregarProfessores(response) {
     }
 }
 
-function criarLinha(elemento) {
+function criarLinha(professor) {
+    var elemento = professor.entidade
+    var emails = professor.emails
     var linha = "<tr>"
     linha = linha + `<td>${elemento.nome}</td>`
     linha = linha + `<td>${elemento.cargo}</td>`
     linha = linha + verificaNull(elemento.telefone)
     linha = linha + verificaNull(elemento.telemovel)
-    linha = linha + verificaNull(elemento.email)
+    linha = linha + '<td>'
+    emails.forEach(element => {
+        linha = linha + `${element.email}`
+    });
+    linha = linha + '</td>'
     linha = linha + `<td>
         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professorFaculdade}, ${id_universidade})">
         <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
@@ -105,13 +111,20 @@ function carregarProfessoresAdd(response) {
     }
 }
 
-function criarLinhasAdd(elemento) {
+function criarLinhasAdd(professor) {
+    console.log(professor);
+    var elemento = professor.entidade
+    var emails = professor.emails
     var linha = "<tr>"
     linha = linha + `<td>${elemento.nome}</td>`
     linha = linha + `<td>${elemento.cargo}</td>`
     linha = linha + verificaNull(elemento.telefone)
     linha = linha + verificaNull(elemento.telemovel)
-    linha = linha + verificaNull(elemento.email)
+    linha = linha + '<td>'
+    emails.forEach(element => {
+        linha = linha + `${element.email}`
+    });
+    linha = linha + '</td>'
     linha = linha + `<td><a onclick="selecionar(${elemento.id_professorFaculdade}, \'${elemento.nome}\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>`
     linha = linha + '</tr>'
     $('#tableBodyAdd').append(linha)

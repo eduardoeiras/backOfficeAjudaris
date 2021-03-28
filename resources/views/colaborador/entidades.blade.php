@@ -90,6 +90,9 @@
                                                         <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_entidadeOficial.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_entidadeOficial.')"><i
+                                                                class="material-icons" data-toggle="tooltip"
+                                                                title="Delete">&#xE872;</i></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;
@@ -130,6 +133,10 @@
                                         <input type="text" name="entidade" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
+                                        <label>Número de Identificação Fiscal (NIF)</label>
+                                        <input type="text" id="nifAdd" name="nif" class="form-control" maxlength="70">
+                                    </div>
+                                    <div class="form-group">
                                         <label>Disponibilidade</label>
                                         <select name="disponibilidade">
                                             <option value="0">Disponivel</option>
@@ -150,10 +157,6 @@
                                     <div class="form-group">
                                         <label>Telemóvel</label>
                                         <input type="tel" name="telemovel" class="form-control" maxlength="15">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Número de Identificação Fiscal (NIF)</label>
-                                        <input type="text" id="nifAdd" name="nif" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
@@ -283,6 +286,28 @@
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-info" value="Guardar Alterações">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="delete" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="" id="formDelete">
+                                @csrf
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Remover Entidade Oficial</h4>
+                                    <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem a certeza que deseja remover a entidade oficial?</p>
+                                    <p class="text-warning"><small>Esta ação não pode ser retrocedida.</small></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                    <input type="submit" class="btn btn-danger" value="Remover">
                                 </div>
                             </form>
                         </div>

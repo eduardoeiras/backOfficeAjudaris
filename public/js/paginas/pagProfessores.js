@@ -46,6 +46,7 @@ function editar(id) {
                     <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
                     $('#emailsAssociadosEdit').append(linha)
                 });
+                $('#observacoes').val(professor.observacoes)
                 $('#rua').val(professor.rua)
                 $('#numPorta').val(professor.numPorta)
                 $('#localidade').val(professor.localidade)

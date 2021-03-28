@@ -46,13 +46,11 @@
                             <table class="table table-striped table-hover" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Nome</th>
                                         <th>Cargo</th>
                                         <th>Telemovel</th>
                                         <th>Telefone</th>
-                                        <th>Email</th>
-                                        <th>Observações</th>
+                                        <th>Emails</th>
                                         <th>Disponibilidade</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
@@ -65,7 +63,6 @@
                                         if(isset($data)) {
                                             foreach($data as $linha) {
                                                 $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->id_professorFaculdade.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->cargo.'</td>';
                                                 $dados = $dados.verificaNull($linha["entidade"]->telemovel);
@@ -75,8 +72,7 @@
                                                     $dados = $dados." ".$email->email;
                                                 }
                                                 $dados = $dados.'</td>';
-                                                $dados = $dados.verificaNull($linha["entidade"]->observacoes);
-                                                if($linha->disponivel == 0) {
+                                                if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
                                                 else {
@@ -91,9 +87,12 @@
                                                     $dados = $dados.'<td> --- </td>';
                                                 }
                                                 $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_professorFaculdade.')"><i
+                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_professorFaculdade.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
+                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_professorFaculdade.')"><i
+                                                                class="material-icons" data-toggle="tooltip"
+                                                                title="Delete">&#xE872;</i></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;
@@ -124,7 +123,7 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <label style="font-size: 18px">Informações do Professor de Faculdade</label>
+                                    <label style="font-size: 18px">Informações de Professor de Faculdade</label>
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
@@ -209,7 +208,7 @@
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <label style="font-size: 18px">Informações do Professor de Faculdade</label>
+                                    <label style="font-size: 18px">Informações de Professor de Faculdade</label>
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
@@ -242,42 +241,63 @@
                                     </div>
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
-                                            <label>Emails Associados:</label>
-                                            <div id="emailsAssociadosAdd">   
+                                            <label style="font-size: 18px">Emails Associados:</label>
+                                            <div id="emailsAssociadosEdit"> 
                                             </div>
-                                            <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
-                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                            <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
+                                            <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
                                         </div>
                                     </div>
                                     <label style="font-size: 18px">Morada</label>
                                     <br><br>
                                     <div class="form-group">
                                         <label>Número da Porta</label>
-                                        <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
+                                        <input type="text" id="numPorta" name="numPorta" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label>Rua</label>
-                                        <input type="text" id="ruaAdd" name="rua" class="form-control" maxlength="50">
+                                        <input type="text" id="rua" name="rua" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
                                         <label>Localidade</label>
-                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                        <input type="text" id="localidade" name="localidade" class="form-control" maxlength="50" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Distrito</label>
-                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                        <input type="text" id="distrito" name="distrito" class="form-control" maxlength="70" required>
                                     </div>
-                                    <br>
                                     <div class="form-group">
                                         <label>Primeiros dígitos</label>
-                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <input type="text" id="codPostal" name="codPostal" class="form-control" maxlength="10" required>
                                         <label>Segundos dígitos</label>
-                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
+                                        <input type="text" id="codPostalRua" name="codPostalRua" class="form-control" maxlength="6" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-info" value="Guardar Alterações">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="delete" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="" id="formDelete">
+                                @csrf
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Remover Professor de Faculdade</h4>
+                                    <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem a certeza que deseja remover o professor de faculdade?</p>
+                                    <p class="text-warning"><small>Esta ação não pode ser retrocedida.</small></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                    <input type="submit" class="btn btn-danger" value="Remover">
                                 </div>
                             </form>
                         </div>

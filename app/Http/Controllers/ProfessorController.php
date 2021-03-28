@@ -183,15 +183,31 @@ class ProfessorController extends Controller
     }
 
     public function getDisponiveis() {
-        $entidades = DB::table('professor')
+        $professores = DB::table('professor')
                     ->join('colaborador', 'professor.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('professor.id_professor', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
+                    ->select('professor.id_professor as id', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+
+                    
+        $resposta = array();
+        foreach($professores as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }   
     
-        return \json_encode($entidades);
+        return \json_encode($resposta);
     }
 
     public function getNumProfs() {
@@ -230,7 +246,7 @@ class ProfessorController extends Controller
         
         $profs = DB::table('professor')
                     ->join('colaborador', 'professor.id_colaborador', '=' , 'colaborador.id_colaborador')
-                    ->select('professor.id_professor', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome')
+                    ->select('professor.id_professor', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->get();
 
         foreach($profs as $professor) {

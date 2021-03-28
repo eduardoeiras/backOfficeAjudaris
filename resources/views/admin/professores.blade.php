@@ -126,7 +126,6 @@
                                         <label>Nome</label>
                                         <input type="text" name="nome" class="form-control" maxlength="70" required>
                                     </div>
-                                    
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
                                         <select name="disponibilidade">
@@ -134,6 +133,11 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
                                     <div class="form-group">
@@ -210,6 +214,11 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
                                     <div class="form-group">

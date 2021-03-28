@@ -166,12 +166,28 @@ class ContadorHistoriaController extends Controller
     public function getDisponiveis() {
         $contadores = DB::table('contador_historias')
                     ->join('colaborador', 'contador_historias.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('contador_historias.id_contadorHistorias', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.email', 'colaborador.nome')
+                    ->select('contador_historias.id_contadorHistorias as id', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+                    
+        $resposta = array();
+
+        foreach($contadores as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
     
-        return \json_encode($contadores);
+        return \json_encode($resposta);
     }
 }

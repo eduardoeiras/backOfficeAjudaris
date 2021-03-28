@@ -13,8 +13,8 @@ class ProjetoUtilizadorController extends Controller
     {
         $projutilizador = new ProjetoUtilizador();
 
-        $projutilizador->id_projeto = $request->id_projeto;
-        $projutilizador->id_utilizador = $request->id_utilizador;
+        $projutilizador->id_projeto = intval($request->id_projeto);
+        $projutilizador->id_utilizador = intval($request->id_utilizador);
 
         $projutilizador->save();
 

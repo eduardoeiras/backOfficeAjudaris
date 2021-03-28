@@ -180,12 +180,28 @@ class EntidadeOficialController extends Controller
     public function getDisponiveis() {
         $entidades = DB::table('entidade_oficial')
                     ->join('colaborador', 'entidade_oficial.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('entidade_oficial.id_entidadeOficial', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
+                    ->select('entidade_oficial.id_entidadeOficial as id', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+                    
+        $resposta = array();
+
+        foreach($entidades as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
     
-        return \json_encode($entidades);
+        return \json_encode($resposta);
     }
 }

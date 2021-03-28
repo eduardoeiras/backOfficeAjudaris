@@ -12,7 +12,6 @@ $(document).ready(function () {
         method: "GET",
         dataType: "json",
         success: function (response) {
-            console.log(response);
             id_projeto = response.id_projeto
             ano = response.ano
             carregarEntidades(response)
@@ -144,12 +143,18 @@ function carregarUniversidade(response) {
 }
 
 function criarLinha(elemento, tipo) {
+    var entidade = elemento.entidade
+    var emails = elemento.emails
     var linha = "<tr>"
     if (tipo != 'rbe') {
-        linha = linha + `<td>${elemento.nome}</td>`
-        linha = linha + verificaNull(elemento.telefone)
-        linha = linha + verificaNull(elemento.telemovel)
-        linha = linha + verificaNull(elemento.email)
+        linha = linha + `<td>${entidade.nome}</td>`
+        linha = linha + verificaNull(entidade.telefone)
+        linha = linha + verificaNull(entidade.telemovel)
+        linha = linha + '<td>'
+        emails.forEach(element => {
+            linha = linha + `${element.email}`
+        });
+        linha = linha + '</td>'
         linha = linha + '<td> --- </td>'
         switch (tipo) {
             case 'entidade':
@@ -157,7 +162,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_entidadeOficial}, 
+                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_entidadeOficial}, 
                             ${id_projeto}, ${ano}, \'entidade\')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
@@ -169,7 +174,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_contadorHistorias}, 
+                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_contadorHistorias}, 
                             ${id_projeto}, ${ano}, \'contador\')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
@@ -181,7 +186,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_escolaSolidaria}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_escolaSolidaria}, 
                                     ${id_projeto}, ${ano}, \'escola\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -193,7 +198,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_ilustradorSolidario}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_ilustradorSolidario}, 
                                     ${id_projeto}, ${ano}, \'ilustrador\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -205,7 +210,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_juri}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_juri}, 
                                     ${id_projeto}, ${ano}, \'juri\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -213,7 +218,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + '</tr>'
                 break;
             case 'professor':
-                var cargoUrl = `cargosProfessor/getPorIdProfessor/` + elemento.id_professor + "-" + id_projeto + "-" + ano;
+                var cargoUrl = `cargosProfessor/getPorIdProfessor/` + entidade.id_professor + "-" + id_projeto + "-" + ano;
                 $.ajax({
                     url: cargoUrl,
                     method: "GET",
@@ -223,7 +228,7 @@ function criarLinha(elemento, tipo) {
                         linha = linha + `<td>${response.nomeCargo}</td>`
                         linha = linha + `<td>${ano}</td>`
                         linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professor}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_professor}, 
                                     ${id_projeto}, ${ano}, \'professor\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -238,7 +243,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professorFaculdade}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_professorFaculdade}, 
                                     ${id_projeto}, ${ano}, \'profFacul\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -250,7 +255,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_universidade}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_universidade}, 
                                     ${id_projeto}, ${ano}, \'universidade\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -260,16 +265,16 @@ function criarLinha(elemento, tipo) {
         }
     }
     else {
-        linha = linha + `<td>${elemento.nomeCoordenador}</td>`
+        linha = linha + `<td>${entidade.nomeCoordenador}</td>`
         linha = linha + '<td> --- </td>'
         linha = linha + '<td> --- </td>'
         linha = linha + '<td> --- </td>'
-        linha = linha + `<td>${elemento.regiao}</td>`
+        linha = linha + `<td>${entidade.regiao}</td>`
         linha = linha + `<td>RBE</td>`
         linha = linha + `<td>Participante</td>`
         linha = linha + `<td>${ano}</td>`
         linha = linha + `<td>
-                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_rbe}, 
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_rbe}, 
                                     ${id_projeto}, ${ano}, \'rbe\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
@@ -338,25 +343,31 @@ $("#menu-toggle").click(function (e) {
 function criarLinhasAdd(elementos, rbe) {
     if (!rbe) {
         for (elemento of elementos) {
+            var entidade = elemento.entidade
+            var emails = elemento.emails
             let linha = "<tr>";
-            linha = linha + `<td>${elemento.nome}</td>`
-            linha = linha + verificaNull(elemento.telefone)
-            linha = linha + verificaNull(elemento.telemovel)
-            linha = linha + verificaNull(elemento.email)
-            let idSelect = `elemento.${idTipo}`;
-            linha = linha + '<td><button onclick="selecionar(' + idSelect + ', \'' + elemento.nome + '\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>'
+            linha = linha + `<td>${entidade.nome}</td>`
+            linha = linha + verificaNull(entidade.telefone)
+            linha = linha + verificaNull(entidade.telemovel)
+            linha = linha + '<td>'
+            emails.forEach(element => {
+                linha = linha + `${element.email}`
+            });
+            linha = linha + '</td>'
+            linha = linha + '<td><button onclick="selecionar(' + entidade.id + ', \'' + entidade.nome + '\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>'
             linha = linha + '</tr>'
             $('#tableBodyAdd').append(linha)
         }
     }
     else {
         for (elemento of elementos) {
+            var entidade = elemento.entidade
+            var emails = elemento.emails
             let linha = "<tr>";
-            linha = linha + `<td>${elemento.nomeCoordenador}</td>`
-            linha = linha + `<td>${elemento.regiao}</td>`
-            linha = linha + `<td>${elemento.nome}</td>`
-            let idSelect = `elemento.${idTipo}`;
-            linha = linha + '<td><button onclick="selecionar(' + idSelect + ', \'' + elemento.nomeCoordenador + '\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>'
+            linha = linha + `<td>${entidade.nomeCoordenador}</td>`
+            linha = linha + `<td>${entidade.regiao}</td>`
+            linha = linha + `<td>${entidade.nome}</td>`
+            linha = linha + '<td><button onclick="selecionar(' + entidade.id + ', \'' + entidade.nomeCoordenador + '\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>'
             linha = linha + '</tr>'
             $('#tableBodyAdd').append(linha)
         }
@@ -579,6 +590,7 @@ function selecionar(id, nome) {
     $('#anoParticipacao').val(ano);
     $('#id_projeto').val(id_projeto);
     $('#id_elemento').val(id);
+    console.log(id, ano, nome, id_projeto);
     switch (tipoSelect) {
         case 'ilustrador':
             var url = 'projetoIlustrador/jaAssociado/' + id + "-" + id_projeto + "-" + ano

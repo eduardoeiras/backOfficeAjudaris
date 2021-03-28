@@ -13,7 +13,7 @@ class ProjetoEntidadeController extends Controller
     {
         $projentidade = new ProjetoEntidade();
 
-        $projentidade->id_projeto = $request->intval($request->id_projeto);
+        $projentidade->id_projeto = intval($request->id_projeto);
         $projentidade->id_entidadeOficial = intval($request->id_elemento);
         $projentidade->anoParticipacao = intval($request->anoParticipacao);
 

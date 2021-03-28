@@ -182,15 +182,30 @@ class ProfessorFaculdadeController extends Controller
     }
 
     public function getDisponiveis() {
-        $entidades = DB::table('professor_faculdade')
+        $profefacul = DB::table('professor_faculdade')
                     ->join('colaborador', 'professor_faculdade.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('professor_faculdade.id_professorFaculdade', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
+                    ->select('professor_faculdade.id_professorFaculdade as id', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();  
+
+        $resposta = array();
+        foreach($profefacul as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }   
     
-        return \json_encode($entidades);
+        return \json_encode($resposta);
     }
 
     public function existeAssociacao($id_professor, $id_universidade) {
@@ -215,14 +230,26 @@ class ProfessorFaculdadeController extends Controller
         $profsSemUniversidade = array();
         
         $profs = DB::table('professor_faculdade')
-                    ->select('professor_faculdade.id_professorFaculdade', 'professor_faculdade.cargo', 
-                    'professor_faculdade.telemovel', 'professor_faculdade.telefone', 'professor_faculdade.email', 'professor_faculdade.nome')
-                    ->get();
+                ->join('colaborador', 'professor_faculdade.id_colaborador', '=' , 'colaborador.id_colaborador')
+                ->select('professor_faculdade.id_professorFaculdade', 'professor_faculdade.cargo', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
+                ->get();
+
+        
 
         foreach($profs as $professor) {
             $existe = self::existeAssociacao($professor->id_professorFaculdade, $id_universidade);
             if($existe == false) {
-                array_push($profsSemUniversidade, $professor);
+                $emails = DB::table('email')
+                ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                ->select('email.email')
+                ->where('email.id_colaborador', '=', $professor->id_colaborador)
+                ->get();
+                
+                $prof = array(
+                    "entidade" => $professor,
+                    "emails" => $emails
+                );
+                array_push($profsSemUniversidade, $prof);
             }
         }
         

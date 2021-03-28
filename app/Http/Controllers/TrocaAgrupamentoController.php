@@ -30,7 +30,7 @@ class TrocaAgrupamentoController extends Controller
         $trocas->agrupamentoAntigo = $request->agrupamentoAntigo;
         $trocas->novoAgrupamento = $request->novoAgrupamento;
         $trocas->observacoes = $request->observacoes;
-        //$trocas->id_professor = $request->id_professor;
+        $trocas->id_professor = $request->id_professor;
 
         $trocas->save();
         

@@ -140,6 +140,18 @@
                                         <label>Curso</label>
                                         <input type="text" name="curso" class="form-control" maxlength="50">
                                     </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
                                     <div class="form-group">
@@ -159,13 +171,7 @@
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Disponibilidade</label>
-                                        <select name="disponibilidade">
-                                            <option value="0">Disponivel</option>
-                                            <option value="1">Indisponivel</option>
-                                        </select>
-                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Morada</label>
                                     <br><br>
                                     <div class="form-group">
@@ -225,6 +231,18 @@
                                         <label>Curso</label>
                                         <input type="text" id="curso" name="curso" class="form-control" maxlength="50">
                                     </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="disponibilidade" id="disponibilidade">
+                                            <option value="0">Disponivel</option>
+                                            <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
                                     <div class="form-group">
@@ -244,13 +262,7 @@
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Disponibilidade</label>
-                                        <select name="disponibilidade" id="disponibilidade">
-                                            <option value="0">Disponivel</option>
-                                            <option value="1">Indisponivel</option>
-                                        </select>
-                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Morada</label>
                                     <br><br>
                                     <div class="form-group">

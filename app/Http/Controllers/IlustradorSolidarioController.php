@@ -180,12 +180,28 @@ class IlustradorSolidarioController extends Controller
     public function getDisponiveis() {
             $ilustradores = DB::table('ilustrador_solidario')
                         ->join('colaborador', 'ilustrador_solidario.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('ilustrador_solidario.id_ilustradorSolidario', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome')
+                        ->select('ilustrador_solidario.id_ilustradorSolidario as id', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
                         ->where([
                             ['colaborador.disponivel', '=', 0]
                             ])
-                        ->get();  
+                        ->get();
         
-        return \json_encode($ilustradores);
+        $resposta = array();
+
+        foreach($ilustradores as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }  
+        
+        return \json_encode($resposta);
     }
 }

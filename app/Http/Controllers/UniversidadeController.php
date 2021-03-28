@@ -183,28 +183,45 @@ class UniversidadeController extends Controller
     }
 
     public function getDisponiveis() {
-        $entidades = DB::table('universidade')
+        $universidades = DB::table('universidade')
                     ->join('colaborador', 'universidade.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('universidade.id_universidade', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
+                    ->select('universidade.id_universidade as id', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+                    
+        $resposta = array();
+        foreach($universidades as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
     
-        return \json_encode($entidades);
+        return \json_encode($resposta);
     }
 
     public function gerirProfessoresUniversidade($id) {
         $universidade = Universidade::find($id);
 
-        \session(['id_universidade' => $id]);
-
-        $user = session()->get("utilizador");
-        if($user->tipoUtilizador == 0) {
-            return view('admin/gerirProfessoresUniversidade', ['title' => 'Universidade: <br><br>'.$universidade->nome.' - '.$universidade->tipo]);
-        }
-        else {
-            return view('colaborador/gerirProfessoresUniversidade', ['title' => 'Universidade: <br><br>'.$universidade->nome.' - '.$universidade->tipo]);
+        if($universidade != null) {
+            $colaborador = Colaborador::find($universidade->id_colaborador);
+            \session(['id_universidade' => $id]); 
+            $user = session()->get("utilizador");
+            if($user->tipoUtilizador == 0) {
+                return view('admin/gerirProfessoresUniversidade', ['title' => 'Universidade: <br><br>'.$colaborador->nome.' - '.$universidade->tipo]);
+            }
+            else {
+                return view('colaborador/gerirProfessoresUniversidade', ['title' => 'Universidade: <br><br>'.$colaborador->nome.' - '.$universidade->tipo]);
+            }     
         }
     }
 }

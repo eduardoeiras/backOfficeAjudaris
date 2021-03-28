@@ -139,9 +139,8 @@
                                         <input type="text" name="nome" class="form-control" maxlength="70" requied>
                                     </div>
                                     <div class="form-group">
-                                        <label>Concelhos</label>
-                                        <select id="concelhosAdd" name="concelhos">
-                                        </select>
+                                        <label>Observações</label>
+                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
@@ -150,6 +149,12 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Concelhos</label>
+                                        <select id="concelhosAdd" name="concelhos">
+                                        </select>
+                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
                                     <div class="form-group">
@@ -224,18 +229,22 @@
                                         <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Concelho</label>
-                                        <select name="concelho" id="concelho">
-                                            
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
                                         <label>Disponibilidade</label>
                                         <select name="disponibilidade" id="disponibilidade">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Concelho</label>
+                                        <select name="concelho" id="concelho">
+                                        </select>
+                                    </div>
+                                    <br><br>
                                     <label style="font-size: 18px">Contactos</label>
                                     <br><br>
                                     <div class="form-group">

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CodPostal;
-use Illuminate\Http\Request;
 use DB;
 class CodPostalController extends Controller
 {

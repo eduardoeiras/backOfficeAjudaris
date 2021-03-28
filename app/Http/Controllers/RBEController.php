@@ -181,15 +181,30 @@ class RBEController extends Controller
     }
 
     public function getDisponiveis() {
-        $entidades = DB::table('rbe')
+        $rbes = DB::table('rbe')
                     ->join('colaborador', 'rbe.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('rbe.id_rbe', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.email', 'colaborador.nome')
-                    ->join('concelho', 'rbe.id_concelho', '=', 'concelho.id_concelho')
+                    ->select('rbe.id_rbe as id', 'rbe.regiao', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+                    
+        $resposta = array();
+        foreach($rbes as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }   
+
     
-        return \json_encode($entidades);
+        return \json_encode($resposta);
     }
 }

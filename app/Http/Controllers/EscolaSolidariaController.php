@@ -184,30 +184,45 @@ class EscolaSolidariaController extends Controller
     }
 
     public function getDisponiveis() {
-        $ilustradores = DB::table('escola_solidaria')
+        $escolas = DB::table('escola_solidaria')
                     ->join('colaborador', 'escola_solidaria.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('escola_solidaria.id_escolaSolidaria', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome')
+                    ->select('escola_solidaria.id_escolaSolidaria as id', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.nome', 'colaborador.id_colaborador')
                     ->where([
                         ['colaborador.disponivel', '=', 0]
                         ])
-                    ->get();  
+                    ->get();
+        $resposta = array();
+
+        foreach($escolas as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
     
-        return \json_encode($ilustradores);
+        return \json_encode($resposta);
     }
 
     public function gerirEscola($id) {
         $escola = EscolaSolidaria::find($id);
-
-        \session(['id_escola' => $id]);
-
-        $user = session()->get("utilizador");
-        if($user->tipoUtilizador == 0) {
-            return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$escola->nome]);
+        if($escola != null) {
+            $colaborador = Colaborador::find($escola->id_colaborador);
+            \session(['id_escola' => $id]); 
+            $user = session()->get("utilizador");
+            if($user->tipoUtilizador == 0) {
+                return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
+            }
+            else {
+                return view('colaborador/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
+            }
         }
-        else {
-            return view('colaborador/gerirProfessoresEscola', ['title' => 'Escola: '.$escola->nome]);
-        }
-
     }
 
     public function getProfessores() {
@@ -216,7 +231,7 @@ class EscolaSolidariaController extends Controller
         $professores = DB::table('professor')
                         ->join('escola_professor', 'professor.id_professor', '=', 'escola_professor.id_professor')
                         ->join('colaborador', 'professor.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel')
+                        ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.id_colaborador')
                         ->where([
                             ['escola_professor.id_escola', '=', $id]
                             ])
@@ -287,6 +302,12 @@ class EscolaSolidariaController extends Controller
             $query->delete();
         }
 
-        return redirect()->route("gerirEscola", $id_escola);
+        $user = session()->get("utilizador");
+        if($user->tipoUtilizador == 0) {
+            return redirect()->route("gerirEscola", $id_escola);
+        }
+        else {
+            return redirect()->route("gerirEscolaColaborador", $id_escola);
+        }
     }
 }
