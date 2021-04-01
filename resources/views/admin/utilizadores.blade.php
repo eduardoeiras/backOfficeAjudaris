@@ -25,6 +25,12 @@
 </head>
 
 <body>
+    <?php
+    if(isset($data)) {
+        $userName = '<input id="username" type="hidden" value="'.$data.'">';
+        echo $userName;
+    }
+    ?>
     <div class="d-flex" id="wrapper">
         @include("admin/sideBar")
         <div id="page-content-wrapper">
@@ -88,7 +94,7 @@
                 <div id="addUtilizador" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" action="utilizadores/addUtilizador" id="formAdd">
+                            <form method="POST" action="utilizadores/addUtilizador" id="formAdd" onsubmit="return verificarErroUsername()">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Adicionar Utilizador</h4>
@@ -99,6 +105,7 @@
                                     <div class="form-group">
                                         <label>Nome de utilizador</label>
                                         <input type="text" id="nomeUtilizadorAdd" name="nomeUtilizador" class="form-control" maxlength="70" required>
+                                        <label style="color: red" id="erroUserExiste"></label>
                                     </div>
                                     <div class="form-group">
                                         <label>Password</label>
@@ -143,7 +150,7 @@
                 <div id="editUtilizador" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" action="" id="formEditarUtilizador">
+                            <form method="POST" action="" id="formEditarUtilizador" onsubmit="return verificarErroUsername()">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Editar Utilizador</h4>
@@ -154,6 +161,7 @@
                                     <div class="form-group">
                                         <label>Nome de utilizador</label>
                                         <input type="text" id="nomeUtilizador" name="nomeUtilizador" class="form-control" maxlength="70" required>
+                                        <label style="color: red" id="erroUserExisteEdit"></label>
                                     </div>
                                     <div class="form-group">
                                         <label>Password</label>
@@ -168,7 +176,7 @@
                                         <input type="text" id="departamento" name="departamento" class="form-control" maxlength="30" required>
                                     </div>
                                     <div class="form-group">
-                                        <label>Tipo de Utilizador</label>
+                                        <label id="editTipoUserLabel">Tipo de Utilizador</label>
                                         <select id="tipoUtilizador" name="tipoUtilizador" required>
                                             <option value="0">Administrador</option>
                                             <option value="1">Colaborador</option>

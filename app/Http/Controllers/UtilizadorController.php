@@ -5,15 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
 use DB;
-use Session;
-use Auth;
 
 class UtilizadorController extends Controller
 {
     
     public function index()
     {
-        return view('admin.utilizadores');
+        $user = session()->get('utilizador');
+        return view('admin.utilizadores', ['data' => $user->nomeUtilizador]);
     }
 
     public function store(Request $request)
@@ -112,7 +111,9 @@ class UtilizadorController extends Controller
 
         if($user != null) {
             if($user->password == $password) {
-                session()->put("utilizador", $user);
+                $sessionUser = DB::table('utilizador')->select("nomeUtilizador", "nome", "tipoUtilizador", "departamento", "email")
+                    ->where('nomeUtilizador', $user->nomeUtilizador)->first();
+                session()->put("utilizador", $sessionUser);
                 if($user->tipoUtilizador == 0) {
                     return redirect()->route('dashboardAdmin');
                 }
@@ -170,12 +171,12 @@ class UtilizadorController extends Controller
     }
 
     public function existeUser($name) {
-        $user = DB::table('utilizador')->where('nomeUtilizador', $nome)->first();
+        $user = DB::table('utilizador')->where('nomeUtilizador', $name)->first();
         if($user != null) {
-            return true; 
+            return 1; 
         }
         else {
-            return false;
+            return 0;
         }
     }
 
