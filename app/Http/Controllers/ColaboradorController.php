@@ -146,6 +146,20 @@ class ColaboradorController extends Controller
         }
     }
 
+    public static function existeEmailSemColaborador($email)
+    {
+        $email = DB::table('email')
+                    ->where('email.email', '=', "$email")
+                    ->first();
+        
+        if($email != null) {
+           return 1; 
+        }
+        else {
+            return 0;
+        }
+    }
+
     public static function getLastId()
     {
         $id = DB::select('SELECT MAX(id_colaborador) as id_colaborador FROM colaborador');

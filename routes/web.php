@@ -355,5 +355,7 @@ Route::post('colaborador/gerirUniversidade/delete/{id}-{id_universidade}', 'Univ
 
 Route::get('admin/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['checkLogInAdmin']);
 Route::get('colaborador/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['CheckLogInColaborador']);
+Route::get('admin/existeEmail/{email}', 'ColaboradorController@existeEmailSemColaborador')->middleware(['checkLogInAdmin']);
+Route::get('colaborador/existeEmail/{email}', 'ColaboradorController@existeEmailSemColaborador')->middleware(['CheckLogInColaborador']);
 
 

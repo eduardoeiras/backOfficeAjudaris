@@ -166,9 +166,9 @@
                                             </div>
                                             <input type="email" id="emailFormAdd" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(true)">Adicionar Email</button>
+                                            <label style="color: red; margin-top: 10px" id="erroEmailAdd"></label>
                                         </div>
                                     </div>
-                                    <br><br>
                                     <label style="font-size: 18px">Morada</label>
                                     <br><br>
                                     <div class="form-group">
@@ -279,9 +279,9 @@
                                             </div>
                                             <input type="email" id="emailFormEdit" name="email" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Email">
                                             <button type="button" class="btn btn-success" onclick="adicionarEmail(false)">Adicionar Email</button>
+                                            <label style="color: red; margin-top: 10px" id="erroEmailEdit"></label>
                                         </div>
                                     </div>
-                                    <br><br>
                                     <label style="font-size: 18px">Morada</label>
                                     <br><br>
                                     <div class="form-group">
