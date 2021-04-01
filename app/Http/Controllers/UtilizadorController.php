@@ -111,7 +111,7 @@ class UtilizadorController extends Controller
 
         if($user != null) {
             if($user->password == $password) {
-                $sessionUser = DB::table('utilizador')->select("nomeUtilizador", "nome", "tipoUtilizador", "departamento", "email")
+                $sessionUser = DB::table('utilizador')->select("id_utilizador", "nomeUtilizador", "nome", "tipoUtilizador", "departamento", "email")
                     ->where('nomeUtilizador', $user->nomeUtilizador)->first();
                 session()->put("utilizador", $sessionUser);
                 if($user->tipoUtilizador == 0) {
