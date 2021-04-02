@@ -16,7 +16,7 @@ class JuriController extends Controller
         ->join('colaborador', 'juri.id_colaborador', '=' , 'colaborador.id_colaborador')
         ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
         ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('juri.id_juri', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->select('juri.id_juri', 'juri.tipoJuri', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
         ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
         ->get();
 
@@ -60,12 +60,15 @@ class JuriController extends Controller
         $disponibilidade = $request->disponibilidade;
         $emails = $request->emails;
 
+        $tipo = $request->tipo;
+
         //Obtenção do id do colaborador criado
         $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
         $rua, $localidade, $distrito, $emails);
 
         $juris = new Juri();
         $juris->id_colaborador = $idColab;
+        $juris->tipoJuri = $tipo;
         $juris->save();
 
         $user = session()->get("utilizador");
@@ -93,12 +96,14 @@ class JuriController extends Controller
         $distrito = $request->distrito;
         $emails = $request->emails;
         $emailsToDelete = $request->deletedEmails;
+
+        $tipo = $request->tipo;
         
         $juri = Juri::find($id_juri);
         if($juri != null) {
             ColaboradorController::update($juri->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
-
+            $juri->tipoJuri = $tipo;
             $juri->save();
         }
             $user = session()->get("utilizador");
@@ -148,6 +153,7 @@ class JuriController extends Controller
             "disponivel" => $colaborador->disponivel,
             "observacoes" => $colaborador->observacoes,
             "rua" => $codPostalRua->rua,
+            "tipoJuri" => $jur->tipoJuri,
             "numPorta" => $colaborador->numPorta,
             "localidade" => $codPostal->localidade,
             "codPostal" => $colaborador->codPostal,

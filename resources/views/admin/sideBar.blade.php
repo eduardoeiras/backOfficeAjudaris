@@ -9,7 +9,7 @@
         <a href="http://backofficeajudaris/admin/ilustradores" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/ilustrador.png')}}" class="sideBarImg">Ilustradores Solidários</a>
         <a href="http://backofficeajudaris/admin/contadores" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/contador.png')}}" class="sideBarImg">Contadores de Histórias</a>
         <a href="http://backofficeajudaris/admin/entidades" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/entidadeOficial.png')}}" class="sideBarImg">Entidades Oficiais</a>
-        <a href="http://backofficeajudaris/admin/juris" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/juri.png')}}" class="sideBarImg">Juris</a>
+        <a href="http://backofficeajudaris/admin/juris" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/juri.png')}}" class="sideBarImg">Juris e Revisores</a>
         <a href="http://backofficeajudaris/admin/rbes" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/rbes.png')}}" class="sideBarImg">Redes de Bibliotecas Escolares (RBE)</a>
         <a href="http://backofficeajudaris/admin/concelhos" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/portugal.png')}}" class="sideBarImg">Concelhos</a>
         <a href="http://backofficeajudaris/admin/universidades" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/universidade.png')}}" class="sideBarImg">Universidades</a>

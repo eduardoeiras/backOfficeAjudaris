@@ -35,11 +35,11 @@
                             <div class="table-title">
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <h2>Gerir <b>Juris</b></h2>
+                                        <h2>Gerir <b>Juris/Revisores</b></h2>
                                     </div>
                                     <div class="col-sm-6">
                                         <a href="#add" class="btn btn-success" data-toggle="modal"><i
-                                                class="material-icons">&#xE147;</i> <span>Criar um novo Juri</span></a>
+                                                class="material-icons">&#xE147;</i> <span>Criar um novo Juri/Revisor</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -77,15 +77,15 @@
                                                 else {
                                                     $dados = $dados.'<td>Indisponível</td>';    
                                                 }
-                                                /*if($linha->juri == 0){
+                                                if($linha["entidade"]->tipoJuri == 0){
                                                     $dados = $dados.'<td>Juri</td>';
                                                 }
-                                                elseif ($linha->revisor == 1){
+                                                elseif ($linha["entidade"]->tipoJuri == 1){
                                                     $dados = $dados.'<td>Revisor</td>';
                                                 }
                                                 else{
                                                     $dados = $dados.'<td>Juri e Revisor</td>';
-                                                }*/
+                                                }
                                                 $dados = $dados.verificaNull($linha["entidade"]->localidade);
                                                 $dados = $dados.verificaNull($linha["entidade"]->rua);
                                                 if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
@@ -98,9 +98,6 @@
                                                         <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_juri.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_juri.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Delete">&#xE872;</i></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;
@@ -126,12 +123,12 @@
                             <form method="POST" action="juris/add">
                                 @csrf
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Adicionar Juri</h4>
+                                    <h4 class="modal-title">Adicionar Juri/Revisor</h4>
                                     <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <label style="font-size: 18px">Informações do Juri</label>
+                                    <label style="font-size: 18px">Informações do Juri/Revisor</label>
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
@@ -217,12 +214,12 @@
                             <form method="POST" action="" id="formEditar">
                                 @csrf
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Editar Juri</h4>
+                                    <h4 class="modal-title">Editar Juri/Revisor</h4>
                                     <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <label style="font-size: 18px">Informações do Agrupamento</label>
+                                    <label style="font-size: 18px">Informações do Juri/Revisor</label>
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>

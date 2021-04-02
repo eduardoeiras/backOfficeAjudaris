@@ -92,9 +92,6 @@
                                                         <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_universidade.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_universidade.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Delete">&#xE872;</i></a>
                                                         <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';

@@ -33,6 +33,7 @@ function editar(id) {
         success: function (resposta) {
             if (resposta != null) {
                 juri = resposta[0]
+                console.log(juri);
                 $('#emailsAssociadosEdit').empty()
                 url = 'juris/edit/' + juri.id_juri
                 $('#formEditar').attr('action', url)
@@ -41,7 +42,7 @@ function editar(id) {
                 $('#telefone').val(juri.telefone)
                 var disp = juri.disponivel
                 $('#disponibilidade').val(disp.toString())
-                var tipo = juri.tipo
+                var tipo = juri.tipoJuri
                 $('#tipo').val(tipo.toString())
                 juri.emails.original.forEach(linha => {
                     emailsAdicionadosEdit.push(linha.email)
