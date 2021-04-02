@@ -41,6 +41,8 @@ function editar(id) {
                 $('#telefone').val(juri.telefone)
                 var disp = juri.disponivel
                 $('#disponibilidade').val(disp.toString())
+                var tipo = juri.tipo
+                $('#tipo').val(tipo.toString())
                 juri.emails.original.forEach(linha => {
                     emailsAdicionadosEdit.push(linha.email)
                     let index = emailsAdicionadosEdit.indexOf(linha.email)

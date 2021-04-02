@@ -51,6 +51,7 @@
                                         <th>Telefone</th>
                                         <th>Emails</th>
                                         <th>Disponibilidade</th>
+                                        <th>Tipo de Participação</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
                                         <th>Código Postal</th>
@@ -76,6 +77,15 @@
                                                 else {
                                                     $dados = $dados.'<td>Indisponível</td>';    
                                                 }
+                                                /*if($linha->juri == 0){
+                                                    $dados = $dados.'<td>Juri</td>';
+                                                }
+                                                elseif ($linha->revisor == 1){
+                                                    $dados = $dados.'<td>Revisor</td>';
+                                                }
+                                                else{
+                                                    $dados = $dados.'<td>Juri e Revisor</td>';
+                                                }*/
                                                 $dados = $dados.verificaNull($linha["entidade"]->localidade);
                                                 $dados = $dados.verificaNull($linha["entidade"]->rua);
                                                 if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
@@ -132,6 +142,14 @@
                                         <select name="disponibilidade" id="disponibilidadeAdd">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tipo de Participação</label>
+                                        <select name="tipo" id="tipoAdd">
+                                            <option value="0">Juri</option>
+                                            <option value="1">Revisor</option>
+                                            <option value="2">Juri e Revisor</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -215,6 +233,14 @@
                                         <select name="disponibilidade" id="disponibilidade">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Disponibilidade</label>
+                                        <select name="tipo" id="tipo">
+                                            <option value="0">Juri</option>
+                                            <option value="1">Revisor</option>
+                                            <option value="2">Juri e Revisor</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
