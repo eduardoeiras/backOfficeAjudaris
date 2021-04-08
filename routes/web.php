@@ -26,7 +26,12 @@ Route::get('/{msg}', function ($msg) {
     return view("login")->with("msg", $msg);
 })->name("paginaLoginErro");
 
-//ROUTES PARA O USER ADMIN
+/*  _______________________________________________________________________________________________________________________________________
+   |                                                                                                                                       |
+   |-------------------------------------------------- ROUTES PARA O USER ADMIN -----------------------------------------------------|
+   |_______________________________________________________________________________________________________________________________________|
+*/
+
 /*Cada route tem de ter um middleware que verifica se o utilizador fez login antes de concretizar o pedido*/
 Route::get('admin/dashboardAdmin','ProjetoController@index')->name("dashboardAdmin")->middleware(['checkLogInAdmin']);
 Route::get('admin/projetos/getPorId/{id}', 'ProjetoController@getProjetoPorId')->middleware(['checkLogInAdmin']);
@@ -205,7 +210,18 @@ Route::post('admin/gerirProjetosUser/projetosAssociados/destroy/{id}-{id_projeto
 Route::get('admin/gerirProjetosUser/projetos/getSemAssociacao/{id}','ProjetoController@getSemAssociacao')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirProjetosUser/gerirProjetosUtilizador/add','ProjetoUtilizadorController@store')->middleware(['checkLogInAdmin']);
 
-// ROUTES PARA O USER COLABORADOR
+//ROUTES PARA A GESTÃO DAS COMUNICAÇÕES
+Route::get('admin/gerirComunicacoes-{id}-{nome}', 'ComunicacoesController@index')->name("gerirComunicacoes")->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirComunicacoes/add','ComunicacoesController@store')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['checkLogInAdmin']);
+
+
+/*  _______________________________________________________________________________________________________________________________________
+   |                                                                                                                                       |
+   |-------------------------------------------------- ROUTES PARA O USER COLABORADOR -----------------------------------------------------|
+   |_______________________________________________________________________________________________________________________________________|
+*/
 
 Route::get('colaborador/dashboardColaborador','ProjetoController@index')->name("dashboardColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/projetos/getPorId/{id}', 'ProjetoController@getProjetoPorId')->middleware(['CheckLogInColaborador']);
@@ -352,6 +368,14 @@ Route::get('colaborador/gerirUniversidade/getProfessores', 'UniversidadeProfFacu
 Route::get('colaborador/profsFaculdade/getDisponiveisSemEscola/{id}','ProfessorFaculdadeController@getDisponiveisSemEscola')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirUniversidade/add','UniversidadeProfFaculdadeController@store')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirUniversidade/delete/{id}-{id_universidade}', 'UniversidadeProfFaculdadeController@destroy')->middleware(['CheckLogInColaborador']);
+
+//ROUTES PARA A GESTÃO DAS COMUNICAÇÕES
+Route::get('colaborador/gerirComunicacoes-{id}-{nome}', 'ComunicacoesController@index')->name("gerirComunicacoesColaborador")->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirComunicacoes/add','ComunicacoesController@store')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['CheckLogInColaborador']);
+
+//ROUTES PARA A GESTÃO DOS EMAILS PARA O COLABORADOR E ADMINISTRADOR
 
 Route::get('admin/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['checkLogInAdmin']);
 Route::get('colaborador/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['CheckLogInColaborador']);

@@ -2,54 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CodPostal;
 use App\Models\Colaborador;
-use App\Models\ContadorHistoria;
+use App\Models\Comunicacao;
 use Illuminate\Http\Request;
 use DB;
 
-class ContadorHistoriaController extends Controller
+class ComunicacoesController extends Controller
 {
-    public function index()
+    public function index($id, $nome)
     {
         $user = session()->get("utilizador");
-        
+        $comunicacoes = DB::table('comunicacao')
+            ->select('comunicacao.*')
+            ->where('comunicacao.id_colaborador', '=', $id)
+            ->get();
+        session("id_colaborador", $id);
         if($user->tipoUtilizador == 0) {
-            return view('admin/comunicacoes', ['data' => null]);
+            return view('admin/gerirComunicacoes', ['data' => $comunicacoes, 'id_colaborador' => $id, 'nome' => $nome]);
         }
         else {
-            return view('colaborador/comunicacoes', ['data' => null]);
+            return view('colaborador/gerirComunicacoes', ['data' => $comunicacoes, 'id_colaborador' => $id, 'nome' => $nome]);
         }
     }
 
     public function store(Request $request)
     {
-        $nome = $request->nome;
+        $data = $request->data;
         $observacoes = $request->obs;
-        $telefone = $request->telefone;
-        $telemovel = $request->telemovel;
-        $codPostal = $request->codPostal;
-        $localidade = $request->localidade;
-        $codPostalRua = $request->codPostalRua;
-        $numPorta = $request->numPorta;
-        $rua = $request->rua;
-        $distrito = $request->distrito;
-        $disponibilidade = $request->disponibilidade;
-        $emails = $request->emails;
-
-        $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
-        $rua, $localidade, $distrito, $emails);
+        $id_colaborador = $request->id_colaborador;
+        $nome = $request->nome;
         
-        $contadorHistoria = new ContadorHistoria();
-        $contadorHistoria->id_colaborador = $idColab;
-        $contadorHistoria->save();
+        $comunicacao = new Comunicacao();
+        $comunicacao->data = $data;
+        $comunicacao->observacoes = $observacoes;
+        $comunicacao->id_colaborador = $id_colaborador;
+        $comunicacao->save();
         
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
-            return redirect()->route("contadores");
+            return redirect()->route("gerirComunicacoes", ['id' => $id_colaborador, 'nome' => $nome]);
         }
         else {
-            return redirect()->route("contadoresColaborador");
+            return redirect()->route("gerirComunicacoesColaborador", ['id' => $id_colaborador, 'nome' => $nome]);
         }
     }
 
@@ -84,24 +78,18 @@ class ContadorHistoriaController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $contador = ContadorHistoria::find($id);
-        if($contador != null) {
-            $idColaborador = $contador->id_colaborador;
-            if($contador->projetos()->first() != null) {
-                $contador->projetos()->where('id_contador', $id)->delete();
-            }
-            $contador->delete();
-            ColaboradorController::delete($idColaborador);
+        $comunicacao = Comunicacao::find($id);
+        if($comunicacao != null) {
+            $comunicacao->id_colaborador = null;
+            $comunicacao->delete();
         }
-        
 
-        return redirect()->route("contadores");
- 
+        return redirect()->route("gerirComunicacoes", ['id' => $request->id_colaborador, 'nome' => $request->nome]);
     }
 
-    public function getComunicacaoPorId($id) {
+    public function getContadorPorId($id) {
         $contador = ContadorHistoria::find($id);
         $colaborador = Colaborador::find($contador->id_colaborador);
         $codPostal = CodPostal::find($colaborador->codPostal);
@@ -139,5 +127,33 @@ class ContadorHistoriaController extends Controller
             return null;
         }
         
+    }
+
+    public function getDisponiveis() {
+        $contadores = DB::table('contador_historias')
+                    ->join('colaborador', 'contador_historias.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('contador_historias.id_contadorHistorias as id', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
+                    ->where([
+                        ['colaborador.disponivel', '=', 0]
+                        ])
+                    ->get();
+                    
+        $resposta = array();
+
+        foreach($contadores as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
+    
+        return \json_encode($resposta);
     }
 }

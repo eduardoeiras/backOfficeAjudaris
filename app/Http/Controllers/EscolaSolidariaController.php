@@ -214,7 +214,6 @@ class EscolaSolidariaController extends Controller
         $escola = EscolaSolidaria::find($id);
         if($escola != null) {
             $colaborador = Colaborador::find($escola->id_colaborador);
-            \session(['id_escola' => $id]); 
             $user = session()->get("utilizador");
             if($user->tipoUtilizador == 0) {
                 return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
