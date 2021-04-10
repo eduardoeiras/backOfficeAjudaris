@@ -16,6 +16,7 @@ class ComunicacoesController extends Controller
             ->select('comunicacao.*')
             ->where('comunicacao.id_colaborador', '=', $id)
             ->get();
+        
         session("id_colaborador", $id);
         if($user->tipoUtilizador == 0) {
             return view('admin/gerirComunicacoes', ['data' => $comunicacoes, 'id_colaborador' => $id, 'nome' => $nome]);
@@ -49,33 +50,25 @@ class ComunicacoesController extends Controller
 
     public function update($id, Request $request)
     {
-        $id_contadorHistorias = \intval($id);
-        $nome = $request->nome;
+        $id_comunicacao = \intval($id);
+        $id_colaborador = \intval($request->id_colaborador);
         $observacoes = $request->obs;
-        $telefone = $request->telefone;
-        $telemovel = $request->telemovel;
-        $codPostal = $request->codPostal;
-        $disponibilidade = $request->disponibilidade;
-        $localidade = $request->localidade;
-        $codPostalRua = $request->codPostalRua;
-        $numPorta = $request->numPorta;
-        $rua = $request->rua;
-        $distrito = $request->distrito;
-        $emails = $request->emails;
-        $emailsToDelete = $request->deletedEmails;
+        $nome = $request->nome;
         
-        $contador = ContadorHistoria::find($id_contadorHistorias);
-        if($contador != null) {
-            ColaboradorController::update($contador->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
-            $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
-        } 
+        $comunicacao = Comunicacao::find($id_comunicacao);
+        if($comunicacao != null) {
+            $comunicacao->observacoes = $observacoes;
+            $comunicacao->save();
+        }
+        
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
-            return redirect()->route("contadores");
+            return redirect()->route("gerirComunicacoes", ['id' => $id_colaborador, 'nome' => $nome]);
         }
         else {
-            return redirect()->route("contadoresColaborador");
+            return redirect()->route("gerirComunicacoesColaborador", ['id' => $id_colaborador, 'nome' => $nome]);
         }
+        
     }
 
     public function destroy($id, Request $request)
@@ -89,71 +82,15 @@ class ComunicacoesController extends Controller
         return redirect()->route("gerirComunicacoes", ['id' => $request->id_colaborador, 'nome' => $request->nome]);
     }
 
-    public function getContadorPorId($id) {
-        $contador = ContadorHistoria::find($id);
-        $colaborador = Colaborador::find($contador->id_colaborador);
-        $codPostal = CodPostal::find($colaborador->codPostal);
-        $codPostalRua = DB::table('cod_postal_rua')
-            ->where([
-                ['cod_postal_rua.codPostal', '=', $colaborador->codPostal],
-                ['cod_postal_rua.codPostalRua', '=', $colaborador->codPostalRua],
-                ])->first();
+    public function getPorId($id) {
+        $comunicacao = Comunicacao::find($id);
         
-        $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
-
-        $contador = array(
-            "id_contadorHistorias" => $contador->id_contadorHistorias,
-            "nome" => $colaborador->nome,
-            "telefone" => $colaborador->telefone,
-            "telemovel" => $colaborador->telemovel,
-            "disponivel" => $colaborador->disponivel,
-            "observacoes" => $colaborador->observacoes,
-            "rua" => $codPostalRua->rua,
-            "numPorta" => $colaborador->numPorta,
-            "localidade" => $codPostal->localidade,
-            "codPostal" => $colaborador->codPostal,
-            "codPostalRua" => $colaborador->codPostalRua,
-            "distrito" => $codPostal->distrito,
-            "emails" => $emails
-        );
-        
-        $resposta = array();
-        array_push($resposta, $contador);
-
-        if($contador != null) {
-            return response()->json($resposta);  
+        if($comunicacao != null) {
+            return response()->json($comunicacao);  
         }
         else {
             return null;
         }
         
-    }
-
-    public function getDisponiveis() {
-        $contadores = DB::table('contador_historias')
-                    ->join('colaborador', 'contador_historias.id_colaborador', '=', 'colaborador.id_colaborador')
-                    ->select('contador_historias.id_contadorHistorias as id', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
-                    ->where([
-                        ['colaborador.disponivel', '=', 0]
-                        ])
-                    ->get();
-                    
-        $resposta = array();
-
-        foreach($contadores as $entidade) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
-            ->get();
-                        
-            $ent = array(
-                "entidade" => $entidade,
-                "emails" => $emails
-            );
-            array_push($resposta, $ent);
-        }
-    
-        return \json_encode($resposta);
     }
 }

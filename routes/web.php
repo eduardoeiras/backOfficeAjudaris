@@ -212,6 +212,7 @@ Route::post('admin/gerirProjetosUser/gerirProjetosUtilizador/add','ProjetoUtiliz
 
 //ROUTES PARA A GESTÃO DAS COMUNICAÇÕES
 Route::get('admin/gerirComunicacoes-{id}-{nome}', 'ComunicacoesController@index')->name("gerirComunicacoes")->middleware(['checkLogInAdmin']);
+Route::get('admin/gerirComunicacoes/getPorId/{id}', 'ComunicacoesController@getPorId')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirComunicacoes/add','ComunicacoesController@store')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['checkLogInAdmin']);
@@ -371,6 +372,7 @@ Route::post('colaborador/gerirUniversidade/delete/{id}-{id_universidade}', 'Univ
 
 //ROUTES PARA A GESTÃO DAS COMUNICAÇÕES
 Route::get('colaborador/gerirComunicacoes-{id}-{nome}', 'ComunicacoesController@index')->name("gerirComunicacoesColaborador")->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/gerirComunicacoes/getPorId/{id}', 'ComunicacoesController@getPorId')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirComunicacoes/add','ComunicacoesController@store')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['CheckLogInColaborador']);

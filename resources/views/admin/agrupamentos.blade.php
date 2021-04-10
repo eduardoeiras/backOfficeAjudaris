@@ -85,7 +85,8 @@
                                                                 title="Edit">&#xE254;</i></a>
                                                         <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha["entidade"]->id_agrupamento.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
-                                                                title="Delete">&#xE872;</i></a>
+                                                                title="Delete">&#xE872;</i></a>´
+                                                        <a href="gerirComunicacoes-'.$linha["entidade"]->id_colaborador.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;

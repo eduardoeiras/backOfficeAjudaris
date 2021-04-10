@@ -88,6 +88,7 @@
                                                         <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_contadorHistorias.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
+                                                        <a href="gerirComunicacoes-'.$linha["entidade"]->id_colaborador.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;

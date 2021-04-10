@@ -135,9 +135,9 @@
                     </div>
                 </div>
                 <div id="edit" class="modal fade">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <form method="POST" action="">
+                            <form method="POST" id="formEditar" action="">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Editar Comunicação</h4>
@@ -149,7 +149,7 @@
                                     <div class="form-group row">
                                         <label for="dataComunicacao" class="col-2 col-form-label">Data de Comunicação</label>
                                         <div class="col-10">
-                                          <input class="form-control" type="datetime-local" name="data" id="dataComunicacao" required>
+                                          <input class="form-control" type="text" id="dataComunicacao" required readonly>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -157,6 +157,12 @@
                                         <textarea name="obs" id="observacoes" class="form-control" placeholder="Observações" maxlength="400" required></textarea>
                                     </div>
                                 </div>
+                                <?php 
+                                    if(isset($nome)) {
+                                        echo '<input type="hidden" name="id_colaborador" value="'.$id_colaborador.'">';
+                                        echo '<input type="hidden" name="nome" value="'.$nome.'">';
+                                    }
+                                ?>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-success" value="Adicionar">

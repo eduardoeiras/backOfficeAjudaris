@@ -32,35 +32,36 @@ function editar(id) {
         dataType: "json",
         success: function (resposta) {
             if (resposta != null) {
-                ilustrador = resposta[0]
-                $('#emailsAssociadosEdit').empty()
-                url = 'gerirComunicacoes/edit/' + ilustrador.id_ilustradorSolidario
+                console.log(resposta);
+                url = 'gerirComunicacoes/edit/' + resposta.id_comunicacao
                 $('#formEditar').attr('action', url)
-                $('#nome').val(ilustrador.nome)
-                $('#telefone').val(ilustrador.telefone)
-                $('#telemovel').val(ilustrador.telemovel)
-                $('#disponibilidade').val(ilustrador.disponivel.toString())
-                $('#volumeLivro').val(ilustrador.volumeLivro)
-                $('#observacoes').val(ilustrador.observacoes)
-                ilustrador.emails.original.forEach(linha => {
-                    emailsAdicionadosEdit.push(linha.email)
-                    let index = emailsAdicionadosEdit.indexOf(linha.email)
-                    linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
-                    <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
-                    $('#emailsAssociadosEdit').append(linha)
-                });
-                $('#numPorta').val(ilustrador.numPorta)
-                $('#rua').val(ilustrador.rua)
-                $('#localidade').val(ilustrador.localidade)
-                $('#distrito').val(ilustrador.distrito)
-                $('#codPostal').val(ilustrador.codPostal)
-                $('#codPostalRua').val(ilustrador.codPostalRua)
+                dataFormatada = formatarData(resposta.data)
+                $('#dataComunicacao').val(dataFormatada)
+                $('#observacoes').val(resposta.observacoes)
             }
         },
         error: function (error) {
-
+            alert("Ocorreu um erro na obtenção da comunicação!\n Por favor tente novamente.")
         }
     })
+}
+
+function formatarData(date) {
+    var data = new Date(date),
+        mes = '' + (data.getMonth() + 1)
+        dia = '' + data.getDate()
+        ano = data.getFullYear()
+        hora = data.getHours()
+        minutos = data.getMinutes()
+
+
+    if (mes.length < 2) 
+        mes = '0' + mes
+    if (dia.length < 2) 
+        dia = '0' + dia
+
+    let dataString = `${dia}-${mes}-${ano} ${hora}:${minutos}`
+    return dataString;
 }
 
 function remover(id) {

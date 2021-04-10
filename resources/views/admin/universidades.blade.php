@@ -96,6 +96,7 @@
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Delete">&#xE872;</i></a>
                                                         <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                                                        <a href="gerirComunicacoes-'.$linha["entidade"]->id_colaborador.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;
