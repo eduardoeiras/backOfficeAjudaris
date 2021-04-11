@@ -194,6 +194,14 @@ Route::post('admin/gerirEscola/delete/{id}-{id_escola}', 'EscolaSolidariaControl
 Route::get('admin/professores/getDisponiveisSemEscola/{id}','ProfessorController@getDisponiveisSemEscola')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirEscola/add','EscolaSolidariaController@associarProfessor')->middleware(['checkLogInAdmin']);
 
+//ROUTES PARA A GESTÃO DOS LIVROS POR ANO DAS ESCOLAS
+Route::get('admin/gerirLivrosAno-{id}-{nome}', 'LivrosAnoController@index')->name("gerirLivrosAno")->middleware(['checkLogInAdmin']);
+Route::get('admin/gerirLivrosAno/getPorId/{ano}-{id}', 'LivrosAnoController@getPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/gerirLivrosAno/existeAssociacao/{ano}-{id}', 'LivrosAnoController@existeAssociacao')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirLivrosAno/add','LivrosAnoController@store')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirLivrosAno/edit/{ano}-{id}','LivrosAnoController@update')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirLivrosAno/delete/{ano}-{id}','LivrosAnoController@destroy')->middleware(['checkLogInAdmin']);
+
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS UNIVERSIDADES
 
 Route::get('admin/gerirUniversidade{id}', 'UniversidadeController@gerirProfessoresUniversidade')->name("gerirUniversidade")->middleware(['checkLogInAdmin']);
@@ -361,6 +369,14 @@ Route::get('colaborador/gerirEscola/getProfessores', 'EscolaSolidariaController@
 Route::get('colaborador/professores/getDisponiveisSemEscola/{id}','ProfessorController@getDisponiveisSemEscola')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirEscola/add','EscolaSolidariaController@associarProfessor')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirEscola/delete/{id}-{id_escola}', 'EscolaSolidariaController@deleteAssociacao')->middleware(['CheckLogInColaborador']);
+
+//ROUTES PARA A GESTÃO DOS LIVROS POR ANO DAS ESCOLAS
+Route::get('colaborador/gerirLivrosAno-{id}-{nome}', 'LivrosAnoController@index')->name("gerirLivrosAnoColaborador")->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/gerirLivrosAno/getPorId/{ano}-{id}', 'LivrosAnoController@getPorId')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/gerirLivrosAno/existeAssociacao/{ano}-{id}', 'LivrosAnoController@existeAssociacao')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirLivrosAno/add','LivrosAnoController@store')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirLivrosAno/edit/{ano}-{id}','LivrosAnoController@update')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirLivrosAno/delete/{ano}-{id}','LivrosAnoController@destroy')->middleware(['CheckLogInColaborador']);
 
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS UNIVERSIDADES
 

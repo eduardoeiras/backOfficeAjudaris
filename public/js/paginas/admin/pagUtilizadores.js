@@ -6,6 +6,7 @@ $(document).ready(function () {
     if($('#username').val() != null) {
         username = $('#username').val()
     }
+    
     $.ajax({
         url: 'utilizadores/getAll',
         method: "GET",

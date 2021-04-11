@@ -99,6 +99,7 @@
                                                                 title="Edit">&#xE254;</i></a>
                                                         <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
                                                         <a href="gerirComunicacoes-'.$linha["entidade"]->id_colaborador.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                                                        <a href="gerirLivrosAno-'.$linha["entidade"]->id_escolaSolidaria.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;

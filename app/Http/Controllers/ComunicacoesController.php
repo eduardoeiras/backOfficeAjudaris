@@ -17,7 +17,6 @@ class ComunicacoesController extends Controller
             ->where('comunicacao.id_colaborador', '=', $id)
             ->get();
         
-        session("id_colaborador", $id);
         if($user->tipoUtilizador == 0) {
             return view('admin/gerirComunicacoes', ['data' => $comunicacoes, 'id_colaborador' => $id, 'nome' => $nome]);
         }
