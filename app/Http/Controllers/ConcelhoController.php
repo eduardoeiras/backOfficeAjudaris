@@ -115,4 +115,18 @@ class ConcelhoController extends Controller
         }
         
     }
+
+    public static function existeConcelho($concelho)
+    {
+        $concelho = DB::table('concelho')
+                    ->where('concelho.nome', '=', "$concelho")
+                    ->first();
+        
+        if($concelho != null) {
+           return 1; 
+        }
+        else {
+            return 0;
+        }
+    }
 }

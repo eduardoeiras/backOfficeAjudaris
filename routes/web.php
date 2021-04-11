@@ -127,6 +127,7 @@ Route::get('admin/concelhos','ConcelhoController@index')->name("concelhos")->mid
 Route::get('admin/concelhos/verificaRbe/{id}','ConcelhoController@verificaRbes')->middleware(['checkLogInAdmin']);
 Route::get('admin/concelhos/getAll','ConcelhoController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/concelhos/getPorId/{id}', 'ConcelhoController@getConcelhoPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/concelhos/existeConcelho/{concelho}', 'ConcelhoController@existeConcelho')->middleware(['checkLogInAdmin']);
 Route::post('admin/concelhos/delete/{id}', 'ConcelhoController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/concelhos/edit/{id}', 'ConcelhoController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/concelhos/add', 'ConcelhoController@store')->middleware(['checkLogInAdmin']);

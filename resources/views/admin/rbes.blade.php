@@ -150,10 +150,20 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <!--<div class="form-group">
                                         <label>Concelhos</label>
                                         <select id="concelhosAdd" name="concelhos">
                                         </select>
+                                    </div>-->
+                                    <div class="form-group">
+                                        <div style="padding-top: 5px">
+                                            <label>Concelhos:</label>
+                                            <div id="concelhosAssociadosAdd">   
+                                            </div>
+                                            <input type="concelho" id="concelhoFormAdd" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
+                                            <button type="button" class="btn btn-success" onclick="adicionarConcelho(true)">Adicionar Concelho</button>
+                                            <label style="color: red; margin-top: 10px" id="erroConcelhoAdd"></label>
+                                        </div>
                                     </div>
                                     <br><br>
                                     <label style="font-size: 18px">Contactos</label>
@@ -241,10 +251,20 @@
                                         <label>Observações</label>
                                         <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
                                     </div>
-                                    <div class="form-group">
+                                    <!--<div class="form-group">
                                         <label>Concelho</label>
                                         <select name="concelho" id="concelho">
                                         </select>
+                                    </div>-->
+                                    <div class="form-group">
+                                        <div style="padding-top: 5px">
+                                            <label style="font-size: 18px">Concelhos Associados:</label>
+                                            <div id="concelhoAssociadosEdit"> 
+                                            </div>
+                                            <input type="concelho" id="concelhoFormEdit" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
+                                            <button type="button" class="btn btn-success" onclick="adicionarConcelho(false)">Adicionar Concelho</button>
+                                            <label style="color: red; margin-top: 10px" id="erroConcelhoEdit"></label>
+                                        </div>
                                     </div>
                                     <br><br>
                                     <label style="font-size: 18px">Contactos</label>
