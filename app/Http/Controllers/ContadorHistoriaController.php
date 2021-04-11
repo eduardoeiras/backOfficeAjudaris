@@ -14,11 +14,35 @@ class ContadorHistoriaController extends Controller
     {
         $user = session()->get("utilizador");
         
+        $contadoresHistorias = DB::table(DB::raw('contador_historias', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'contador_historias.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('contador_historias.id_contadorHistorias', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+
+        $resposta = array();
+
+        foreach($contadoresHistorias as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+            
+            $contador = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $contador);
+        }
+
         if($user->tipoUtilizador == 0) {
-            return view('admin/contadores', ['data' => null]);
+            return view('admin/contadores', ['data' => $resposta]);
         }
         else {
-            return view('colaborador/contadores', ['data' => null]);
+            return view('colaborador/contadores', ['data' => $resposta]);
         }
     }
 
