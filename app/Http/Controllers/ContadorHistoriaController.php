@@ -15,10 +15,10 @@ class ContadorHistoriaController extends Controller
         $user = session()->get("utilizador");
         
         if($user->tipoUtilizador == 0) {
-            return view('admin/comunicacoes', ['data' => null]);
+            return view('admin/contadores', ['data' => null]);
         }
         else {
-            return view('colaborador/comunicacoes', ['data' => null]);
+            return view('colaborador/contadores', ['data' => null]);
         }
     }
 

@@ -71,9 +71,6 @@
                                                         <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_comunicacao.')"><i
                                                                 class="material-icons" data-toggle="tooltip"
                                                                 title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_comunicacao.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Delete">&#xE872;</i></a>
                                                     </td>';
                                                 $dados = $dados.'</tr>';
                                                 echo $dados;
@@ -166,6 +163,34 @@
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-success" value="Adicionar">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="delete" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="" id="formDelete">
+                                @csrf
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Remover Comunicação</h4>
+                                    <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Tem a certeza que deseja remover a comunicação?</p>
+                                    <p class="text-warning"><small>Esta ação não pode ser retrocedida.</small></p>
+                                </div>
+                                <?php 
+                                    if(isset($id_colaborador) && isset($nome)) {
+                                        echo '<input type="hidden" name="id_colaborador" value="'.$id_colaborador.'">';
+                                        echo '<input type="hidden" name="nome" value="'.$nome.'">';
+                                    }
+                                ?>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                    <input type="submit" class="btn btn-danger" value="Remover">
                                 </div>
                             </form>
                         </div>
