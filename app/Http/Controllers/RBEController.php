@@ -45,7 +45,7 @@ class RBEController extends Controller
             $rbibe = array(
                 "entidade" => $rbe,
                 "emails" => $emails,
-                "concelho" => $concelho
+                "concelhos" => $concelho
             );
             array_push($resposta, $rbibe);
         }
@@ -73,36 +73,25 @@ class RBEController extends Controller
         $distrito = $request->distrito;
         $disponibilidade = $request->disponibilidade;
         $emails = $request->emails;
-
-        $concelho = $request->concelho;
-
+        
+        $concelhos = $request->concelhos;
+        
         //Obtenção do atributo do agrupamento
         $regiao = $request->regiao;
-
+        
         //Obtenção do id do colaborador criado
         $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
         $rua, $localidade, $distrito, $emails);
 
-        $idConce = ConcelhoController::store($concelho);
-
-        if(ConcelhoController::existeConcelho($idConce)){
-            $rbe_con = new Rbe_concelho();
-            $rbe_con->id_concelho = $idConce;
-            $rbe = new RBE();
-            $rbe->regiao = $regiao;
-            $rbe->id_concelho = $idConce;
-            $rbe->id_colaborador = $idColab;
-            $rbe->save();
-        }else {
-            $concelho = new Concelho();
-            $concelho->id_concelho = $idConce;
-            $rbe = new RBE();
-            $rbe->regiao = $regiao;
-            $rbe->id_concelho = $idConce;
-            $rbe->id_colaborador = $idColab;
-            $rbe->save();
-        }
-
+        $rbe = new RBE();
+        $rbe->regiao = $regiao;
+        $rbe->id_colaborador = $idColab;
+        $rbe->save();
+        
+        $id_rbe = self::getLastId();
+        
+        ConcelhoController::criaAssociaConcelhos($concelhos, $id_rbe);
+        
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
             return redirect()->route("rbes");
@@ -128,6 +117,8 @@ class RBEController extends Controller
         $distrito = $request->distrito;
         $emails = $request->emails;
         $emailsToDelete = $request->deletedEmails;
+
+        $concelhos = $request->concelhos;
         $concelhosToDelete = $request->deletedConcelhos;
 
         $regiao = $request->regiao;
@@ -137,7 +128,8 @@ class RBEController extends Controller
             ColaboradorController::update($rbe->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
 
-            ConcelhoController::update($concelhosToDelete);
+            ConcelhoController::criaAssociaConcelhos($concelhos, $id_rbe);
+            
             $rbe->regiao = $regiao;
             $rbe->save();
         }    
@@ -235,5 +227,17 @@ class RBEController extends Controller
 
     
         return \json_encode($resposta);
+    }
+
+    public static function getLastId()
+    {
+        $id = DB::select('SELECT MAX(id_rbe) as id_rbe FROM rbe')[0]->id_rbe;
+        
+        if($id != null) {
+           return $id; 
+        }
+        else {
+            return null;
+        }
     }
 }

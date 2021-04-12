@@ -142,17 +142,16 @@ function adicionarConcelho(adicionar) {
     if(adicionar) {
         if($('#concelhoFormAdd').val() != "") {
             var concelho = $('#concelhoFormAdd').val()
-            existeConcelhoBD(concelho, true)
             var existe = false;
             for(item of concelhosAdicionadosAdd) {
                 if(item === concelho) {
                     existe = true
                 }
             }
-            if(!existe && !existeConcelhoBd) {
+            if(!existe) {
                 concelhosAdicionadosAdd.push(concelho) 
                 let index = concelhosAdicionadosAdd.indexOf(concelho)
-                let linha = `<div id="concelhoAdd_${index}"><input type="checkbox" name="concelho[]" style="display: none;" value="${concelho}" checked>
+                let linha = `<div id="concelhoAdd_${index}"><input type="checkbox" name="concelhos[]" style="display: none;" value="${concelho}" checked>
                 <label style="font-size: 14px" onclick="removerConcelho(true, false, ${index})">${concelho}</label></div>`
                 $('#concelhosAssociadosAdd').append(linha)
                 $('#concelhoFormAdd').val("")
@@ -163,17 +162,16 @@ function adicionarConcelho(adicionar) {
     else {
         if($('#concelhoFormEdit').val() != "") {
             var concelho = $('#concelhoFormEdit').val()
-            existeConcelhoBD(concelho, false)
             var existe = false;
             for(item of concelhosAdicionadosEdit) {
                 if(item === concelho) {
                     existe = true
                 }
             }
-            if(!existe && !existeConcelhoBd) {
+            if(!existe) {
                 concelhosAdicionadosEdit.push(concelho) 
                 let index = concelhosAdicionadosEdit.indexOf(concelho)
-                let linha = `<div id="concelhoEdit_${index}"><input type="checkbox" name="concelho[]" style="display: none;" value="${concelho}" checked>
+                let linha = `<div id="concelhoEdit_${index}"><input type="checkbox" name="concelhos[]" style="display: none;" value="${concelho}" checked>
                 <label style="font-size: 14px" onclick="removerConcelho(false, false, ${index})">${concelho}</label></div>`
                 $('#concelhosAssociadosEdit').append(linha)
                 $('#concelhoFormEdit').val("")
@@ -185,7 +183,7 @@ function adicionarConcelho(adicionar) {
 function removerConcelho(adicionar, jaExistente, index) {
     if(adicionar) {
         if(index != -1) {
-            concelhoAdicionadosAdd.splice(index, 1)
+            concelhosAdicionadosAdd.splice(index, 1)
             $(`#concelhoAdd_${index}`).remove();
         }
     }
@@ -202,39 +200,4 @@ function removerConcelho(adicionar, jaExistente, index) {
             }
         }
     }
-}
-
-function existeConcelhoBD(concelho, adicionar) {
-    let url = 'existeConcelho/' + concelho
-    $.ajax({
-        url: url,
-        method: "GET",
-        dataType: "json",
-        success: function (existe) {
-            if (existe == 1) {
-                existeConcelhoBd = true
-                if(adicionar) {
-                    $('#erroConcelhoAdd').text("O concelho que pretende adicionar já se encontra associado a um colaborardor! \n \
-                    Verifique se introduziu corretamente o endereço de concelho.")
-                }
-                else {
-                    $('#erroConcelhoEdit').text("O concelho que pretende adicionar já se encontra associado a um colaborardor! \n \
-                    Verifique se introduziu corretamente o endereço de concelho.")
-                }
-            }
-            else {
-                existeConcelhoBd = false
-                if(adicionar) {
-                    $('#erroConcelhoAdd').text("")
-                }
-                else {
-                    $('#erroConcelhoEdit').text("")
-                }
-            }
-        },
-        error: function (error) {
-            alert("Erro na verificação da existência do concelho na base de dados, por favor tente novamente!");
-            existeConcelhoBd = true
-        }
-    })
 }

@@ -50,7 +50,7 @@
                                         <th>Número identificador</th>
                                         <th>Região</th>
                                         <th>Nome do Coordenador</th>
-                                        <!--<th>Concelhos</th>-->
+                                        <th>Concelhos</th>
                                         <th>Disponibilidade</th>
                                         <th>Telemovel</th>
                                         <th>Telefone</th>
@@ -70,7 +70,11 @@
                                                 $dados = $dados.'<td>'.$linha["entidade"]->id_rbe.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->regiao.'</td>';
                                                 $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
-                                                //$dados = $dados.'<td>'.$nomeConcelho.'</td>';
+                                                $dados = $dados.'<td>';
+                                                foreach ($linha["concelhos"] as $concelho) {
+                                                    $dados = $dados." ".$concelho->nome;
+                                                }
+                                                $dados = $dados.'</td>';
                                                 if($linha["entidade"]->disponivel == 0) {
                                                     $dados = $dados.'<td>Disponível</td>';
                                                 }
@@ -150,19 +154,13 @@
                                             <option value="1">Indisponivel</option>
                                         </select>
                                     </div>
-                                    <!--<div class="form-group">
-                                        <label>Concelhos</label>
-                                        <select id="concelhosAdd" name="concelhos">
-                                        </select>
-                                    </div>-->
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
                                             <label>Concelhos:</label>
                                             <div id="concelhosAssociadosAdd">   
                                             </div>
-                                            <input type="concelho" id="concelhoFormAdd" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
+                                            <input type="text" id="concelhoFormAdd" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
                                             <button type="button" class="btn btn-success" onclick="adicionarConcelho(true)">Adicionar Concelho</button>
-                                            <label style="color: red; margin-top: 10px" id="erroConcelhoAdd"></label>
                                         </div>
                                     </div>
                                     <br><br>
@@ -251,19 +249,13 @@
                                         <label>Observações</label>
                                         <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
                                     </div>
-                                    <!--<div class="form-group">
-                                        <label>Concelho</label>
-                                        <select name="concelho" id="concelho">
-                                        </select>
-                                    </div>-->
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
                                             <label style="font-size: 18px">Concelhos Associados:</label>
                                             <div id="concelhoAssociadosEdit"> 
                                             </div>
-                                            <input type="concelho" id="concelhoFormEdit" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
+                                            <input type="text" id="concelhoFormEdit" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
                                             <button type="button" class="btn btn-success" onclick="adicionarConcelho(false)">Adicionar Concelho</button>
-                                            <label style="color: red; margin-top: 10px" id="erroConcelhoEdit"></label>
                                         </div>
                                     </div>
                                     <br><br>

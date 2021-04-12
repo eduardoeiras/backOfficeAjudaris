@@ -12,6 +12,7 @@ class Rbe_concelho extends Model
     protected $table = 'rbe_concelho';
     public $primaryKey = ['id_rbe', 'id_concelho'];
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $fillable = [
         'id_rbe', 

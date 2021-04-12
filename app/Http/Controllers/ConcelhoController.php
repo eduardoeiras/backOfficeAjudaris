@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Concelho;
+use App\Models\Rbe_concelho;
 use Illuminate\Http\Request;
 use DB;
 use Session;
@@ -116,17 +117,59 @@ class ConcelhoController extends Controller
         
     }
 
-    public static function existeConcelho($concelho)
-    {
-        $concelho = DB::table('concelho')
-                    ->where('concelho.nome', '=', "$concelho")
-                    ->first();
-        
-        if($concelho != null) {
-            return 1;     
+    public static function verificaAssociacao($id_concelho, $id_rbe) {
+        $associacao = DB::table('Rbe_concelho')
+                        ->where([
+                            ['Rbe_concelho.id_concelho', '=', $id_concelho],
+                            ['Rbe_concelho.id_rbe', '=', $id_rbe]])
+                        ->first(); 
+
+        if($associacao != null) {
+            return true;
         }
         else {
-            return 0;
+            return false;
+        }
+    }
+
+    public static function criaAssociaConcelhos($concelhos, $id_rbe)
+    {
+        foreach($concelhos as $concelho) {
+
+            $concelho = DB::table('concelho')
+                        ->where('concelho.nome', '=', $concelho)
+                        ->first(); 
+
+            $id_concelho = null;
+                        
+            if($concelho == null) {
+                $concelho = new Concelho();
+                $concelho->nome = $concelho;
+                $concelho->save(); 
+                $id_concelho = self::getLastId();  
+            }
+            else {
+                $id_concelho = $concelho->id_concelho;
+            }
+            
+            if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
+                $associacao = new Rbe_concelho();
+                $associacao->id_rbe = $id_rbe;
+                $associacao->id_concelho = $id_concelho;
+                $associacao->save();    
+            }
+        }
+    }
+
+    public static function getLastId()
+    {
+        $id = DB::select('SELECT MAX(id_concelho) as id_concelho FROM concelho')[0]->id_concelho;
+        
+        if($id != null) {
+           return $id; 
+        }
+        else {
+            return null;
         }
     }
 }
