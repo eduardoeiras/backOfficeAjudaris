@@ -123,11 +123,7 @@ class ConcelhoController extends Controller
                     ->first();
         
         if($concelho != null) {
-            if(self::verificaRbes($id)){
-               return 1;  
-            }else {
-                self::store($request);
-            }
+            return 1;     
         }
         else {
             return 0;

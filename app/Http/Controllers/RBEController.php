@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use \App\Models\CodPostal;
 use \App\Models\CodPostalRua;
 use App\Models\Colaborador;
+use App\Models\Concelho;
+use App\Models\Rbe_concelho;
 use DB;
 use Session;
 use Auth;
@@ -16,10 +18,11 @@ class RBEController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $rbes = DB::table(DB::raw('rbe', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        $rbes = DB::table(DB::raw('rbe', 'colaborador', 'cod_postal', 'cod_postal_rua', 'rbe_concelho'))
         ->join('colaborador', 'rbe.id_colaborador', '=' , 'colaborador.id_colaborador')
         ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
         ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->join('rbe_concelho', 'rbe_concelho.id_rbe', '=', 'rbe.id_rbe')
         ->select('rbe.id_rbe', 'rbe.regiao', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
         ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
         ->get();
@@ -32,10 +35,17 @@ class RBEController extends Controller
             ->select('email.email')
             ->where('email.id_colaborador', '=', $rbe->id_colaborador)
             ->get();
+
+            $concelho = DB::table('concelho')
+            ->join('rbe_concelho', 'rbe_concelho.id_concelho', '=', 'concelho.id_concelho')
+            ->select('concelho.nome')
+            ->where('rbe_concelho.id_rbe', '=', $rbe->id_rbe)
+            ->get();
             
             $rbibe = array(
                 "entidade" => $rbe,
-                "emails" => $emails
+                "emails" => $emails,
+                "concelho" => $concelho
             );
             array_push($resposta, $rbibe);
         }
@@ -64,17 +74,34 @@ class RBEController extends Controller
         $disponibilidade = $request->disponibilidade;
         $emails = $request->emails;
 
+        $concelho = $request->concelho;
+
         //Obtenção do atributo do agrupamento
         $regiao = $request->regiao;
 
         //Obtenção do id do colaborador criado
         $idColab = ColaboradorController::create($nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal, $codPostalRua,
         $rua, $localidade, $distrito, $emails);
-        
-        $rbe = new RBE();
-        $rbe->regiao = $regiao;
-        $rbe->id_colaborador = $idColab;
-        $rbe->save();
+
+        $idConce = ConcelhoController::store($concelho);
+
+        if(ConcelhoController::existeConcelho($idConce)){
+            $rbe_con = new Rbe_concelho();
+            $rbe_con->id_concelho = $idConce;
+            $rbe = new RBE();
+            $rbe->regiao = $regiao;
+            $rbe->id_concelho = $idConce;
+            $rbe->id_colaborador = $idColab;
+            $rbe->save();
+        }else {
+            $concelho = new Concelho();
+            $concelho->id_concelho = $idConce;
+            $rbe = new RBE();
+            $rbe->regiao = $regiao;
+            $rbe->id_concelho = $idConce;
+            $rbe->id_colaborador = $idColab;
+            $rbe->save();
+        }
 
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
@@ -101,6 +128,7 @@ class RBEController extends Controller
         $distrito = $request->distrito;
         $emails = $request->emails;
         $emailsToDelete = $request->deletedEmails;
+        $concelhosToDelete = $request->deletedConcelhos;
 
         $regiao = $request->regiao;
         
@@ -109,6 +137,7 @@ class RBEController extends Controller
             ColaboradorController::update($rbe->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
 
+            ConcelhoController::update($concelhosToDelete);
             $rbe->regiao = $regiao;
             $rbe->save();
         }    
