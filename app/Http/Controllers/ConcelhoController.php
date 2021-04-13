@@ -172,14 +172,15 @@ class ConcelhoController extends Controller
             $id_concelho = null;
                         
             if($concelho != null) {
-                $concelho->delete();  
+                $id_concelho = $concelho->id_concelho; 
             }
 
             if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
-                $associacao = new Rbe_concelho();
-                $associacao->id_rbe = $id_rbe;
-                $associacao->id_concelho = $id_concelho;
-                $associacao->save();    
+                $id_remover = DB::table('rbe_concelho')
+                ->where([['rbe_concelho.id_concelho', '=', $id_concelho], ['rbe_concelho.id_rbe', '=', $id_rbe]])
+                ->first();
+                
+                $id_remover->delete();
             }
         }
     }
