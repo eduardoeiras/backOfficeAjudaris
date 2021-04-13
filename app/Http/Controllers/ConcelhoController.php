@@ -161,6 +161,29 @@ class ConcelhoController extends Controller
         }
     }
 
+    public static function removeAssociaConcelhos($concelhos, $id_rbe)
+    {
+        foreach($concelhos as $concelho) {
+
+            $concelho = DB::table('concelho')
+                        ->where('concelho.nome', '=', $concelho)
+                        ->first(); 
+
+            $id_concelho = null;
+                        
+            if($concelho != null) {
+                $concelho->delete();  
+            }
+
+            if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
+                $associacao = new Rbe_concelho();
+                $associacao->id_rbe = $id_rbe;
+                $associacao->id_concelho = $id_concelho;
+                $associacao->save();    
+            }
+        }
+    }
+
     public static function getLastId()
     {
         $id = DB::select('SELECT MAX(id_concelho) as id_concelho FROM concelho')[0]->id_concelho;

@@ -129,6 +129,7 @@ class RBEController extends Controller
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
 
             ConcelhoController::criaAssociaConcelhos($concelhos, $id_rbe);
+            ConcelhoController::removeAssociaConcelhos($concelhosToDelete, $id_rbe);
             
             $rbe->regiao = $regiao;
             $rbe->save();
