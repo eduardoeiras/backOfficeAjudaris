@@ -22,7 +22,6 @@ class RBEController extends Controller
         ->join('colaborador', 'rbe.id_colaborador', '=' , 'colaborador.id_colaborador')
         ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
         ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->join('rbe_concelho', 'rbe_concelho.id_rbe', '=', 'rbe.id_rbe')
         ->select('rbe.id_rbe', 'rbe.regiao', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
         ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
         ->get();
@@ -49,7 +48,7 @@ class RBEController extends Controller
             );
             array_push($resposta, $rbibe);
         }
-
+        
         if($user->tipoUtilizador == 0) {
             return view('admin\rbes', ['data' => $resposta]);
         }
@@ -120,20 +119,27 @@ class RBEController extends Controller
 
         $concelhos = $request->concelhos;
         $concelhosToDelete = $request->deletedConcelhos;
-
+        
         $regiao = $request->regiao;
         
         $rbe = RBE::find($id_rbe);
         if($rbe != null) {
             ColaboradorController::update($rbe->id_colaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta,
             $disponibilidade, $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete);
-
-            ConcelhoController::criaAssociaConcelhos($concelhos, $id_rbe);
-            ConcelhoController::removeAssociaConcelhos($concelhosToDelete, $id_rbe);
+            if($concelhos != null) {
+                if(count($concelhos) > 0) {
+                    ConcelhoController::criaAssociaConcelhos($concelhos, $id_rbe);    
+                }    
+            }
+            if($concelhosToDelete != null) {
+                if(count($concelhosToDelete) > 0) {
+                    ConcelhoController::removeAssociaConcelhos($concelhosToDelete, $id_rbe);    
+                }    
+            }
             
             $rbe->regiao = $regiao;
             $rbe->save();
-        }    
+        }  
         
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
@@ -142,7 +148,6 @@ class RBEController extends Controller
         else {
             return redirect()->route("rbesColaborador");
         }
-        
     }
 
 
@@ -154,6 +159,10 @@ class RBEController extends Controller
             if($rbe->projetos()->first() != null) {
                 $rbe->projetos()->where('id_rbe', $id)->delete();
             }
+            if($rbe->concelhos()->first() != null) {
+                $rbe->concelhos()->where('id_rbe', $id)->delete();
+            }
+
             $rbe->delete();
             ColaboradorController::delete($idColaborador);
         }
@@ -173,6 +182,12 @@ class RBEController extends Controller
         
         $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
 
+        $concelho = DB::table('concelho')
+            ->join('rbe_concelho', 'rbe_concelho.id_concelho', '=', 'concelho.id_concelho')
+            ->select('concelho.nome')
+            ->where('rbe_concelho.id_rbe', '=', $rbe->id_rbe)
+            ->get();
+
         $rbe = array(
             "id_rbe" => $rbe->id_rbe,
             "nome" => $colaborador->nome,
@@ -187,7 +202,8 @@ class RBEController extends Controller
             "codPostal" => $colaborador->codPostal,
             "codPostalRua" => $colaborador->codPostalRua,
             "distrito" => $codPostal->distrito,
-            "emails" => $emails
+            "emails" => $emails,
+            "concelhos" => $concelho
         );
 
         $resposta = array();

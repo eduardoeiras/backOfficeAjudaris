@@ -136,20 +136,20 @@ class ConcelhoController extends Controller
     {
         foreach($concelhos as $concelho) {
 
-            $concelho = DB::table('concelho')
+            $concelhoBD = DB::table('concelho')
                         ->where('concelho.nome', '=', $concelho)
                         ->first(); 
 
             $id_concelho = null;
                         
-            if($concelho == null) {
-                $concelho = new Concelho();
-                $concelho->nome = $concelho;
-                $concelho->save(); 
+            if($concelhoBD == null) {
+                $con = new Concelho();
+                $con->nome = $concelho;
+                $con->save(); 
                 $id_concelho = self::getLastId();  
             }
             else {
-                $id_concelho = $concelho->id_concelho;
+                $id_concelho = $concelhoBD->id_concelho;
             }
             
             if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
@@ -165,22 +165,19 @@ class ConcelhoController extends Controller
     {
         foreach($concelhos as $concelho) {
 
-            $concelho = DB::table('concelho')
+            $con = DB::table('concelho')
                         ->where('concelho.nome', '=', $concelho)
                         ->first(); 
 
-            $id_concelho = null;
-                        
-            if($concelho != null) {
-                $id_concelho = $concelho->id_concelho; 
-            }
+            if($con != null) {
+                if(self::verificaAssociacao($con->id_concelho, $id_rbe)) {
+                    $assoc = DB::table('rbe_concelho')
+                    ->where([['rbe_concelho.id_concelho', '=', $con->id_concelho], ['rbe_concelho.id_rbe', '=', $id_rbe]]);
 
-            if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
-                $id_remover = DB::table('rbe_concelho')
-                ->where([['rbe_concelho.id_concelho', '=', $id_concelho], ['rbe_concelho.id_rbe', '=', $id_rbe]])
-                ->first();
-                
-                $id_remover->delete();
+                    if($assoc->first() != null) {
+                        $assoc->delete(); 
+                    }
+                }    
             }
         }
     }

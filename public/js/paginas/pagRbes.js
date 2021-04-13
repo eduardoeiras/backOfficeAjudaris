@@ -38,20 +38,19 @@ function editar(id) {
         success: function (resposta) {
             if (resposta != null) {
                 rbe = resposta[0]
+                console.log(rbe);
                 $('#emailsAssociadosEdit').empty()
+                $('#concelhosAssociadosEdit').empty()
                 url = 'rbes/edit/' + rbe.id_rbe
                 $('#formEditar').attr('action', url)
                 $('#regiao').val(rbe.regiao)
                 $('#nome').val(rbe.nome)
-                //carregarConcelhos(false)
-                //var concelho = rbe.id_concelho
-                //$('#concelho').val(concelho)
-                rbe.concelhos.original.forEach(linha => {
-                    concelhosAdicionadosEdit.push(linha.concelho)
-                    let index = concelhosAdicionadosEdit.indexOf(linha.concelho)
-                    linha= `<div id="concelhoEdit_${index}"><input id="concelho_${index}" type="checkbox" name="concelhos[]" style="display: none;" value="${linha.concleho}" checked>
-                    <label style="font-size: 14px" onclick="removerConcelho(false, true, ${index})">${linha.concelho}</label></div>`
-                    $('#concelhosAsssociadosEdit').append(linha)
+                rbe.concelhos.forEach(linha => {
+                    concelhosAdicionadosEdit.push(linha.nome)
+                    let index = concelhosAdicionadosEdit.indexOf(linha.nome)
+                    linha= `<div id="concelhoEdit_${index}"><input id="concelho_${index}" type="checkbox" name="concelhos[]" style="display: none;" value="${linha.nome}" checked>
+                    <label style="font-size: 14px" onclick="removerConcelho(false, true, ${index})">${linha.nome}</label></div>`
+                    $('#concelhosAssociadosEdit').append(linha)
                 });
                 var disp = rbe.disponivel
                 $('#disponibilidade').val(disp.toString())

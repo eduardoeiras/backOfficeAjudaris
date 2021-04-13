@@ -23,7 +23,7 @@ class RBE extends Model
     }
 
     public function concelhos() {
-        return $this->hasMany(Rbe_concelho::class, 'id_concelho');
+        return $this->hasMany(Rbe_concelho::class, 'id_rbe');
     }
 
     public function colaborador(){

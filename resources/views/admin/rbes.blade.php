@@ -252,7 +252,7 @@
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
                                             <label style="font-size: 18px">Concelhos Associados:</label>
-                                            <div id="concelhoAssociadosEdit"> 
+                                            <div id="concelhosAssociadosEdit"> 
                                             </div>
                                             <input type="text" id="concelhoFormEdit" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
                                             <button type="button" class="btn btn-success" onclick="adicionarConcelho(false)">Adicionar Concelho</button>
