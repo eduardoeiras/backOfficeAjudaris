@@ -226,6 +226,11 @@ Route::post('admin/gerirComunicacoes/add','ComunicacoesController@store')->middl
 Route::post('admin/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['checkLogInAdmin']);
 
+//ROUTES PARA A PESQUISA GERAL
+Route::get('admin/pesqGlobal/{nome}', 'ColaboradorController@pesqGeralNome')->middleware(['checkLogInAdmin']);
+Route::get('admin/pesquisaGeral', function () {
+    return view("admin/pesquisaGeral");
+})->middleware(['checkLogInAdmin']);
 
 /*  _______________________________________________________________________________________________________________________________________
    |                                                                                                                                       |

@@ -203,5 +203,35 @@ class ColaboradorController extends Controller
             $colaborador->codPostalRua = $codPostalRua;
         }
     }
+
+    function pesqGeralNome($nome) {
+        $colaboradores = DB::table('colaborador')
+            ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+            ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+            ->select('colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+            ->where('colaborador.nome', 'like', '%'.$nome.'%')
+            ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+            ->get();
+
+        $resposta = array();
+
+        foreach($colaboradores as $colab) {
+            
+            $emails = DB::table('email')
+                ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                ->select('email.email')
+                ->where('email.id_colaborador', '=', $colab->id_colaborador)
+                ->get();
+                
+            $ent = array(
+                "entidade" => $colab,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }
+
+        return \json_encode($resposta);
+
+    }
     
 }
