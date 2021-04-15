@@ -40,66 +40,7 @@
                                 </div>
                             </div>
                             <table class="table table-striped table-hover" id="tabelaDados">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Telefone</th>
-                                        <th>Telemovel</th>
-                                        <th>Emails</th>
-                                        <th>Disponibilidade</th>
-                                        <th>Localidade</th>
-                                        <th>Rua</th>
-                                        <th>Código Postal</th>
-                                        <th>Opções</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableBody">
-                                    <?php
-                                        if(isset($data)) {
-                                            foreach($data as $linha) {
-                                                $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
-                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
-                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
-                                                $dados = $dados.'<td>';
-                                                foreach ($linha["emails"] as $email) {
-                                                    $dados = $dados." ".$email->email;
-                                                }
-                                                $dados = $dados.'</td>';
-                                                if($linha["entidade"]->disponivel == 0) {
-                                                    $dados = $dados.'<td>Disponível</td>';
-                                                }
-                                                else {
-                                                    $dados = $dados.'<td>Indisponível</td>';    
-                                                }
-                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
-                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
-                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
-                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
-                                                }
-                                                else {
-                                                    $dados = $dados.'<td> --- </td>';
-                                                }
-                                                $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_colaborador.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Edit">&#xE254;</i></a>
-                                                        <a href="gerirComunicacoes-'.$linha["entidade"]->id_colaborador.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
-                                                    </td>';
-                                                $dados = $dados.'</tr>';
-                                                echo $dados;
-                                            }
-                                        }
-                                        function verificaNull($valor) {
-                                            if($valor != null) {
-                                                return '<td>'.$valor.'</td>';    
-                                            }
-                                            else {
-                                                return '<td> --- </td>';
-                                            }
-                                        }
-                                    ?>
-                                </tbody>
+                                
                             </table>
                         </div>
                     </div>
@@ -182,26 +123,6 @@
                                     <input type="submit" class="btn btn-info" value="Guardar Alterações">
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-                <div id="pesquisaNome" class="modal fade">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Pesquisa Geral</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label>Nome do Colaborador:</label>
-                                    <input type="text" id="pesqNome" class="form-control" maxlength="70">
-                                    <label style="color: red; margin-top: 10px" id="erroPesqNome"></label>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar" onclick="voltar()">
-                                <input type="submit" class="btn btn-info" value="Guardar Alterações" onclick="obterRegistos()">
-                            </div>
                         </div>
                     </div>
                 </div>

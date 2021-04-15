@@ -7,6 +7,7 @@ use App\Models\CodPostalRua;
 use App\Models\Colaborador;
 use App\Models\Email;
 use DB;
+use SoulDoit\DataTable\SSP;
 
 class ColaboradorController extends Controller
 {
@@ -204,34 +205,31 @@ class ColaboradorController extends Controller
         }
     }
 
-    function pesqGeralNome($nome) {
-        $colaboradores = DB::table('colaborador')
-            ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-            ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-            ->select('colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-            ->where('colaborador.nome', 'like', '%'.$nome.'%')
-            ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-            ->get();
+    function getColaboradores() {
+        $dt = [
+            ['label'=>'Nome', 'db'=>'nome', 'dt'=>0],
+            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>1],
+            ['label'=>'Telemovel', 'db'=>'telemovel', 'dt'=>2],
+            ['label'=>'Disponibilidade', 'db'=>'disponivel', 'dt'=>3, 'formatter'=>function($value, $model){
+                if($value == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            }],
+            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){ 
+                $btns = [
+                    '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>',
+                ];
+                return implode(" ", $btns); 
+            }],
+        ];
 
-        $resposta = array();
+        $dt_obj = new SSP('App\Models\Colaborador', $dt);
 
-        foreach($colaboradores as $colab) {
-            
-            $emails = DB::table('email')
-                ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-                ->select('email.email')
-                ->where('email.id_colaborador', '=', $colab->id_colaborador)
-                ->get();
-                
-            $ent = array(
-                "entidade" => $colab,
-                "emails" => $emails
-            );
-            array_push($resposta, $ent);
-        }
-
-        return \json_encode($resposta);
-
+        echo json_encode($dt_obj->getDtArr());
     }
-    
 }

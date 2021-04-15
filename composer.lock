@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fac753ae2702317b354e7eb283f28cbc",
+    "content-hash": "af0defa84981f05b039ec6cf50ce1af9",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2426,6 +2426,65 @@
                 }
             ],
             "time": "2021-03-09T12:30:35+00:00"
+        },
+        {
+            "name": "syamsoul/laravel-datatable-ssp",
+            "version": "2.3.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/syamsoul/laravel-datatable-ssp.git",
+                "reference": "f68229f06ccc52170c6b067dd485e64ab578d721"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/syamsoul/laravel-datatable-ssp/zipball/f68229f06ccc52170c6b067dd485e64ab578d721",
+                "reference": "f68229f06ccc52170c6b067dd485e64ab578d721",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "laravel-package",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SoulDoit\\DataTable\\DataTableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SoulDoit\\DataTable\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Syamsoul Azrien Muda",
+                    "email": "syamsoulazrien.miat@gmail.com"
+                }
+            ],
+            "description": "DataTable SSP (PHP) for Laravel. This package allows you to manage your DataTable from server-side in Laravel app.",
+            "keywords": [
+                "datatable",
+                "laravel",
+                "php",
+                "server-side",
+                "souldoit",
+                "ssp",
+                "syamsoul"
+            ],
+            "support": {
+                "issues": "https://github.com/syamsoul/laravel-datatable-ssp/issues",
+                "source": "https://github.com/syamsoul/laravel-datatable-ssp/tree/2.3.10"
+            },
+            "time": "2020-09-28T05:12:06+00:00"
         },
         {
             "name": "symfony/console",
