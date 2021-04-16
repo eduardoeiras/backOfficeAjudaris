@@ -208,9 +208,40 @@ class ColaboradorController extends Controller
     function getColaboradores() {
         $dt = [
             ['label'=>'Nome', 'db'=>'nome', 'dt'=>0],
-            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>1],
-            ['label'=>'Telemovel', 'db'=>'telemovel', 'dt'=>2],
-            ['label'=>'Disponibilidade', 'db'=>'disponivel', 'dt'=>3, 'formatter'=>function($value, $model){
+            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>1, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Telemovel', 'db'=>'telemovel', 'dt'=>2, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' --- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Emails', 'db'=>'id_colaborador', 'dt'=>3, 'formatter'=>function($value, $model){
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($value))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Disponibilidade', 'db'=>'disponivel', 'dt'=>4, 'formatter'=>function($value, $model){
                 if($value == 0) {
                     return 'Disponível';
                 }
@@ -218,7 +249,7 @@ class ColaboradorController extends Controller
                     return 'Indisponível';
                 }
             }],
-            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){ 
+            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){ 
                 $btns = [
                     '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
                     class="material-icons" data-toggle="tooltip"
@@ -227,9 +258,7 @@ class ColaboradorController extends Controller
                 return implode(" ", $btns); 
             }],
         ];
-
         $dt_obj = new SSP('App\Models\Colaborador', $dt);
-
         echo json_encode($dt_obj->getDtArr());
     }
 }

@@ -226,8 +226,11 @@ Route::post('admin/gerirComunicacoes/add','ComunicacoesController@store')->middl
 Route::post('admin/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['checkLogInAdmin']);
 
+//ROUTES PARA A GESTÃO DOS EMAILS PARA O ADMINISTRADOR
+Route::get('admin/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['checkLogInAdmin']);
+Route::get('admin/existeEmail/{email}', 'ColaboradorController@existeEmailSemColaborador')->middleware(['checkLogInAdmin']);
+
 //ROUTES PARA A PESQUISA GERAL
-//Route::get('admin/pesqGlobal/{nome}', 'ColaboradorController@pesqGeralNome')->middleware(['checkLogInAdmin']);
 Route::get('admin/pesqGlobal/getColaboradores', 'ColaboradorController@getColaboradores')->middleware(['checkLogInAdmin']);
 Route::get('admin/pesquisaGeral', function () {
     return view("admin/pesquisaGeral");
@@ -400,11 +403,12 @@ Route::post('colaborador/gerirComunicacoes/add','ComunicacoesController@store')-
 Route::post('colaborador/gerirComunicacoes/edit/{id}','ComunicacoesController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirComunicacoes/delete/{id}','ComunicacoesController@destroy')->middleware(['CheckLogInColaborador']);
 
-//ROUTES PARA A GESTÃO DOS EMAILS PARA O COLABORADOR E ADMINISTRADOR
-
-Route::get('admin/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['checkLogInAdmin']);
+//ROUTES PARA A GESTÃO DOS EMAILS PARA O COLABORADOR
 Route::get('colaborador/getEmails/{id}', 'ColaboradorController@getEmails')->middleware(['CheckLogInColaborador']);
-Route::get('admin/existeEmail/{email}', 'ColaboradorController@existeEmailSemColaborador')->middleware(['checkLogInAdmin']);
 Route::get('colaborador/existeEmail/{email}', 'ColaboradorController@existeEmailSemColaborador')->middleware(['CheckLogInColaborador']);
 
-
+//ROUTES PARA A PESQUISA GERAL
+Route::get('colaborador/pesqGlobal/getColaboradores', 'ColaboradorController@getColaboradores')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/pesquisaGeral', function () {
+    return view("colaborador/pesquisaGeral");
+})->middleware(['CheckLogInColaborador']);
