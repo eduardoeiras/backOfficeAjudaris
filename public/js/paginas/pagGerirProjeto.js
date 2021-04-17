@@ -41,7 +41,7 @@ function inicializarDataTableParticipantes() {
     $('#tabelaDados').DataTable({
         "dom": 'Bfrtip',
         "buttons": [
-            'copyHtml5'
+            'copy'
         ],
         "language": {
             "buttons": {
