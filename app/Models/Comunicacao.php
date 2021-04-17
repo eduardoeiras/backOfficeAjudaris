@@ -16,7 +16,6 @@ class Comunicacao extends Model
     protected $fillable = [
         'data',
         'observacoes',
-        'numLivros',
         'id_colaborador'
     ];
 
