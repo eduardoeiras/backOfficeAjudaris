@@ -4,6 +4,12 @@ $(document).ready(function () {
 
 function inicializarDataTable() {
     $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"agrupamentos/getAll", 
+          "type": "GET"
+        },
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",

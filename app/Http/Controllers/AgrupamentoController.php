@@ -9,6 +9,7 @@ use \App\Models\CodPostalRua;
 use App\Models\Colaborador;
 use App\Models\Email;
 use DB;
+use SoulDoit\DataTable\SSP;
 
 class AgrupamentoController extends Controller
 {
@@ -224,33 +225,30 @@ class AgrupamentoController extends Controller
         }
     */
     public function getAll() {
+        $colaborador = null;
         $dt = [
-            ['label'=>'Nome de Utilizador', 'db'=>'nomeUtilizador', 'dt'=>0],
-            ['label'=>'Nome', 'db'=>'nome', 'dt'=>1],
-            ['label'=>'Passsword', 'db'=>'password', 'dt'=>2],
-            ['label'=>'Emails', 'db'=>'email', 'dt'=>3, 'formatter'=>function($value, $model){
-                if($value == null) {
+            ['label'=>'Nome', 'db'=>'id_colaborador', 'dt'=>0, 'formatter'=>function($value, $model){
+                $GLOBALS["colaborador"] = Colaborador::find($value);
+                return $GLOBALS["foo"]->nome;
+            }],
+            ['label'=>'Telemóvel', 'db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){
+                if($GLOBALS["foo"]->telemovel == null) {
                     return ' ---- ';
                 }
                 else {
-                    return $value;
+                    return $GLOBALS["foo"]->telemovel;
                 }
             }],
-            ['label'=>'Telemóvel', 'db'=>'telemovel', 'dt'=>4, 'formatter'=>function($value, $model){
-                if($value == null) {
-                    return ' --- ';
-                }
-                else {
-                    return $value;
-                }
-            }],
-            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>5, 'formatter'=>function($value, $model){
-                if($value == null) {
+            ['label'=>'Telefone', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){
+                if($GLOBALS["foo"]->telefone == null) {
                     return ' ---- ';
                 }
                 else {
-                    return $value;
+                    return $GLOBALS["foo"]->telefone;
                 }
+            }],
+            ['label'=>'Emails', 'db'=>'id_colaborador', 'dt'=>3, 'formatter'=>function($value, $model){
+                
             }],
             ['label'=>'Departamento', 'db'=>'departamento', 'dt'=>6],
             ['label'=>'Opções', 'db'=>'id_utilizador', 'dt'=>8, 'formatter'=>function($value, $model){ 
