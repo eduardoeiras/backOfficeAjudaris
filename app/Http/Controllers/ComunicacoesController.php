@@ -31,7 +31,7 @@ class ComunicacoesController extends Controller
         $observacoes = $request->obs;
         $id_colaborador = $request->id_colaborador;
         $nome = $request->nome;
-        
+
         $comunicacao = new Comunicacao();
         $comunicacao->data = $data;
         $comunicacao->observacoes = $observacoes;

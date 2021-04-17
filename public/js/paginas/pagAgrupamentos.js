@@ -17,6 +17,7 @@ function inicializarDataTable() {
             "info": "A mostrar a página _PAGE_ de _PAGES_",
             "infoEmpty": "Nehuns registos disponíveis!",
             "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "processing": "Obtendo registos. Por favor aguarde...",
             "paginate": {
                 "previous": "Anterior",
                 "next": "Seguinte"
