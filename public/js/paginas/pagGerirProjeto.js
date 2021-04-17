@@ -39,7 +39,19 @@ $(document).ready(function () {
 
 function inicializarDataTableParticipantes() {
     $('#tabelaDados').DataTable({
+        "dom": 'Bfrtip',
+        "buttons": [
+            'copyHtml5'
+        ],
         "language": {
+            "buttons": {
+                "copyTitle": 'Copiar Emails',
+                "copyKeys": 'Pressione <i> ctrl </i> ou <i> \ u2318 </i> + <i> C </i> para copiar os dados da tabela para a área de transferência. <br> <br> Para cancelar, clique nesta mensagem ou pressione Esc. ',
+                "copySuccess": {
+                    "_": '%d linhas copiadas',
+                    "1": '1 linha copiada'
+                }
+            },
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
             "zeroRecords": "Nehum registo encontrado!",
@@ -384,20 +396,8 @@ function realizarFiltragemTipo() {
 
 function inicializarDataTable() {
     $('#tabelaAdd').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copyHtml5'
-        ],
         "language": {
             "sSearch": "Pesquisar",
-            buttons: {
-                    copyTitle: 'Copiar Emails',
-                    copyKeys: 'Pressione <i> ctrl </i> ou <i> \ u2318 </i> + <i> C </i> para copiar os dados da tabela para a área de transferência. <br> <br> Para cancelar, clique nesta mensagem ou pressione Esc. ',
-                    copySuccess: {
-                        _: '%d linhas copiadas',
-                        1: '1 linha copiada'
-                    }
-                },
             "lengthMenu": "Mostrar _MENU_ registos por página",
             "zeroRecords": "Nehum registo encontrado!",
             "info": "A mostrar a página _PAGE_ de _PAGES_",
