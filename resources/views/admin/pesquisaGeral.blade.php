@@ -39,13 +39,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped table-hover" id="tabelaDados">
+                            <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <th>Nome</th>
                                     <th>Telefone</th>
                                     <th>Telemovel</th>
                                     <th>Emails</th>
                                     <th>Disponibilidade</th>
+                                    <th>Morada</th>
                                     <th>Opções</th>
                                 </thead>
                             </table>

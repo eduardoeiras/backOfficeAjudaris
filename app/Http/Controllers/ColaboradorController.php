@@ -6,6 +6,7 @@ use App\Models\CodPostal;
 use App\Models\CodPostalRua;
 use App\Models\Colaborador;
 use App\Models\Email;
+use Illuminate\Http\Request;
 use DB;
 use SoulDoit\DataTable\SSP;
 
@@ -95,6 +96,75 @@ class ColaboradorController extends Controller
             ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
 
             $colaborador->save();
+        }
+    }
+
+    public static function edit($idColaborador, Request $request) {
+        $nome = $request->nome;
+        $observacoes = $request->observacoes;
+        $telefone = $request->telefone;
+        $telemovel = $request->telemovel;
+        $codPostal = $request->codPostal;
+        $disponibilidade = $request->disponibilidade;
+        $localidade = $request->localidade;
+        $codPostalRua = $request->codPostalRua;
+        $numPorta = $request->numPorta;
+        $rua = $request->rua;
+        $distrito = $request->distrito;
+        $emails = $request->emails;
+        $emailsToDelete = $request->deletedEmails;
+
+        $colaborador = Colaborador::find($idColaborador);
+
+        $cod_postal = CodPostal::find($codPostal);
+        $cod_postal_rua = DB::table('cod_postal_rua')
+                                    ->where([
+                                        ['cod_postal_rua.codPostal', '=', $codPostal],
+                                        ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
+                                        ]);
+
+        if($colaborador != null) {
+            $colaborador->telefone = $telefone;
+            $colaborador->telemovel = $telemovel;
+            $colaborador->disponivel = $disponibilidade;
+            $colaborador->nome = $nome;
+            $colaborador->numPorta = $numPorta;
+            $colaborador->observacoes = $observacoes;
+            
+            if($emails != null) {
+                foreach($emails as $email) {
+                    $existeEmail = ColaboradorController::existeEmail($email, $colaborador->id_colaborador);
+                    if(!$existeEmail) {
+                        $newEmail = new Email();
+                        $newEmail->email = $email;
+                        $newEmail->id_colaborador = $colaborador->id_colaborador;
+                        $newEmail->save();
+                    }  
+                }    
+            }
+            if($emailsToDelete != null) {
+                foreach($emailsToDelete as $email) {
+                    $query = DB::table('email')
+                        ->where('email.email', '=', $email);
+
+                    if($query != null) {
+                        $query->delete();
+                    }  
+                } 
+            }
+            
+            ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
+            ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
+
+            $colaborador->save();
+            
+            $user = session()->get("utilizador");
+            if($user->tipoUtilizador == 0) {
+                return redirect()->route("pesquisaGeral");
+            }
+            else {
+                return redirect()->route("pesquisaGeralColaborador");
+            }
         }
     }
 
@@ -205,6 +275,43 @@ class ColaboradorController extends Controller
         }
     }
 
+    public function getPorId($id) {
+
+        $colaborador = Colaborador::find($id);
+
+        $codPostal = CodPostal::find($colaborador->codPostal);
+        $codPostalRua = DB::table('cod_postal_rua')
+            ->where([
+                ['cod_postal_rua.codPostal', '=', $colaborador->codPostal],
+                ['cod_postal_rua.codPostalRua', '=', $colaborador->codPostalRua],
+                ])->first();
+        
+        $emails = ColaboradorController::getEmails($colaborador->id_colaborador);
+
+        $resColaborador = array(
+            "id_colaborador" => $colaborador->id_colaborador,
+            "nome" => $colaborador->nome,
+            "telefone" => $colaborador->telefone,
+            "telemovel" => $colaborador->telemovel,
+            "disponivel" => $colaborador->disponivel,
+            "observacoes" => $colaborador->observacoes,
+            "rua" => $codPostalRua->rua,
+            "numPorta" => $colaborador->numPorta,
+            "localidade" => $codPostal->localidade,
+            "codPostal" => $colaborador->codPostal,
+            "codPostalRua" => $colaborador->codPostalRua,
+            "distrito" => $codPostal->distrito,
+            "emails" => $emails
+        );
+        
+        if($resColaborador != null) {
+            return response()->json($resColaborador);
+        }
+        else{
+            return null;
+        }
+    }
+
     function getColaboradores() {
         $dt = [
             ['label'=>'Nome', 'db'=>'nome', 'dt'=>0],
@@ -249,7 +356,28 @@ class ColaboradorController extends Controller
                     return 'Indisponível';
                 }
             }],
-            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){ 
+            ['label'=>'Morada', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){
+                $morada = DB::table(DB::raw('colaborador', 'cod_postal', 'cod_postal_rua'))
+                ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+                ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+                ->select('colaborador.codPostal', 'colaborador.codPostalRua', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+                ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal and colaborador.id_colaborador = '.$value.'')
+                ->first();
+                $returnValue = "";
+                if($morada != null) {
+                    if(isset($morada->rua)) {
+                        $returnValue = $morada->rua.', '.$morada->localidade.', '.$morada->distrito.', '.$morada->codPostal.'-'.$morada->codPostalRua;   
+                    }
+                    else {
+                        $returnValue = $morada->localidade.', '.$morada->distrito.', '.$morada->codPostal.'-'.$morada->codPostalRua;   
+                    }
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>6, 'formatter'=>function($value, $model){ 
                 $btns = [
                     '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
                     class="material-icons" data-toggle="tooltip"
@@ -259,6 +387,7 @@ class ColaboradorController extends Controller
             }],
         ];
         $dt_obj = new SSP('App\Models\Colaborador', $dt);
+
         echo json_encode($dt_obj->getDtArr());
     }
 }

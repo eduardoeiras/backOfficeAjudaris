@@ -234,7 +234,9 @@ Route::get('admin/existeEmail/{email}', 'ColaboradorController@existeEmailSemCol
 Route::get('admin/pesqGlobal/getColaboradores', 'ColaboradorController@getColaboradores')->middleware(['checkLogInAdmin']);
 Route::get('admin/pesquisaGeral', function () {
     return view("admin/pesquisaGeral");
-})->middleware(['checkLogInAdmin']);
+})->name("pesquisaGeral")->middleware(['checkLogInAdmin']);
+Route::get('admin/colaboradores/getPorId/{id}', 'ColaboradorController@getPorId')->middleware(['checkLogInAdmin']);
+Route::post('admin/colaboradores/edit/{id}', 'ColaboradorController@edit')->middleware(['checkLogInAdmin']);
 
 /*  _______________________________________________________________________________________________________________________________________
    |                                                                                                                                       |
@@ -411,4 +413,7 @@ Route::get('colaborador/existeEmail/{email}', 'ColaboradorController@existeEmail
 Route::get('colaborador/pesqGlobal/getColaboradores', 'ColaboradorController@getColaboradores')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/pesquisaGeral', function () {
     return view("colaborador/pesquisaGeral");
-})->middleware(['CheckLogInColaborador']);
+})->name("pesquisaGeralColaborador")->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/colaboradores/getPorId/{id}', 'ColaboradorController@getPorId')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/colaboradores/edit/{id}', 'ColaboradorController@edit')->middleware(['CheckLogInColaborador']);
+?>

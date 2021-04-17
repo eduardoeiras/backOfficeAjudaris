@@ -46,6 +46,7 @@
                                     <th>Telemovel</th>
                                     <th>Emails</th>
                                     <th>Disponibilidade</th>
+                                    <th>Morada</th>
                                     <th>Opções</th>
                                 </thead>
                             </table>
