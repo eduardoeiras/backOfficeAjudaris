@@ -206,22 +206,7 @@ class AgrupamentoController extends Controller
             return null;
         }
     }
-
     /*
-    public function getAll() {
-
-        $agrupamentos = Agrupamento::all();
-        
-        if($agrupamentos != null) {
-            return  response()->json($agrupamentos);
-        }
-        else {
-            return null;
-        }
-        
-    }*/
-    
-    public function getAllComLocalidade() {
         $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
         ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
         ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
@@ -237,6 +222,52 @@ class AgrupamentoController extends Controller
         else {
             return null;
         }
+    */
+    public function getAll() {
+        $dt = [
+            ['label'=>'Nome de Utilizador', 'db'=>'nomeUtilizador', 'dt'=>0],
+            ['label'=>'Nome', 'db'=>'nome', 'dt'=>1],
+            ['label'=>'Passsword', 'db'=>'password', 'dt'=>2],
+            ['label'=>'Emails', 'db'=>'email', 'dt'=>3, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Telemóvel', 'db'=>'telemovel', 'dt'=>4, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' --- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>5, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Departamento', 'db'=>'departamento', 'dt'=>6],
+            ['label'=>'Opções', 'db'=>'id_utilizador', 'dt'=>8, 'formatter'=>function($value, $model){ 
+                $btns = ['<td>
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', true)"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Edit">&#xE254;</i></a>
+                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Delete">&#xE872;</i></a>
+                        </td>'];
+                return implode(" ", $btns); 
+            }],
+        ];
+        $dt_obj = new SSP('App\Models\Agrupamento', $dt);
+
+        echo json_encode($dt_obj->getDtArr());
     }
     
 }

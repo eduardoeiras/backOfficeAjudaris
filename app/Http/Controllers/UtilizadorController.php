@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
 use DB;
+use SoulDoit\DataTable\SSP;
 
 class UtilizadorController extends Controller
 {
@@ -160,14 +161,86 @@ class UtilizadorController extends Controller
     }
 
     public function getAll() {
-        $utilizadores = Utilizador::all();
+        $dt = [
+            ['label'=>'Nome de Utilizador', 'db'=>'nomeUtilizador', 'dt'=>0],
+            ['label'=>'Nome', 'db'=>'nome', 'dt'=>1],
+            ['label'=>'Passsword', 'db'=>'password', 'dt'=>2],
+            ['label'=>'Emails', 'db'=>'email', 'dt'=>3, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Telemóvel', 'db'=>'telemovel', 'dt'=>4, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' --- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>5, 'formatter'=>function($value, $model){
+                if($value == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $value;
+                }
+            }],
+            ['label'=>'Departamento', 'db'=>'departamento', 'dt'=>6],
+            ['label'=>'Tipo de Utilizador', 'db'=>'tipoUtilizador', 'dt'=>7, 'formatter'=>function($value, $model){
+                if($value == 0) {
+                    return 'Administrador';
+                }
+                else {
+                    return 'Colaborador';
+                }
+            }],
+            ['label'=>'Opções', 'db'=>'id_utilizador', 'dt'=>8, 'formatter'=>function($value, $model){ 
+                $user = session()->get('utilizador');
+                if(intval($model["tipoUtilizador"]) == 0) {
+                    if($user->nomeUtilizador == $model["nomeUtilizador"]) {
+                        $btns = ['<td>
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', true)"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Edit">&#xE254;</i></a>
+                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Delete">&#xE872;</i></a>
+                        </td>'];
+                    }
+                    else {
+                        $btns = ['<td>
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', false)"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Edit">&#xE254;</i></a>
+                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Delete">&#xE872;</i></a>
+                        </td>'];
+                    }
+                }
+                else {
+                    $url = 'gerirProjetosUser/'.$value;
+                    $btns = ['<td>
+                    <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', false)"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/projetos.png"></img></a>
+                    </td>'];
 
-        if($utilizadores != null) {
-            return  response()->json($utilizadores); 
-        }
-        else {
-            return null;
-        }
+                }
+                return implode(" ", $btns); 
+            }],
+        ];
+        $dt_obj = new SSP('App\Models\Utilizador', $dt);
+
+        echo json_encode($dt_obj->getDtArr());
     }
 
     public function existeUser($name) {

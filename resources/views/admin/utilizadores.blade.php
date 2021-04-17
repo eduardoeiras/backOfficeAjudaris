@@ -57,7 +57,7 @@
                                         <th>Nome</th>
                                         <th>Password</th>
                                         <th>Email</th>
-                                        <th>Telemovel</th>
+                                        <th>Telemóvel</th>
                                         <th>Telefone</th>
                                         <th>Departamento</th>
                                         <th>Tipo de utilizador</th>
