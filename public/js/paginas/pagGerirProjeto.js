@@ -39,19 +39,34 @@ $(document).ready(function () {
 
 function inicializarDataTableParticipantes() {
     $('#tabelaDados').DataTable({
-        "dom": 'Bfrtip',
+        "dom": 'Bfrtip',  
         "buttons": [
-            'copy','excel', 'pdf', 'print'
-        ],
-        "language": {
-            "buttons": {
-                "copyTitle": 'Copiar Emails',
-                "copyKeys": 'Pressione <i> ctrl </i> ou <i> \ u2318 </i> + <i> C </i> para copiar os dados da tabela para a área de transferência. <br> <br> Para cancelar, clique nesta mensagem ou pressione Esc. ',
-                "copySuccess": {
-                    "_": '%d linhas copiadas',
-                    "1": '1 linha copiada'
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: 3
                 }
             },
+            {
+                extend: 'excel',
+                exportOptions: {
+                    columns: 3
+                }
+            },
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: 3
+                }
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: 3
+                }
+            }
+        ],
+        "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
             "zeroRecords": "Nehum registo encontrado!",
