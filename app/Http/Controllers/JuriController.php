@@ -14,35 +14,11 @@ class JuriController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $juris = DB::table(DB::raw('juri', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'juri.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('juri.id_juri', 'juri.tipoJuri', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($juris as $jur){
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $jur->id_colaborador)
-            ->get();
-            
-            $juri = array(
-                "entidade" => $jur,
-                "emails" => $emails
-            );
-            array_push($resposta, $juri);
-        }
-        
         if($user->tipoUtilizador == 0) {
-            return view('admin/juris', ['data' => $resposta]);
+            return view('admin/juris');
         }
         else {
-            return view('colaborador/juris', ['data' => $resposta]);
+            return view('colaborador/juris');
         }
     }
 
@@ -242,7 +218,7 @@ class JuriController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Disponibilidade', 'dt'=>4, 'formatter'=>function($value, $model){
+            ['label'=>'Disponibilidade','db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){
                 if($GLOBALS["colaboradorBD"]->disponivel == 0) {
                     return 'Disponível';
                 }
@@ -250,7 +226,7 @@ class JuriController extends Controller
                     return 'Indisponível';
                 }
             }],
-            ['label'=>'Tipo de Participação', 'db' => 'tipoJuri', 'dt'=>5, 'formatter'=>function($value, $model){
+            ['label'=>'Tipo de Participação', 'db'=>'id_colaborador', 'db' => 'tipoJuri', 'dt'=>5, 'formatter'=>function($value, $model){
                 if($value == 0) {
                     return "Juri";
                 }
@@ -261,7 +237,7 @@ class JuriController extends Controller
                     return "Juri e Revisor";
                 }
             }],
-            ['label'=>'Localidade', 'dt'=>6, 'formatter'=>function($value, $model){
+            ['label'=>'Localidade', 'db'=>'id_colaborador', 'dt'=>6, 'formatter'=>function($value, $model){
                 $codPostal = CodPostal::find($GLOBALS["colaboradorBD"]->codPostal);
                 if($codPostal->localidade != null) {
                     return $codPostal->localidade;
@@ -270,7 +246,7 @@ class JuriController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Rua', 'dt'=>7, 'formatter'=>function($value, $model){
+            ['label'=>'Rua', 'db'=>'id_colaborador', 'dt'=>7, 'formatter'=>function($value, $model){
                 $codPostalRua = DB::table('cod_postal_rua')
                 ->where([
                     ['cod_postal_rua.codPostal', '=', $GLOBALS["colaboradorBD"]->codPostal],

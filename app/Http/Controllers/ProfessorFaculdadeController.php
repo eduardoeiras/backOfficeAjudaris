@@ -18,35 +18,11 @@ class ProfessorFaculdadeController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $profacul = DB::table(DB::raw('professor_faculdade', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'professor_faculdade.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('professor_faculdade.id_professorFaculdade', 'professor_faculdade.cargo', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($profacul as $pf) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $pf->id_colaborador)
-            ->get();
-            
-            $profefacul = array(
-                "entidade" => $pf,
-                "emails" => $emails
-            );
-            array_push($resposta, $profefacul);
-        }
-
         if($user->tipoUtilizador == 0) {
-            return view('admin\profs_faculdade', ['data' => $resposta]);
+            return view('admin\profs_faculdade');
         }
         else {
-            return view('colaborador\profs_faculdade', ['data' => $resposta]);
+            return view('colaborador\profs_faculdade');
         }
         
     }
@@ -235,8 +211,6 @@ class ProfessorFaculdadeController extends Controller
                 ->select('professor_faculdade.id_professorFaculdade', 'professor_faculdade.cargo', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
                 ->get();
 
-        
-
         foreach($profs as $professor) {
             $existe = self::existeAssociacao($professor->id_professorFaculdade, $id_universidade);
             if($existe == false) {
@@ -299,7 +273,7 @@ class ProfessorFaculdadeController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Disponibilidade', 'dt'=>5, 'formatter'=>function($value, $model){
+            ['label'=>'Disponibilidade', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){
                 if($GLOBALS["colaboradorBD"]->disponivel == 0) {
                     return 'Disponível';
                 }
@@ -307,7 +281,7 @@ class ProfessorFaculdadeController extends Controller
                     return 'Indisponível';
                 }
             }],
-            ['label'=>'Localidade', 'dt'=>6, 'formatter'=>function($value, $model){
+            ['label'=>'Localidade', 'db'=>'id_colaborador', 'dt'=>6, 'formatter'=>function($value, $model){
                 $codPostal = CodPostal::find($GLOBALS["colaboradorBD"]->codPostal);
                 if($codPostal->localidade != null) {
                     return $codPostal->localidade;
@@ -316,7 +290,7 @@ class ProfessorFaculdadeController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Rua', 'dt'=>7, 'formatter'=>function($value, $model){
+            ['label'=>'Rua', 'db'=>'id_colaborador', 'dt'=>7, 'formatter'=>function($value, $model){
                 $codPostalRua = DB::table('cod_postal_rua')
                 ->where([
                     ['cod_postal_rua.codPostal', '=', $GLOBALS["colaboradorBD"]->codPostal],
@@ -334,7 +308,7 @@ class ProfessorFaculdadeController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Código Postal', 'db'=>'id_colaborador', 'dt'=>8, 'formatter'=>function($value, $model){
+            ['label'=>'Código Postal', 'db'=>'id_colaborador', 'db'=>'id_colaborador', 'dt'=>8, 'formatter'=>function($value, $model){
                 $strCodPostal = $GLOBALS["colaboradorBD"]->codPostal."-".$GLOBALS["colaboradorBD"]->codPostalRua;
                 return $strCodPostal;
             }],

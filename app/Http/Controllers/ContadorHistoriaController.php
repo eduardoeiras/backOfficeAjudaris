@@ -180,7 +180,7 @@ class ContadorHistoriaController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Disponibilidade', 'dt'=>4, 'formatter'=>function($value, $model){
+            ['label'=>'Disponibilidade', 'db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){
                 if($GLOBALS["colaboradorBD"]->disponivel == 0) {
                     return 'Disponível';
                 }
@@ -188,7 +188,7 @@ class ContadorHistoriaController extends Controller
                     return 'Indisponível';
                 }
             }],
-            ['label'=>'Localidade', 'dt'=>5, 'formatter'=>function($value, $model){
+            ['label'=>'Localidade', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){
                 $codPostal = CodPostal::find($GLOBALS["colaboradorBD"]->codPostal);
                 if($codPostal->localidade != null) {
                     return $codPostal->localidade;
@@ -197,7 +197,7 @@ class ContadorHistoriaController extends Controller
                     return " --- ";
                 }
             }],
-            ['label'=>'Rua', 'dt'=>6, 'formatter'=>function($value, $model){
+            ['label'=>'Rua', 'db'=>'id_colaborador', 'dt'=>6, 'formatter'=>function($value, $model){
                 $codPostalRua = DB::table('cod_postal_rua')
                 ->where([
                     ['cod_postal_rua.codPostal', '=', $GLOBALS["colaboradorBD"]->codPostal],

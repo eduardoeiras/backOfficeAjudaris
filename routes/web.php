@@ -110,12 +110,14 @@ Route::post('admin/juris/add', 'JuriController@store')->middleware(['checkLogInA
 Route::get('admin/rbes','RBEController@index')->name("rbes")->middleware(['checkLogInAdmin']);
 Route::get('admin/rbes/getPorId/{id}', 'RBEController@getRbePorId')->middleware(['checkLogInAdmin']);
 Route::get('admin/rbes/getDisponiveis', 'RBEController@getDisponiveis')->middleware(['checkLogInAdmin']);
+Route::get('admin/rbes/getAll','RBEController@getAll')->middleware(['checkLogInAdmin']);
 Route::post('admin/rbes/delete/{id}', 'RBEController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/rbes/edit/{id}', 'RBEController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/rbes/add', 'RBEController@store')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/universidades','UniversidadeController@index')->name("universidades")->middleware(['checkLogInAdmin']);
 Route::get('admin/universidades/getPorId/{id}', 'UniversidadeController@getUniversidadePorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/universidades/getAll', 'UniversidadeController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/universidades/getDisponiveis', 'UniversidadeController@getDisponiveis')->middleware(['checkLogInAdmin']);
 Route::post('admin/universidades/delete/{id}', 'UniversidadeController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/universidades/edit/{id}', 'UniversidadeController@update')->middleware(['checkLogInAdmin']);
@@ -291,11 +293,13 @@ Route::post('colaborador/juris/add', 'JuriController@store')->middleware(['Check
 Route::get('colaborador/rbes','RBEController@index')->name("rbesColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/rbes/getPorId/{id}', 'RBEController@getRbePorId')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/rbes/getDisponiveis', 'RBEController@getDisponiveis')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/rbes/getAll','RBEController@getAll')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/rbes/edit/{id}', 'RBEController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/rbes/add', 'RBEController@store')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/universidades','UniversidadeController@index')->name("universidadesColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/universidades/getPorId/{id}', 'UniversidadeController@getUniversidadePorId')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/universidades/getAll', 'UniversidadeController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/universidades/getDisponiveis', 'UniversidadeController@getDisponiveis')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/universidades/edit/{id}', 'UniversidadeController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/universidades/add', 'UniversidadeController@store')->middleware(['CheckLogInColaborador']);

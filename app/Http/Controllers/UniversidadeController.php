@@ -9,41 +9,19 @@ use \App\Models\CodPostalRua;
 use App\Models\Colaborador;
 use App\Models\Email;
 use DB;
+use SoulDoit\DataTable\SSP;
 
 class UniversidadeController extends Controller
 {
     public function index()
     {
         $user = session()->get("utilizador");
-        $universidades = DB::table(DB::raw('universidade', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'universidade.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('universidade.id_universidade', 'universidade.curso', 'universidade.tipo', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($universidades as $unis) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $unis->id_colaborador)
-            ->get();
-            
-            $universidade = array(
-                "entidade" => $unis,
-                "emails" => $emails
-            );
-            array_push($resposta, $universidade);
-        }
 
         if($user->tipoUtilizador == 0) {
-            return view('admin/universidades', ['data' => $resposta]);
+            return view('admin/universidades');
         }
         else {
-            return view('colaborador/universidades', ['data' => $resposta]);
+            return view('colaborador/universidades');
         }
     }
 
@@ -223,5 +201,127 @@ class UniversidadeController extends Controller
                 return view('colaborador/gerirProfessoresUniversidade', ['title' => 'Universidade: <br><br>'.$colaborador->nome.' - '.$universidade->tipo]);
             }     
         }
+    }
+
+    public function getAll() {
+        $dt = [
+            ['label'=>'Nome', 'db'=>'id_colaborador', 'dt'=>0, 'formatter'=>function($value, $model){
+                $GLOBALS["colaboradorBD"] = Colaborador::find($value);
+                return $GLOBALS["colaboradorBD"]->nome;
+            }],
+            ['label'=>'Tipo', 'db'=>'tipo', 'dt'=>1, 'formatter'=>function($value, $model){
+                return $value;
+            }],
+            ['label'=>'Curso', 'db'=>'curso', 'dt'=>2, 'formatter'=>function($value, $model){
+                if($value != null) {
+                    return $value;
+                }
+                else {
+                    return null;
+                }
+            }],
+            ['label'=>'Telemóvel', 'db'=>'id_colaborador', 'dt'=>3, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->telemovel == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $GLOBALS["colaboradorBD"]->telemovel;
+                }
+            }],
+            ['label'=>'Telefone', 'db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->telefone == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $GLOBALS["colaboradorBD"]->telefone;
+                }
+            }],
+            ['label'=>'Emails', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($value))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Disponibilidade', 'db'=>'id_colaborador', 'dt'=>6, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            }],
+            ['label'=>'Localidade', 'db'=>'id_colaborador', 'dt'=>7, 'formatter'=>function($value, $model){
+                $codPostal = CodPostal::find($GLOBALS["colaboradorBD"]->codPostal);
+                if($codPostal->localidade != null) {
+                    return $codPostal->localidade;
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Rua', 'db'=>'id_colaborador', 'dt'=>8, 'formatter'=>function($value, $model){
+                $codPostalRua = DB::table('cod_postal_rua')
+                ->where([
+                    ['cod_postal_rua.codPostal', '=', $GLOBALS["colaboradorBD"]->codPostal],
+                    ['cod_postal_rua.codPostalRua', '=', $GLOBALS["colaboradorBD"]->codPostalRua],
+                    ])->first();
+                if($codPostalRua != null) {
+                    if($codPostalRua->rua) {
+                        return $codPostalRua->rua;  
+                    }
+                    else {
+                        return " --- ";
+                    }
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Código Postal', 'db'=>'id_colaborador', 'db'=>'id_colaborador', 'dt'=>9, 'formatter'=>function($value, $model){
+                $strCodPostal = $GLOBALS["colaboradorBD"]->codPostal."-".$GLOBALS["colaboradorBD"]->codPostalRua;
+                return $strCodPostal;
+            }],
+            ['label'=>'Opções', 'db'=>'id_universidade', 'dt'=>10, 'formatter'=>function($value, $model){ 
+                $user = session()->get("utilizador");
+                $url = 'gerirUniversidade'.$value;
+                if($user->tipoUtilizador == 0) {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$GLOBALS["colaboradorBD"]->id_colaborador.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    </td>'];
+                }
+                else {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$GLOBALS["colaboradorBD"]->id_colaborador.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    </td>'];
+                }
+                
+                return implode(" ", $btns); 
+            }],
+        ];
+        $dt_obj = new SSP("universidade", $dt);      
+
+        echo json_encode($dt_obj->getDtArr());
     }
 }
