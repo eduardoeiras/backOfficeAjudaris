@@ -16,30 +16,6 @@ class AgrupamentoController extends Controller
     public function index()
     {
         $user = session()->get("utilizador");
-        $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'agrupamento.nif', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($agrupamentos as $agrup) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $agrup->id_colaborador)
-            ->get();
-            
-            $agrupamento = array(
-                "entidade" => $agrup,
-                "emails" => $emails
-            );
-            array_push($resposta, $agrupamento);
-        }
-        
         
         if($user->tipoUtilizador == 0) {
             return view('admin/agrupamentos');
@@ -287,15 +263,26 @@ class AgrupamentoController extends Controller
                 return $strCodPostal;
             }],
             ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>8, 'formatter'=>function($value, $model){ 
-                $btns = ['<td>
-                <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
-                        class="material-icons" data-toggle="tooltip"
-                        title="Edit">&#xE254;</i></a>
-                <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$value.')"><i
-                        class="material-icons" data-toggle="tooltip"
-                        title="Delete">&#xE872;</i></a>´
-                <a href="gerirComunicacoes-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
-            </td>'];
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>´
+                    <a href="gerirComunicacoes-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    </td>']; 
+                }
+                else {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>´
+                    <a href="gerirComunicacoes-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    </td>'];    
+                }
                 return implode(" ", $btns); 
             }],
         ];

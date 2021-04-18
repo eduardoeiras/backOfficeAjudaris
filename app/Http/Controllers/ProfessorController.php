@@ -246,7 +246,8 @@ class ProfessorController extends Controller
         
         $profs = DB::table('professor')
                     ->join('colaborador', 'professor.id_colaborador', '=' , 'colaborador.id_colaborador')
-                    ->select('professor.id_professor', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
+                    ->select('professor.id_professor', 'colaborador.telemovel', 'colaborador.telefone', 
+                    'colaborador.nome', 'colaborador.id_colaborador')
                     ->get();
 
         foreach($profs as $professor) {

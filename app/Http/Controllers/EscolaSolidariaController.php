@@ -8,6 +8,7 @@ use App\Models\EscolaSolidaria;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\EscolaSolidariaProf;
+use SoulDoit\DataTable\SSP;
 
 class EscolaSolidariaController extends Controller
 {
@@ -15,36 +16,11 @@ class EscolaSolidariaController extends Controller
     {
         $user = session()->get("utilizador");
 
-        $escolas = DB::table(DB::raw('escola_solidaria', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'escola_solidaria.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('escola_solidaria.id_escolaSolidaria', 'escola_solidaria.contactoAssPais', 'escola_solidaria.id_agrupamento',
-         'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($escolas as $escola) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $escola->id_colaborador)
-            ->get();
-            
-            $ent = array(
-                "entidade" => $escola,
-                "emails" => $emails
-            );
-            array_push($resposta, $ent);
-        }
-
         if($user->tipoUtilizador == 0) {
-            return view('admin/escolasSolidarias', ['data' => $resposta]);
+            return view('admin/escolasSolidarias');
         }
         else {
-            return view('colaborador/escolasSolidarias', ['data' => $resposta]);
+            return view('colaborador/escolasSolidarias');
         }
     }
 
@@ -216,16 +192,15 @@ class EscolaSolidariaController extends Controller
             $colaborador = Colaborador::find($escola->id_colaborador);
             $user = session()->get("utilizador");
             if($user->tipoUtilizador == 0) {
-                return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
+                return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome, 'id_escola' => $id]);
             }
             else {
-                return view('colaborador/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
+                return view('colaborador/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome, 'id_escola' => $id]);
             }
         }
     }
 
-    public function getProfessores() {
-        $id = intval(\session('id_escola'));
+    public function getProfessores($id) {
         
         $professores = DB::table('professor')
                         ->join('escola_professor', 'professor.id_professor', '=', 'escola_professor.id_professor')
@@ -308,5 +283,135 @@ class EscolaSolidariaController extends Controller
         else {
             return redirect()->route("gerirEscolaColaborador", $id_escola);
         }
+    }
+
+    public function getAll() {
+        $dt = [
+            ['label'=>'Nome', 'db'=>'id_colaborador', 'dt'=>0, 'formatter'=>function($value, $model){
+                $GLOBALS["colaboradorBD"] = Colaborador::find($value);
+                return $GLOBALS["colaboradorBD"]->nome;
+            }],
+            ['label'=>'Telemóvel', 'db'=>'id_colaborador', 'dt'=>1, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->telemovel == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $GLOBALS["colaboradorBD"]->telemovel;
+                }
+            }],
+            ['label'=>'Telefone', 'db'=>'id_colaborador', 'dt'=>2, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->telefone == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $GLOBALS["colaboradorBD"]->telefone;
+                }
+            }],
+            ['label'=>'Contacto da Associação de Pais', 'db'=>'contactoAssPais', 'dt'=>3, 'formatter'=>function($value, $model){
+                if($value != null) {
+                    return $value;
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Emails', 'db'=>'id_colaborador', 'dt'=>4, 'formatter'=>function($value, $model){
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($value))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Disponibilidade', 'dt'=>5, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            }],
+            ['label'=>'Agrupamento', 'db'=>'id_agrupamento', 'dt'=>6, 'formatter'=>function($value, $model) {
+                 $nomeAgrupamento = AgrupamentoController::getNomeAgrupamentoPorId($value);
+                 if($nomeAgrupamento != null) {
+                     return $nomeAgrupamento;
+                 }
+                 else {
+                     return " --- ";
+                 }
+            }],
+            ['label'=>'Localidade', 'dt'=>7, 'formatter'=>function($value, $model){
+                $codPostal = CodPostal::find($GLOBALS["colaboradorBD"]->codPostal);
+                if($codPostal->localidade != null) {
+                    return $codPostal->localidade;
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Rua', 'dt'=>8, 'formatter'=>function($value, $model){
+                $codPostalRua = DB::table('cod_postal_rua')
+                ->where([
+                    ['cod_postal_rua.codPostal', '=', $GLOBALS["colaboradorBD"]->codPostal],
+                    ['cod_postal_rua.codPostalRua', '=', $GLOBALS["colaboradorBD"]->codPostalRua],
+                    ])->first();
+                if($codPostalRua != null) {
+                    if($codPostalRua->rua) {
+                        return $codPostalRua->rua;  
+                    }
+                    else {
+                        return " --- ";
+                    }
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Código Postal', 'db'=>'id_colaborador', 'dt'=>9, 'formatter'=>function($value, $model){
+                $strCodPostal = $GLOBALS["colaboradorBD"]->codPostal."-".$GLOBALS["colaboradorBD"]->codPostalRua;
+                return $strCodPostal;
+            }],
+            ['label'=>'Opções', 'db'=>'id_escolaSolidaria', 'dt'=>10, 'formatter'=>function($value, $model){ 
+                $user = session()->get("utilizador");
+                $url = 'gerirEscola'.$value;
+                if($user->tipoUtilizador == 0) {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$GLOBALS["colaboradorBD"]->id_colaborador.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    <a href="gerirLivrosAno-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>
+                    </td>'];
+                }
+                else {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$GLOBALS["colaboradorBD"]->id_colaborador.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    <a href="gerirLivrosAno-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>
+                    </td>'];
+                }
+                
+                return implode(" ", $btns); 
+            }],
+        ];
+        $dt_obj = new SSP('App\Models\EscolaSolidaria', $dt);
+
+        echo json_encode($dt_obj->getDtArr());
     }
 }

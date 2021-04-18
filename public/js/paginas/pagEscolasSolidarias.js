@@ -1,7 +1,27 @@
 var idSelecionado = 0;
 
 $(document).ready(function () {
-    inicializarDataTable('#tabelaDados');
+    $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"escolas/getAll", 
+          "type": "GET"
+        },
+        "language": {
+            "sSearch": "Pesquisar",
+            "lengthMenu": "Mostrar _MENU_ registos por página",
+            "zeroRecords": "Nehum registo encontrado!",
+            "info": "A mostrar a página _PAGE_ de _PAGES_",
+            "infoEmpty": "Nehuns registos disponíveis!",
+            "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "processing": "Obtendo registos. Por favor aguarde...",
+            "paginate": {
+                "previous": "Anterior",
+                "next": "Seguinte"
+            }
+        }
+    });
 });
 
 function inicializarDataTable(idTabela) {
@@ -88,13 +108,13 @@ function remover(id) {
 }
 
 function carregarAgrupamentosAdd() {
+    destruirTabela('#tabelaAdd')
     $.ajax({
         url: 'agrupamentos/getAllComLocalidade',
         method: "GET",
         dataType: "json",
         success: function (agrupamentos) {
             if (agrupamentos != null) {
-                destruirTabela('#tabelaAdd')
                 for (elemento of agrupamentos) {
                     var linha = '<tr>'
                     linha = linha + `<td>${elemento.nome}</td>`
@@ -113,13 +133,13 @@ function carregarAgrupamentosAdd() {
 }
 
 function carregarAgrupamentosEdit() {
+    destruirTabela('#tabelaEdit')
     $.ajax({
         url: 'agrupamentos/getAllComLocalidade',
         method: "GET",
         dataType: "json",
         success: function (agrupamentos) {
             if (agrupamentos != null) {
-                destruirTabela('#tabelaEdit')
                 for (elemento of agrupamentos) {
                     var linha = '<tr>'
                     linha = linha + `<td>${elemento.nome}</td>`

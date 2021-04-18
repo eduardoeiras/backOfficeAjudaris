@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped table-hover" style="width=90%" id="tabelaDados">
+                            <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <tr>
                                         <th>Nome</th>

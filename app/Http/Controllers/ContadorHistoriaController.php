@@ -7,42 +7,18 @@ use App\Models\Colaborador;
 use App\Models\ContadorHistoria;
 use Illuminate\Http\Request;
 use DB;
+use SoulDoit\DataTable\SSP;
 
 class ContadorHistoriaController extends Controller
 {
     public function index()
     {
         $user = session()->get("utilizador");
-        
-        $contadoresHistorias = DB::table(DB::raw('contador_historias', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'contador_historias.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('contador_historias.id_contadorHistorias', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($contadoresHistorias as $entidade) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
-            ->get();
-            
-            $contador = array(
-                "entidade" => $entidade,
-                "emails" => $emails
-            );
-            array_push($resposta, $contador);
-        }
-
         if($user->tipoUtilizador == 0) {
-            return view('admin/contadores', ['data' => $resposta]);
+            return view('admin/contadores');
         }
         else {
-            return view('colaborador/contadores', ['data' => $resposta]);
+            return view('colaborador/contadores');
         }
     }
 
@@ -125,7 +101,7 @@ class ContadorHistoriaController extends Controller
  
     }
 
-    public function getComunicacaoPorId($id) {
+    public function getContadorPorId($id) {
         $contador = ContadorHistoria::find($id);
         $colaborador = Colaborador::find($contador->id_colaborador);
         $codPostal = CodPostal::find($colaborador->codPostal);
@@ -163,5 +139,112 @@ class ContadorHistoriaController extends Controller
             return null;
         }
         
+    }
+
+    public function getAll() {
+        $dt = [
+            ['label'=>'Nome', 'db'=>'id_colaborador', 'dt'=>0, 'formatter'=>function($value, $model){
+                $GLOBALS["colaboradorBD"] = Colaborador::find($value);
+                return $GLOBALS["colaboradorBD"]->nome;
+            }],
+            ['label'=>'Telemóvel', 'db'=>'id_colaborador', 'dt'=>1, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->telemovel == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $GLOBALS["colaboradorBD"]->telemovel;
+                }
+            }],
+            ['label'=>'Telefone', 'db'=>'id_colaborador', 'dt'=>2, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->telefone == null) {
+                    return ' ---- ';
+                }
+                else {
+                    return $GLOBALS["colaboradorBD"]->telefone;
+                }
+            }],
+            ['label'=>'Emails', 'db'=>'id_colaborador', 'dt'=>3, 'formatter'=>function($value, $model){
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($value))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Disponibilidade', 'dt'=>4, 'formatter'=>function($value, $model){
+                if($GLOBALS["colaboradorBD"]->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            }],
+            ['label'=>'Localidade', 'dt'=>5, 'formatter'=>function($value, $model){
+                $codPostal = CodPostal::find($GLOBALS["colaboradorBD"]->codPostal);
+                if($codPostal->localidade != null) {
+                    return $codPostal->localidade;
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Rua', 'dt'=>6, 'formatter'=>function($value, $model){
+                $codPostalRua = DB::table('cod_postal_rua')
+                ->where([
+                    ['cod_postal_rua.codPostal', '=', $GLOBALS["colaboradorBD"]->codPostal],
+                    ['cod_postal_rua.codPostalRua', '=', $GLOBALS["colaboradorBD"]->codPostalRua],
+                    ])->first();
+                if($codPostalRua != null) {
+                    if($codPostalRua->rua) {
+                        return $codPostalRua->rua;  
+                    }
+                    else {
+                        return " --- ";
+                    }
+                }
+                else {
+                    return " --- ";
+                }
+            }],
+            ['label'=>'Código Postal', 'db'=>'id_colaborador', 'dt'=>7, 'formatter'=>function($value, $model){
+                $strCodPostal = $GLOBALS["colaboradorBD"]->codPostal."-".$GLOBALS["colaboradorBD"]->codPostalRua;
+                return $strCodPostal;
+            }],
+            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>8, 'formatter'=>function($value, $model){ 
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>´
+                    <a href="gerirComunicacoes-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    </td>'];
+                }
+                else {
+                    $btns = ['<td>
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="gerirComunicacoes-'.$value.'-'.$GLOBALS["colaboradorBD"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    </td>'];
+                }
+                return implode(" ", $btns); 
+            }],
+        ];
+        $dt_obj = new SSP('App\Models\ContadorHistoria', $dt);
+
+        echo json_encode($dt_obj->getDtArr());
     }
 }

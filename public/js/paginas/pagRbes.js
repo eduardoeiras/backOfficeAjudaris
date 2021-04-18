@@ -84,59 +84,6 @@ function remover(id) {
     $('#formDelete').attr('action', url)
 }
 
-function carregarConcelhos(adicionar) {
-    if(carregamento == false) {
-        $.ajax({
-            url: 'concelhos/getAll',
-            method: "GET",
-            dataType: "json",
-            success: function (concelhos) {
-                var opcoes = ''
-                if (concelhos != null) {
-                    carregamento = true;
-                    for(concelho of concelhos) {
-                        opcoes = opcoes + `<option value="${concelho.id_concelho}">${concelho.nome}</option>`
-                    }
-                    if(adicionar) {
-                        $('#concelhosAdd').append(opcoes)   
-                    }
-                    else {
-                        $('#concelho').append(opcoes)   
-                    }
-                    
-                }
-            },
-            error: function (error) {
-
-            }
-        })    
-    }
-}
-
-function getNomeConcelho(id) {
-    var url = `concelhos/getPorId/` + id
-    var nome = ''
-    $.ajax({
-        url: url,
-        method: "GET",
-        dataType: "json",
-        success: function (concelho) {
-            if (concelho != null) {
-                nome = concelho.nome
-            }
-        },
-        error: function (error) {
-        }
-    })
-
-    if(nome != '') {
-        return nome;
-    }
-    else {
-        return null;
-    }
-}
-
 function adicionarConcelho(adicionar) {
     if(adicionar) {
         if($('#concelhoFormAdd').val() != "") {
