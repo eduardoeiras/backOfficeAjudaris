@@ -38,7 +38,6 @@ Route::get('admin/projetos/getPorId/{id}', 'ProjetoController@getProjetoPorId')-
 Route::post('admin/projetos/delete/{id}', 'ProjetoController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetos/edit/{id}', 'ProjetoController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetos/add', 'ProjetoController@store')->middleware(['checkLogInAdmin']);
-Route::get('admin/projetos/getPdf/{id}', 'FicheiroController@getPdf')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetos/submeterFicheiro', 'FicheiroController@receberFicheiro')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/gerirProjeto{id}', 'ProjetoController@gerirParticipantes')->name("gerirProjeto")->middleware(['checkLogInAdmin']);
@@ -55,6 +54,7 @@ Route::post('admin/utilizadores/addUtilizador', 'UtilizadorController@store')->m
 
 Route::get('admin/professores','ProfessorController@index')->name("professores")->middleware(['checkLogInAdmin']);
 Route::get('admin/professores/getPorId/{id}', 'ProfessorController@getProfPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/professores/getAll', 'ProfessorController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/professores/getDisponiveis', 'ProfessorController@getDisponiveis')->middleware(['checkLogInAdmin']);
 Route::post('admin/professores/delete/{id}', 'ProfessorController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/professores/edit/{id}', 'ProfessorController@update')->middleware(['checkLogInAdmin']);
@@ -77,6 +77,7 @@ Route::post('admin/agrupamentos/add', 'AgrupamentoController@store')->middleware
 
 Route::get('admin/ilustradores','IlustradorSolidarioController@index')->name("ilustradores")->middleware(['checkLogInAdmin']);
 Route::get('admin/ilustradores/getPorId/{id}', 'IlustradorSolidarioController@getIlustradorPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/ilustradores/getAll', 'IlustradorSolidarioController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/ilustradores/getDisponiveis', 'IlustradorSolidarioController@getDisponiveis')->middleware(['checkLogInAdmin']);
 Route::post('admin/ilustradores/delete/{id}', 'IlustradorSolidarioController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/ilustradores/edit/{id}', 'IlustradorSolidarioController@update')->middleware(['checkLogInAdmin']);
@@ -99,6 +100,7 @@ Route::post('admin/entidades/edit/{id}', 'EntidadeOficialController@update')->mi
 Route::post('admin/entidades/add', 'EntidadeOficialController@store')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/juris','JuriController@index')->name("juris")->middleware(['checkLogInAdmin']);
+Route::get('admin/juris/getAll', 'JuriController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/juris/getPorId/{id}', 'JuriController@getJuriPorId')->middleware(['checkLogInAdmin']);
 Route::get('admin/juris/getDisponiveis', 'JuriController@getDisponiveis')->middleware(['checkLogInAdmin']);
 Route::post('admin/juris/delete/{id}', 'JuriController@destroy')->middleware(['checkLogInAdmin']);
@@ -121,6 +123,7 @@ Route::post('admin/universidades/add', 'UniversidadeController@store')->middlewa
 
 Route::get('admin/profsFaculdade','ProfessorFaculdadeController@index')->name("profsFaculdade")->middleware(['checkLogInAdmin']);
 Route::get('admin/profsFaculdade/getPorId/{id}', 'ProfessorFaculdadeController@getProfPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/profsFaculdade/getAll', 'ProfessorFaculdadeController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/profsFaculdade/getDisponiveis', 'ProfessorFaculdadeController@getDisponiveis')->middleware(['checkLogInAdmin']);
 Route::post('admin/profsFaculdade/delete/{id}', 'ProfessorFaculdadeController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/profsFaculdade/edit/{id}', 'ProfessorFaculdadeController@update')->middleware(['checkLogInAdmin']);
@@ -232,7 +235,6 @@ Route::get('colaborador/dashboardColaborador','ProjetoController@index')->name("
 Route::get('colaborador/projetos/getPorId/{id}', 'ProjetoController@getProjetoPorId')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetos/edit/{id}', 'ProjetoController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetos/add', 'ProjetoController@store')->middleware(['CheckLogInColaborador']);
-Route::get('colaborador/projetos/getPdf/{id}', 'FicheiroController@getPdf')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/gerirProjeto{id}', 'ProjetoController@gerirParticipantes')->name("gerirProjetoColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/gerirProjeto/getParticipantes', 'ProjetoController@getParticipantes')->middleware(['CheckLogInColaborador']);
@@ -240,6 +242,7 @@ Route::get('colaborador/gerirProjeto/pesquisaParticipantes/{tipo}-{ano}-{pesq}',
 
 Route::get('colaborador/professores','ProfessorController@index')->name("professoresColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/professores/getPorId/{id}', 'ProfessorController@getProfPorId')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/professores/getAll', 'ProfessorController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/professores/getDisponiveis', 'ProfessorController@getDisponiveis')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/professores/edit/{id}', 'ProfessorController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/professores/add', 'ProfessorController@store')->middleware(['CheckLogInColaborador']);
@@ -258,6 +261,7 @@ Route::post('colaborador/agrupamentos/edit/{id}', 'AgrupamentoController@update'
 Route::post('colaborador/agrupamentos/add', 'AgrupamentoController@store')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/ilustradores','IlustradorSolidarioController@index')->name("ilustradoresColaborador")->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/ilustradores/getAll', 'IlustradorSolidarioController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/ilustradores/getPorId/{id}', 'IlustradorSolidarioController@getIlustradorPorId')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/ilustradores/getDisponiveis', 'IlustradorSolidarioController@getDisponiveis')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/ilustradores/edit/{id}', 'IlustradorSolidarioController@update')->middleware(['CheckLogInColaborador']);
@@ -279,6 +283,7 @@ Route::post('colaborador/entidades/add', 'EntidadeOficialController@store')->mid
 
 Route::get('colaborador/juris','JuriController@index')->name("jurisColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/juris/getPorId/{id}', 'JuriController@getJuriPorId')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/juris/getAll', 'JuriController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/juris/getDisponiveis', 'JuriController@getDisponiveis')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/juris/edit/{id}', 'JuriController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/juris/add', 'JuriController@store')->middleware(['CheckLogInColaborador']);
@@ -298,6 +303,7 @@ Route::post('colaborador/universidades/add', 'UniversidadeController@store')->mi
 Route::get('colaborador/profsFaculdade','ProfessorFaculdadeController@index')->name("profsFaculdadeColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/profsFaculdade/getPorId/{id}', 'ProfessorFaculdadeController@getProfPorId')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/profsFaculdade/getDisponiveis', 'ProfessorFaculdadeController@getDisponiveis')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/profsFaculdade/getAll', 'ProfessorFaculdadeController@getAll')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/profsFaculdade/edit/{id}', 'ProfessorFaculdadeController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/profsFaculdade/add', 'ProfessorFaculdadeController@store')->middleware(['CheckLogInColaborador']);
 
