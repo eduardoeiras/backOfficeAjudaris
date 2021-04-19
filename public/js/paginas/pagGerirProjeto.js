@@ -4,6 +4,7 @@ var idTipo = 0;
 var tipoSelect = "";
 var inicializada = false;
 var existe = false;
+var dtTable;
 
 $(document).ready(function () {
 
@@ -36,8 +37,56 @@ $(document).ready(function () {
     })
 });
 
+function copiarEmais (str) {
+    var el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style = {position: 'absolute', left: '-9999px'};
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+ }
+
 function inicializarDataTableParticipantes() {
-    $('#tabelaDados').DataTable({
+    dtTable = $('#tabelaDados').DataTable({
+        "dom": 'Bfrtip',  
+        "buttons": [
+            {
+                extend: 'copy',
+                text: 'Copiar Emails',
+                action: function ( e, dt, node, conf ) {
+                    var data = dtTable.buttons.exportData( {
+                      columns: 3,
+                    });
+                    var emails = ""
+                    var count = 1
+                    var numEmails = data.body.length
+                    for(email of data.body) {
+                        if(email != "") {
+                            if(count == numEmails) {
+                                emails = emails + email
+                            }
+                            else {
+                                emails = emails + email + ";"
+                            }    
+                        }
+                        count++;
+                    }
+                    copiarEmais(emails)
+                  },
+            },
+            {
+                extend: 'excel',
+            },
+            {
+                extend: 'pdf',
+            },
+            {
+                extend: 'print',
+                text: 'Imprimir Tabela'
+            }
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
@@ -394,7 +443,8 @@ function inicializarDataTable() {
                 "previous": "Anterior",
                 "next": "Seguinte"
             }
-        }
+        },
+        
     });
 }
 
