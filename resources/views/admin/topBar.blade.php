@@ -9,7 +9,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Página Inicial<span class="sr-only"></span></a>
+                <a class="nav-link" href="http://backofficeAjudaris/admin/pesquisaGeral">Colaboradores - Pesquisa Global<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="http://backofficeAjudaris/admin/dashboardAdmin">Página Inicial<span class="sr-only"></span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="http://backofficeAjudaris/admin/terminarSessao">Terminar Sessão<span class="sr-only"></span></a>
