@@ -15,7 +15,7 @@ function inicializarDataTable() {
             {data: 'nome', name: '', orderable: false, searchable: false},
             {data: 'agrupamentoAntigo', name: 'troca_agrupamento.agrupamentoAntigo'},
             {data: 'novoAgrupamento', name: 'troca_agrupamento.novoAgrupamento'},
-            {data: 'observacoes', name: 'troca_agrupamento.observacoes'},
+            {data: 'data', name: 'troca_agrupamento.data'},
             {data: 'opcoes', name: '', orderable: false, searchable: false},
         ],
         "language": {

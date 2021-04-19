@@ -184,6 +184,24 @@ class AgrupamentoController extends Controller
         }
     }
 
+    public function getAllComLocalidade() {
+        $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'agrupamento.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('agrupamento.id_agrupamento', 'agrupamento.nomeDiretor', 'colaborador.nome', 'cod_postal.localidade', 'cod_postal.distrito')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
+        ->get();
+                
+        
+        if($agrupamentos != null) {
+            return  response()->json($agrupamentos);
+        }
+        else {
+            return null;
+        }
+    }
+
     public function getAll() {
 
         $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
@@ -206,6 +224,22 @@ class AgrupamentoController extends Controller
                         $returnValue = $returnValue.$email->email;
                     } 
                     return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
                 }
                 else {
                     return " --- ";

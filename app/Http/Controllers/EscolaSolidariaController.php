@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CodPostal;
 use App\Models\Colaborador;
 use App\Models\EscolaSolidaria;
+use App\Models\Professor;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\EscolaSolidariaProf;
@@ -253,6 +254,11 @@ class EscolaSolidariaController extends Controller
 
         $novaAssoc->save();
 
+        $professor = Professor::find($request->id_professor);
+        $escola = EscolaSolidaria::find($request->id_escola);
+        $professor->id_agrupamento = $escola->id_agrupamento;
+        $professor->save();
+
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
             return redirect()->route("gerirEscola", $request->id_escola);
@@ -307,6 +313,30 @@ class EscolaSolidariaController extends Controller
                         $returnValue = $returnValue.$email->email;
                     } 
                     return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('contactoAssPais', function ($model) {
+                if($model->contactoAssPais != null) {
+                    return $model->contactoAssPais;
                 }
                 else {
                     return " --- ";

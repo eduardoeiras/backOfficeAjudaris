@@ -214,6 +214,22 @@ class JuriController extends Controller
                     return 'Indisponível';
                 }
             })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
             ->editColumn('tipoJuri', function ($model) {
                 if($model->tipoJuri == 0) {
                     return "Juri";

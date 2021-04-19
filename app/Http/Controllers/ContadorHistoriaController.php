@@ -167,6 +167,21 @@ class ContadorHistoriaController extends Controller
                 else {
                     return " --- ";
                 }
+            })->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
             })
             ->editColumn('disponibilidade', function ($model) {
                 if($model->disponivel == 0) {
@@ -195,7 +210,7 @@ class ContadorHistoriaController extends Controller
                 }
                 else {
                     $btns = '
-                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_contadorHistorias.')"><i
                             class="material-icons" data-toggle="tooltip"
                             title="Edit">&#xE254;</i></a>
                     <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>

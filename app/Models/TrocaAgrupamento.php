@@ -16,11 +16,11 @@ class TrocaAgrupamento extends Model
     protected $fillable = [
         'agrupamentoAntigo',
         'novoAgrupamento',
-        'observacoes',
+        'data',
         'id_professor'
     ];
 
     public function professor() {
-        return $this->hasOne(Professor::class, 'id_troca');
+        return $this->hasOne(Professor::class, 'id_professor');
     }
 }

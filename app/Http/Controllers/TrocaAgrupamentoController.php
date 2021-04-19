@@ -74,7 +74,7 @@ class TrocaAgrupamentoController extends Controller
     {
         $troca = TrocaAgrupamento::find($id);
         if($troca->professor()->first() != null) {
-            $troca->professor()->where('id_troca', $id)->delete();
+            $troca->id_professor = null;
         }
         $troca->delete();
         return redirect()->route("trocasAgrupamento");
@@ -105,17 +105,13 @@ class TrocaAgrupamentoController extends Controller
             ->addColumn('opcoes', function($model) {
                 $user = session()->get("utilizador");
                 if($user->tipoUtilizador == 0) {
-                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_troca.')"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Edit">&#xE254;</i></a>
+                    $btns = '
                     <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_troca.')"><i
                     class="material-icons" data-toggle="tooltip"
                     title="Delete">&#xE872;</i></a>';
                 }
                 else {
-                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_troca.')"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Edit">&#xE254;</i></a>';
+                    $btns = '';
                 }
                 return $btns;
          })

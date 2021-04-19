@@ -51,7 +51,7 @@
                                         <th>Nome do Professor</th>
                                         <th>Nome do Agrupamento Antigo</th>
                                         <th>Nome do Novo Agrupamento</th>
-                                        <th>Observações</th>
+                                        <th>Data</th>
                                         <th>Opções</th>
                                     </tr>
                                 </thead>

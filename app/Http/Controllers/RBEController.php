@@ -255,6 +255,22 @@ class RBEController extends Controller
                     return " --- ";
                 }
             })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
             ->editColumn('concelhos', function ($model) {
                 $concelhos = DB::table('concelho')
                     ->join('rbe_concelho', 'rbe_concelho.id_concelho', '=', 'concelho.id_concelho')

@@ -258,6 +258,22 @@ class ProfessorFaculdadeController extends Controller
                     return " --- ";
                 }
             })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
             ->editColumn('disponibilidade', function ($model) {
                 if($model->disponivel == 0) {
                     return 'Disponível';
