@@ -4,6 +4,18 @@ $(document).ready(function () {
 
 function inicializarDataTable() {
     $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"formacoes/getAll", 
+          "type": "GET"
+        },
+        "columns": [
+            {data: 'id_formacao', name: 'formacao.id_formacao'},
+            {data: 'nomeInstituicao', name: 'formacao.nomeInstituicao'},
+            {data: 'email', name: 'formacao.email'},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
@@ -11,6 +23,7 @@ function inicializarDataTable() {
             "info": "A mostrar a página _PAGE_ de _PAGES_",
             "infoEmpty": "Nehuns registos disponíveis!",
             "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "processing": "Obtendo registos. Por favor aguarde...",
             "paginate": {
                 "previous": "Anterior",
                 "next": "Seguinte"

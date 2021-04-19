@@ -6,18 +6,19 @@ use App\Models\Formacao;
 use Illuminate\Http\Request;
 use DB;
 use Session;
+use DataTables;
+
 class FormacaoController extends Controller
 {
     
     public function index()
     {
         $user = session()->get("utilizador");
-        $formacoes = Formacao::all();
         if($user->tipoUtilizador == 0) {
-            return view('admin/formacoes', ['data' => $formacoes]);
+            return view('admin/formacoes');
         }
         else {
-            return view('colaborador/formacoes', ['data' => $formacoes]);
+            return view('colaborador/formacoes');
         }
     }
 
@@ -85,5 +86,32 @@ class FormacaoController extends Controller
             return null;
         }
         
+    }
+
+    public function getAll() {
+        $formacoes = DB::table('formacao')
+        ->select('formacao.*');
+
+        return Datatables::of($formacoes)
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_formacao.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_formacao.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>';
+                }
+                else {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_formacao.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true);
+
     }
 }

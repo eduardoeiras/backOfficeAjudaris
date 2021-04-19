@@ -50,15 +50,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped table-hover" id="tabelaDados">
+                            <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <tr>
                                         <th>Nome de utilizador</th>
                                         <th>Nome</th>
                                         <th>Password</th>
-                                        <th>Email</th>
-                                        <th>Telemovel</th>
+                                        <th>Telemóvel</th>
                                         <th>Telefone</th>
+                                        <th>Email</th>
                                         <th>Departamento</th>
                                         <th>Tipo de utilizador</th>
                                         <th>Opções</th>

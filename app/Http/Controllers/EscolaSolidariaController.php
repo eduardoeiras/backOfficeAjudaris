@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\CodPostal;
 use App\Models\Colaborador;
 use App\Models\EscolaSolidaria;
+use App\Models\Professor;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\EscolaSolidariaProf;
+use DataTables;
 
 class EscolaSolidariaController extends Controller
 {
@@ -15,36 +17,11 @@ class EscolaSolidariaController extends Controller
     {
         $user = session()->get("utilizador");
 
-        $escolas = DB::table(DB::raw('escola_solidaria', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'escola_solidaria.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('escola_solidaria.id_escolaSolidaria', 'escola_solidaria.contactoAssPais', 'escola_solidaria.id_agrupamento',
-         'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($escolas as $escola) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $escola->id_colaborador)
-            ->get();
-            
-            $ent = array(
-                "entidade" => $escola,
-                "emails" => $emails
-            );
-            array_push($resposta, $ent);
-        }
-
         if($user->tipoUtilizador == 0) {
-            return view('admin/escolasSolidarias', ['data' => $resposta]);
+            return view('admin/escolasSolidarias');
         }
         else {
-            return view('colaborador/escolasSolidarias', ['data' => $resposta]);
+            return view('colaborador/escolasSolidarias');
         }
     }
 
@@ -216,16 +193,15 @@ class EscolaSolidariaController extends Controller
             $colaborador = Colaborador::find($escola->id_colaborador);
             $user = session()->get("utilizador");
             if($user->tipoUtilizador == 0) {
-                return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
+                return view('admin/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome, 'id_escola' => $id]);
             }
             else {
-                return view('colaborador/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome]);
+                return view('colaborador/gerirProfessoresEscola', ['title' => 'Escola: '.$colaborador->nome, 'id_escola' => $id]);
             }
         }
     }
 
-    public function getProfessores() {
-        $id = intval(\session('id_escola'));
+    public function getProfessores($id) {
         
         $professores = DB::table('professor')
                         ->join('escola_professor', 'professor.id_professor', '=', 'escola_professor.id_professor')
@@ -278,6 +254,11 @@ class EscolaSolidariaController extends Controller
 
         $novaAssoc->save();
 
+        $professor = Professor::find($request->id_professor);
+        $escola = EscolaSolidaria::find($request->id_escola);
+        $professor->id_agrupamento = $escola->id_agrupamento;
+        $professor->save();
+
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
             return redirect()->route("gerirEscola", $request->id_escola);
@@ -308,5 +289,106 @@ class EscolaSolidariaController extends Controller
         else {
             return redirect()->route("gerirEscolaColaborador", $id_escola);
         }
+    }
+
+    public function getAll() {
+
+        $escolas = DB::table(DB::raw('escola_solidaria', 'agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'escola_solidaria.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('escola_solidaria.*', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal');
+
+        return Datatables::of($escolas)
+            ->editColumn('emails', function ($model) {
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($model->id_colaborador))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('contactoAssPais', function ($model) {
+                if($model->contactoAssPais != null) {
+                    return $model->contactoAssPais;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('disponibilidade', function ($model) {
+                if($model->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            })
+            ->editColumn('cod_postal', function ($model) {
+                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                return $strCodPostal;
+            })
+            ->editColumn('agrupamento', function ($model) {
+                $nomeAgrupamento = AgrupamentoController::getNomeAgrupamentoPorId($model->id_agrupamento);
+                 if($nomeAgrupamento != null) {
+                     return $nomeAgrupamento;
+                 }
+                 else {
+                     return " --- ";
+                 }
+            })
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                $url = 'gerirEscola'.$model->id_escolaSolidaria;
+                if($user->tipoUtilizador == 0) {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_escolaSolidaria.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_escolaSolidaria.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    <a href="gerirLivrosAno-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>';
+                }
+                else {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_escolaSolidaria.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    <a href="gerirLivrosAno-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true);
+
     }
 }

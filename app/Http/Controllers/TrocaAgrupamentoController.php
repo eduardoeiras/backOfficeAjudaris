@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\TrocaAgrupamento;
 use Illuminate\Http\Request;
+use App\Models\Professor;
+use App\Models\Colaborador;
 use DB;
 use Session;
+use DataTables;
+
 class TrocaAgrupamentoController extends Controller
 {
 
     public function index()
     {
         $user = session()->get("utilizador");
-        $trocas = TrocaAgrupamento::all();
         if($user->tipoUtilizador == 0) {
-            return view('admin/trocasAgrupamento', ['data' => $trocas]);
+            return view('admin/trocasAgrupamento');
         }
         else{
-            return view('colaborador/trocasAgrupamento', ['data' => $trocas]);
+            return view('colaborador/trocasAgrupamento');
         }
 
         
@@ -71,7 +74,7 @@ class TrocaAgrupamentoController extends Controller
     {
         $troca = TrocaAgrupamento::find($id);
         if($troca->professor()->first() != null) {
-            $troca->professor()->where('id_troca', $id)->delete();
+            $troca->id_professor = null;
         }
         $troca->delete();
         return redirect()->route("trocasAgrupamento");
@@ -87,6 +90,34 @@ class TrocaAgrupamentoController extends Controller
             return null;
         }
         
+    }
+
+    public function getAll() {
+
+        $trocas = DB::table('troca_agrupamento')->select('troca_agrupamento.*');
+
+        return Datatables::of($trocas)
+        ->editColumn('nome', function ($model) {
+            $professor = Professor::find($model->id_professor);
+            $colaborador = Colaborador::find($professor->id_colaborador);
+            return $colaborador->nome;
+        })
+            ->addColumn('opcoes', function($model) {
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = '
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_troca.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>';
+                }
+                else {
+                    $btns = '';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true); 
+
     }
     
 }

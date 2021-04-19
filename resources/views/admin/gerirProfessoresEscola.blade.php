@@ -31,8 +31,8 @@
         <div id="page-content-wrapper">
             @include("admin/topBar")
             <?php
-                if(isset($title)) {
-                    $input = '<input type="hidden" id="idEscola" value="'.session('id_escola').'">';
+                if(isset($title) && isset($id_escola)) {
+                    $input = '<input type="hidden" id="idEscola" value="'.$id_escola.'">';
                     echo $input;
                     echo '<h1 style="padding: 3%">'.$title.'</h1>';
                 }

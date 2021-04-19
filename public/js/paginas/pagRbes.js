@@ -9,6 +9,25 @@ $(document).ready(function () {
 
 function inicializarDataTable() {
     $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"rbes/getAll", 
+          "type": "GET"
+        },
+        "columns": [
+            {data: 'regiao', name: 'rbe.regiao'},
+            {data: 'nome', name: 'colaborador.nome'},
+            {data: 'concelhos', name: '', orderable: false, searchable: false},
+            {data: 'telemovel', name: 'colaborador.telemovel'},
+            {data: 'telefone', name: 'colaborador.telefone'},
+            {data: 'emails', name: '', orderable: false, searchable: false},
+            {data: 'disponibilidade', name: 'colaborador.disponivel'},
+            {data: 'localidade', name: 'cod_postal.localidade'},
+            {data: 'rua', name: 'cod_postal_rua.rua'},
+            {data: 'cod_postal', name: 'cod_postal.codPostal', orderable: false, searchable: false},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
@@ -16,6 +35,7 @@ function inicializarDataTable() {
             "info": "A mostrar a página _PAGE_ de _PAGES_",
             "infoEmpty": "Nehuns registos disponíveis!",
             "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "processing": "Obtendo registos. Por favor aguarde...",
             "paginate": {
                 "previous": "Anterior",
                 "next": "Seguinte"
@@ -82,59 +102,6 @@ function editar(id) {
 function remover(id) {
     url = 'rbes/delete/' + id
     $('#formDelete').attr('action', url)
-}
-
-function carregarConcelhos(adicionar) {
-    if(carregamento == false) {
-        $.ajax({
-            url: 'concelhos/getAll',
-            method: "GET",
-            dataType: "json",
-            success: function (concelhos) {
-                var opcoes = ''
-                if (concelhos != null) {
-                    carregamento = true;
-                    for(concelho of concelhos) {
-                        opcoes = opcoes + `<option value="${concelho.id_concelho}">${concelho.nome}</option>`
-                    }
-                    if(adicionar) {
-                        $('#concelhosAdd').append(opcoes)   
-                    }
-                    else {
-                        $('#concelho').append(opcoes)   
-                    }
-                    
-                }
-            },
-            error: function (error) {
-
-            }
-        })    
-    }
-}
-
-function getNomeConcelho(id) {
-    var url = `concelhos/getPorId/` + id
-    var nome = ''
-    $.ajax({
-        url: url,
-        method: "GET",
-        dataType: "json",
-        success: function (concelho) {
-            if (concelho != null) {
-                nome = concelho.nome
-            }
-        },
-        error: function (error) {
-        }
-    })
-
-    if(nome != '') {
-        return nome;
-    }
-    else {
-        return null;
-    }
 }
 
 function adicionarConcelho(adicionar) {

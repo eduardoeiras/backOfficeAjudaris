@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped table-hover" id="tabelaDados">
+                            <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <tr>
                                         <th>Número identificador</th>
@@ -53,34 +53,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
-                                    <?php
-                                        if(isset($data)) {
-                                            foreach($data as $linha) {
-                                                $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha->id_formacao.'</td>';
-                                                $dados = $dados.'<td>'.$linha->nomeInstituicao.'</td>';
-                                                $dados = $dados.verificaNull($linha->email);
-                                                $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha->id_formacao.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Edit">&#xE254;</i></a>
-                                                        <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$linha->id_formacao.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Delete">&#xE872;</i></a>
-                                                    </td>';
-                                                $dados = $dados.'</tr>';
-                                                echo $dados;
-                                            }
-                                        }
-                                        function verificaNull($valor) {
-                                            if($valor != null) {
-                                                return '<td>'.$valor.'</td>';    
-                                            }
-                                            else {
-                                                return '<td> --- </td>';
-                                            }
-                                        }
-                                    ?>
+                                    
                                 </tbody>
                             </table>
                         </div>

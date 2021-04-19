@@ -9,41 +9,19 @@ use \App\Models\CodPostalRua;
 use App\Models\Colaborador;
 use App\Models\Email;
 use DB;
+use DataTables;
 
 class UniversidadeController extends Controller
 {
     public function index()
     {
         $user = session()->get("utilizador");
-        $universidades = DB::table(DB::raw('universidade', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'universidade.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('universidade.id_universidade', 'universidade.curso', 'universidade.tipo', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($universidades as $unis) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $unis->id_colaborador)
-            ->get();
-            
-            $universidade = array(
-                "entidade" => $unis,
-                "emails" => $emails
-            );
-            array_push($resposta, $universidade);
-        }
 
         if($user->tipoUtilizador == 0) {
-            return view('admin/universidades', ['data' => $resposta]);
+            return view('admin/universidades');
         }
         else {
-            return view('colaborador/universidades', ['data' => $resposta]);
+            return view('colaborador/universidades');
         }
     }
 
@@ -223,5 +201,86 @@ class UniversidadeController extends Controller
                 return view('colaborador/gerirProfessoresUniversidade', ['title' => 'Universidade: <br><br>'.$colaborador->nome.' - '.$universidade->tipo]);
             }     
         }
+    }
+
+    public function getAll() {
+
+        $universidades = DB::table(DB::raw('universidade', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'universidade.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('universidade.*', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal');
+
+        return Datatables::of($universidades)
+            ->editColumn('emails', function ($model) {
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($model->id_colaborador))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('disponibilidade', function ($model) {
+                if($model->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            })
+            ->editColumn('cod_postal', function ($model) {
+                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                return $strCodPostal;
+            })
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                $url = 'gerirUniversidade'.$model->id_universidade;
+                if($user->tipoUtilizador == 0) {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_universidade.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_universidade.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>';
+                }
+                else {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_universidade.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true); 
     }
 }

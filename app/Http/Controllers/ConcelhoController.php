@@ -71,52 +71,6 @@ class ConcelhoController extends Controller
         return redirect()->route("concelhos");
     }
 
-    public function verificaRbes($id) {
-        $concelho = Concelho::find($id);
-        if($concelho->rbes()->first() != null) {
-            $msg = 'O concelho, '.$concelho->nome.', possui Redes de Bibliotecas Escolares Associadas
-            e não pode ser eliminado!';
-            return $msg;
-        }
-        else {
-            return null; 
-        }
-    }
-
-    public function getAll()
-    {
-        $concelhos = Concelho::all();
-        if($concelhos != null) {
-            return response()->json($concelhos);
-        }
-        else {
-            return null;
-        }
-    }
-
-    public static function getNomePorId($id)
-    {
-        $concelho = DB::table('concelho')->where('id_concelho', $id)->first();
-        if($concelho != null) {
-            return $concelho->nome;
-        }
-        else {
-            return null;
-        }
-    }
-
-    public function getConcelhoPorId($id) {
-        
-        $concelho = DB::table('concelho')->where('id_concelho', $id)->first();
-        if($concelho != null) {
-            return response()->json($concelho);  
-        }
-        else {
-            return null;
-        }
-        
-    }
-
     public static function verificaAssociacao($id_concelho, $id_rbe) {
         $associacao = DB::table('Rbe_concelho')
                         ->where([

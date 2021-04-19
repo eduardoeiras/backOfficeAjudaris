@@ -7,40 +7,18 @@ use Illuminate\Http\Request;
 use App\Models\Colaborador;
 use \App\Models\CodPostal;
 use DB;
+use DataTables;
+
 class JuriController extends Controller
 {
     public function index()
     {
         $user = session()->get("utilizador");
-        $juris = DB::table(DB::raw('juri', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'juri.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('juri.id_juri', 'juri.tipoJuri', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($juris as $jur){
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $jur->id_colaborador)
-            ->get();
-            
-            $juri = array(
-                "entidade" => $jur,
-                "emails" => $emails
-            );
-            array_push($resposta, $juri);
-        }
-        
         if($user->tipoUtilizador == 0) {
-            return view('admin/juris', ['data' => $resposta]);
+            return view('admin/juris');
         }
         else {
-            return view('colaborador/juris', ['data' => $resposta]);
+            return view('colaborador/juris');
         }
     }
 
@@ -199,5 +177,94 @@ class JuriController extends Controller
         }    
     
         return \json_encode($resposta);
+    }
+
+    public function getAll() {
+
+        $juris = DB::table(DB::raw('juri', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'juri.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('juri.*', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal');
+
+        return Datatables::of($juris)
+            ->editColumn('emails', function ($model) {
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($model->id_colaborador))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('disponibilidade', function ($model) {
+                if($model->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('tipoJuri', function ($model) {
+                if($model->tipoJuri == 0) {
+                    return "Juri";
+                }
+                else if($model->tipoJuri == 1) {
+                    return 'Revisor';
+                }
+                else {
+                    return "Juri e Revisor";
+                }
+            })
+            ->editColumn('cod_postal', function ($model) {
+                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                return $strCodPostal;
+            })
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_juri.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_juri.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>';
+                }
+                else {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_juri.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true); 
     }
 }

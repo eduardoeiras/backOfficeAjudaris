@@ -43,11 +43,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped table-hover" id="tabelaDados">
+                            <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Tipo</th>
                                         <th>Nome</th>
+                                        <th>Tipo</th>
                                         <th>Curso</th>
                                         <th>Telefone</th>
                                         <th>Telemóvel</th>
@@ -60,54 +60,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
-                                    <?php
-                                        if(isset($data)) {
-                                            foreach($data as $linha) {
-                                                $dados = '<tr>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->nome.'</td>';
-                                                $dados = $dados.'<td>'.$linha["entidade"]->tipo.'</td>';
-                                                $dados = $dados.verificaNull($linha["entidade"]->curso);
-                                                $dados = $dados.verificaNull($linha["entidade"]->telefone);
-                                                $dados = $dados.verificaNull($linha["entidade"]->telemovel);
-                                                $dados = $dados.'<td>';
-                                                foreach ($linha["emails"] as $email) {
-                                                    $dados = $dados." ".$email->email;
-                                                }
-                                                if($linha["entidade"]->disponivel == 0) {
-                                                    $dados = $dados.'<td>Disponível</td>';
-                                                }
-                                                else {
-                                                    $dados = $dados.'<td>Indisponível</td>';    
-                                                }
-                                                $dados = $dados.verificaNull($linha["entidade"]->localidade);
-                                                $dados = $dados.verificaNull($linha["entidade"]->rua);
-                                                if($linha["entidade"]->codPostal != null && $linha["entidade"]->codPostalRua != null) {
-                                                    $dados = $dados.'<td>'.$linha["entidade"]->codPostal.'-'.$linha["entidade"]->codPostalRua.'</td>';
-                                                }
-                                                else {
-                                                    $dados = $dados.'<td> --- </td>';
-                                                }
-                                                $url = 'gerirUniversidade'.$linha["entidade"]->id_universidade;
-                                                $dados = $dados.'<td>
-                                                        <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$linha["entidade"]->id_universidade.')"><i
-                                                                class="material-icons" data-toggle="tooltip"
-                                                                title="Edit">&#xE254;</i></a>
-                                                        <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
-                                                        <a href="gerirComunicacoes-'.$linha["entidade"]->id_colaborador.'-'.$linha["entidade"]->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
-                                                    </td>';
-                                                $dados = $dados.'</tr>';
-                                                echo $dados;
-                                            }
-                                        }
-                                        function verificaNull($valor) {
-                                            if($valor != null) {
-                                                return '<td>'.$valor.'</td>';    
-                                            }
-                                            else {
-                                                return '<td> --- </td>';
-                                            }
-                                        }
-                                    ?>
+                                    
                                 </tbody>
                             </table>
                         </div>

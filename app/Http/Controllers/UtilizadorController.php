@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
 use DB;
+use DataTables;
 
 class UtilizadorController extends Controller
 {
@@ -160,14 +161,58 @@ class UtilizadorController extends Controller
     }
 
     public function getAll() {
-        $utilizadores = Utilizador::all();
 
-        if($utilizadores != null) {
-            return  response()->json($utilizadores); 
-        }
-        else {
-            return null;
-        }
+        $utilizadores = DB::table('utilizador')
+        ->select('utilizador.*');
+
+        return Datatables::of($utilizadores)
+            ->editColumn('tipoUtilizador', function ($model) {
+                if($model->tipoUtilizador == 0) {
+                    return 'Administrador';
+                }
+                else {
+                    return 'Colaborador';
+                }
+            })
+            ->addColumn('opcoes', function($model){
+                $user = session()->get('utilizador');
+                if(intval($model->tipoUtilizador) == 0) {
+                    if($user->nomeUtilizador == $model->nomeUtilizador) {
+                        $btns = '
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$model->id_utilizador.', true)"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Edit">&#xE254;</i></a>
+                        ';
+                    }
+                    else {
+                        $btns = '
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$model->id_utilizador.', false)"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Edit">&#xE254;</i></a>
+                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$model->id_utilizador.')"><i
+                                class="material-icons" data-toggle="tooltip"
+                                title="Delete">&#xE872;</i></a>
+                        ';
+                    }
+                }
+                else {
+                    $url = 'gerirProjetosUser/'.$model->id_utilizador;
+                    $btns = '
+                    <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$model->id_utilizador.', false)"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$model->id_utilizador.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>
+                    <a href="'.$url.'"><img src="http://backofficeAjudaris/images/projetos.png"></img></a>
+                    ';
+
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true); 
+
     }
 
     public function existeUser($name) {

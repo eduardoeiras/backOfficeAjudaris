@@ -7,42 +7,18 @@ use App\Models\Colaborador;
 use App\Models\ContadorHistoria;
 use Illuminate\Http\Request;
 use DB;
+use DataTables;
 
 class ContadorHistoriaController extends Controller
 {
     public function index()
     {
         $user = session()->get("utilizador");
-        
-        $contadoresHistorias = DB::table(DB::raw('contador_historias', 'colaborador', 'cod_postal', 'cod_postal_rua'))
-        ->join('colaborador', 'contador_historias.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('contador_historias.id_contadorHistorias', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($contadoresHistorias as $entidade) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
-            ->get();
-            
-            $contador = array(
-                "entidade" => $entidade,
-                "emails" => $emails
-            );
-            array_push($resposta, $contador);
-        }
-
         if($user->tipoUtilizador == 0) {
-            return view('admin/contadores', ['data' => $resposta]);
+            return view('admin/contadores');
         }
         else {
-            return view('colaborador/contadores', ['data' => $resposta]);
+            return view('colaborador/contadores');
         }
     }
 
@@ -125,7 +101,7 @@ class ContadorHistoriaController extends Controller
  
     }
 
-    public function getComunicacaoPorId($id) {
+    public function getContadorPorId($id) {
         $contador = ContadorHistoria::find($id);
         $colaborador = Colaborador::find($contador->id_colaborador);
         $codPostal = CodPostal::find($colaborador->codPostal);
@@ -163,5 +139,86 @@ class ContadorHistoriaController extends Controller
             return null;
         }
         
+    }
+
+    public function getAll() {
+
+        $contadoresHistorias = DB::table(DB::raw('contador_historias', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'contador_historias.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('contador_historias.id_contadorHistorias', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal');
+
+        return Datatables::of($contadoresHistorias)
+            ->editColumn('emails', function ($model) {
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($model->id_colaborador))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email;
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('disponibilidade', function ($model) {
+                if($model->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            })
+            ->editColumn('cod_postal', function ($model) {
+                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                return $strCodPostal;
+            })
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = '
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_contadorHistorias.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_contadorHistorias.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Delete">&#xE872;</i></a>´
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    ';
+                }
+                else {
+                    $btns = '
+                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_contadorHistorias.')"><i
+                            class="material-icons" data-toggle="tooltip"
+                            title="Edit">&#xE254;</i></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
+                    ';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true);
     }
 }

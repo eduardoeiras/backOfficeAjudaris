@@ -7,9 +7,9 @@ $("#menu-toggle").click(function (e) {
 
 $(document).ready(function () {
     id_escola = $('#idEscola').val()
-    
+    let urlGetProfs = "gerirEscola/getProfessores/" + id_escola 
     $.ajax({
-        url: "gerirEscola/getProfessores",
+        url: urlGetProfs,
         method: "GET",
         dataType: "json",
         success: function (response) {
@@ -88,6 +88,7 @@ function verificaNull(valor) {
 }
 
 function inicializarTabelaAdd() {
+    destruirTabela('#tabelaAdd')
     let urlAdd = "professores/getDisponiveisSemEscola/" + id_escola 
     $.ajax({
         url: urlAdd,
@@ -95,7 +96,6 @@ function inicializarTabelaAdd() {
         dataType: "json",
         success: function (response) {
             if (response != null && response.length > 0) {
-                destruirTabela('#tabelaAdd')
                 carregarProfessoresAdd(response)
             }
             inicializarDataTable('#tabelaAdd')

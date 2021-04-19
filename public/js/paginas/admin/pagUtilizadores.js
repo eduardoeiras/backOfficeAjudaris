@@ -1,28 +1,8 @@
-var username = null
 var erroUsername = false
 var editUserName = null
 
 $(document).ready(function () {
-    if($('#username').val() != null) {
-        username = $('#username').val()
-    }
-    
-    $.ajax({
-        url: 'utilizadores/getAll',
-        method: "GET",
-        dataType: "json",
-        success: function (users) {
-            if (users != null) {
-                for (user of users) {
-                    criarLinha(user)
-                }
-                inicializarDataTable();
-            }
-        },
-        error: function (error) {
-
-        }
-    })
+    inicializarDataTable()
 
     $('#nomeUtilizadorAdd').on('keyup', function(e) {
         var userInput = e.target.value;
@@ -58,7 +38,6 @@ $(document).ready(function () {
                 method: "GET",
                 dataType: "json",
                 success: function (existe) {
-                    console.log(editUserName, userInput);
                     if(existe == 1 && userInput != editUserName) {
                         erroUsername = true
                         $('#erroUserExisteEdit').text("Já existe um utilizador com o nome de utilizador introduzido!")
@@ -90,56 +69,25 @@ function mensagem(msg) {
     $('#msg').modal('show'); 
 }
 
-function criarLinha(user) {
-    var linha = '<tr>'
-    linha = linha + `<td>${user.nomeUtilizador}</td>`;
-    linha = linha + `<td>${user.nome}</td>`;
-    linha = linha + `<td>${user.password}</td>`;
-    linha = linha + verificaNull(user.email);
-    linha = linha + verificaNull(user.telemovel);
-    linha = linha + verificaNull(user.telefone);
-    linha = linha + `<td>${user.departamento}</td>`;
-    if (user.tipoUtilizador == 0) {
-        linha = linha + '<td>Administrador</td>';
-        if(user.nomeUtilizador == username) {
-            linha = linha + `<td>
-            <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador(${user.id_utilizador}, true)"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Edit">&#xE254;</i></a>
-            <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador(${user.id_utilizador})"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Delete">&#xE872;</i></a>
-            </td>`;
-        }
-        else {
-            linha = linha + `<td>
-                <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador(${user.id_utilizador}, false)"><i
-                        class="material-icons" data-toggle="tooltip"
-                        title="Edit">&#xE254;</i></a>
-                <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador(${user.id_utilizador})"><i
-                        class="material-icons" data-toggle="tooltip"
-                        title="Delete">&#xE872;</i></a>
-                </td>`;    
-        }
-    }
-    else {
-        let url = 'gerirProjetosUser/' + user.id_utilizador;
-        linha = linha + '<td>Colaborador</td>';
-        linha = linha + `<td>
-            <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador(${user.id_utilizador}, false)"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Edit">&#xE254;</i></a>
-            <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador(${user.id_utilizador})"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Delete">&#xE872;</i></a>
-            <a href="${url}"><img src="http://backofficeAjudaris/images/projetos.png"></img></a>
-            </td>`;
-    }
-    $('#tableBody').append(linha);
-}
-
 function inicializarDataTable() {
     $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"utilizadores/getAll", 
+          "type": "GET"
+        },
+        "columns": [
+            {data: 'nomeUtilizador', name: 'utilizador.nomeUtilizador'},
+            {data: 'nome', name: 'utilizador.nome'},
+            {data: 'password', name: 'utilizador.password'},
+            {data: 'telemovel', name: 'utilizador.telemovel'},
+            {data: 'telefone', name: 'utilizador.telefone'},
+            {data: 'email', name: 'utilizador.email'},
+            {data: 'departamento', name: 'utilizador.departamento'},
+            {data: 'tipoUtilizador', name: 'utilizador.tipoUtilizador'},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
@@ -147,6 +95,7 @@ function inicializarDataTable() {
             "info": "A mostrar a página _PAGE_ de _PAGES_",
             "infoEmpty": "Nehuns registos disponíveis!",
             "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "processing": "Obtendo registos. Por favor aguarde...",
             "paginate": {
                 "previous": "Anterior",
                 "next": "Seguinte"

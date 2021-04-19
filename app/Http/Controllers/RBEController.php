@@ -12,48 +12,18 @@ use App\Models\Rbe_concelho;
 use DB;
 use Session;
 use Auth;
+use DataTables;
 
 class RBEController extends Controller
 {
     public function index()
     {
         $user = session()->get("utilizador");
-        $rbes = DB::table(DB::raw('rbe', 'colaborador', 'cod_postal', 'cod_postal_rua', 'rbe_concelho'))
-        ->join('colaborador', 'rbe.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-        ->select('rbe.id_rbe', 'rbe.regiao', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal')
-        ->get();
-
-        $resposta = array();
-
-        foreach($rbes as $rbe) {
-            $emails = DB::table('email')
-            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-            ->select('email.email')
-            ->where('email.id_colaborador', '=', $rbe->id_colaborador)
-            ->get();
-
-            $concelho = DB::table('concelho')
-            ->join('rbe_concelho', 'rbe_concelho.id_concelho', '=', 'concelho.id_concelho')
-            ->select('concelho.nome')
-            ->where('rbe_concelho.id_rbe', '=', $rbe->id_rbe)
-            ->get();
-            
-            $rbibe = array(
-                "entidade" => $rbe,
-                "emails" => $emails,
-                "concelhos" => $concelho
-            );
-            array_push($resposta, $rbibe);
-        }
-        
         if($user->tipoUtilizador == 0) {
-            return view('admin\rbes', ['data' => $resposta]);
+            return view('admin\rbes');
         }
         else {
-            return view('colaborador\rbes', ['data' => $resposta]);
+            return view('colaborador\rbes');
         }
     }
 
@@ -256,5 +226,96 @@ class RBEController extends Controller
         else {
             return null;
         }
+    }
+
+    public function getAll() {
+
+        $rbes = DB::table(DB::raw('rbe', 'colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('colaborador', 'rbe.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('rbe.*', 'colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal');
+
+        return Datatables::of($rbes)
+            ->editColumn('emails', function ($model) {
+                $colabEmails = DB::table('email')
+                    ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+                    ->select('email.email')
+                    ->where('email.id_colaborador', '=', intval($model->id_colaborador))
+                    ->get();
+                $returnValue = "";
+                if(count($colabEmails) > 0) {
+                    foreach($colabEmails as $email) {
+                        $returnValue = $returnValue.$email->email."\n";
+                    } 
+                    return $returnValue;   
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('concelhos', function ($model) {
+                $concelhos = DB::table('concelho')
+                    ->join('rbe_concelho', 'rbe_concelho.id_concelho', '=', 'concelho.id_concelho')
+                    ->select('concelho.nome')
+                    ->where('rbe_concelho.id_rbe', '=', $model->id_rbe)
+                    ->get();
+                $strLinha = "";
+                foreach($concelhos as $concelho) {
+                    $strLinha = $strLinha.$concelho->nome."\n";
+                }
+                return $strLinha;
+            })
+            ->editColumn('disponibilidade', function ($model) {
+                if($model->disponivel == 0) {
+                    return 'Disponível';
+                }
+                else {
+                    return 'Indisponível';
+                }
+            })
+            ->editColumn('cod_postal', function ($model) {
+                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                return $strCodPostal;
+            })
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_rbe.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_rbe.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>';
+                }
+                else {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_rbe.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true); 
+
     }
 }
