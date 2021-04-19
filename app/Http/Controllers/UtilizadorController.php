@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Utilizador;
 use Illuminate\Http\Request;
 use DB;
-use SoulDoit\DataTable\SSP;
+use DataTables;
 
 class UtilizadorController extends Controller
 {
@@ -161,86 +161,58 @@ class UtilizadorController extends Controller
     }
 
     public function getAll() {
-        $dt = [
-            ['label'=>'Nome de Utilizador', 'db'=>'nomeUtilizador', 'dt'=>0],
-            ['label'=>'Nome', 'db'=>'nome', 'dt'=>1],
-            ['label'=>'Passsword', 'db'=>'password', 'dt'=>2],
-            ['label'=>'Emails', 'db'=>'email', 'dt'=>3, 'formatter'=>function($value, $model){
-                if($value == null) {
-                    return ' ---- ';
-                }
-                else {
-                    return $value;
-                }
-            }],
-            ['label'=>'Telemóvel', 'db'=>'telemovel', 'dt'=>4, 'formatter'=>function($value, $model){
-                if($value == null) {
-                    return ' --- ';
-                }
-                else {
-                    return $value;
-                }
-            }],
-            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>5, 'formatter'=>function($value, $model){
-                if($value == null) {
-                    return ' ---- ';
-                }
-                else {
-                    return $value;
-                }
-            }],
-            ['label'=>'Departamento', 'db'=>'departamento', 'dt'=>6],
-            ['label'=>'Tipo de Utilizador', 'db'=>'tipoUtilizador', 'dt'=>7, 'formatter'=>function($value, $model){
-                if($value == 0) {
+
+        $utilizadores = DB::table('utilizador')
+        ->select('utilizador.*');
+
+        return Datatables::of($utilizadores)
+            ->editColumn('tipoUtilizador', function ($model) {
+                if($model->tipoUtilizador == 0) {
                     return 'Administrador';
                 }
                 else {
                     return 'Colaborador';
                 }
-            }],
-            ['label'=>'Opções', 'db'=>'id_utilizador', 'dt'=>8, 'formatter'=>function($value, $model){ 
+            })
+            ->addColumn('opcoes', function($model){
                 $user = session()->get('utilizador');
-                if(intval($model["tipoUtilizador"]) == 0) {
-                    if($user->nomeUtilizador == $model["nomeUtilizador"]) {
-                        $btns = ['<td>
-                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', true)"><i
+                if(intval($model->tipoUtilizador) == 0) {
+                    if($user->nomeUtilizador == $model->nomeUtilizador) {
+                        $btns = '
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$model->id_utilizador.', true)"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Edit">&#xE254;</i></a>
-                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
-                                class="material-icons" data-toggle="tooltip"
-                                title="Delete">&#xE872;</i></a>
-                        </td>'];
+                        ';
                     }
                     else {
-                        $btns = ['<td>
-                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', false)"><i
+                        $btns = '
+                        <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$model->id_utilizador.', false)"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Edit">&#xE254;</i></a>
-                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
+                        <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$model->id_utilizador.')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
-                        </td>'];
+                        ';
                     }
                 }
                 else {
-                    $url = 'gerirProjetosUser/'.$value;
-                    $btns = ['<td>
-                    <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$value.', false)"><i
+                    $url = 'gerirProjetosUser/'.$model->id_utilizador;
+                    $btns = '
+                    <a href="#editUtilizador" class="edit" data-toggle="modal" onclick="editarUtilizador('.$model->id_utilizador.', false)"><i
                             class="material-icons" data-toggle="tooltip"
                             title="Edit">&#xE254;</i></a>
-                    <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$value.')"><i
+                    <a href="#deleteUtilizador" class="delete" data-toggle="modal" onclick="removerUtilizador('.$model->id_utilizador.')"><i
                             class="material-icons" data-toggle="tooltip"
                             title="Delete">&#xE872;</i></a>
                     <a href="'.$url.'"><img src="http://backofficeAjudaris/images/projetos.png"></img></a>
-                    </td>'];
+                    ';
 
                 }
-                return implode(" ", $btns); 
-            }],
-        ];
-        $dt_obj = new SSP('App\Models\Utilizador', $dt);
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true); 
 
-        echo json_encode($dt_obj->getDtArr());
     }
 
     public function existeUser($name) {

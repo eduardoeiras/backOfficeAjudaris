@@ -56,9 +56,9 @@
                                         <th>Nome de utilizador</th>
                                         <th>Nome</th>
                                         <th>Password</th>
-                                        <th>Email</th>
                                         <th>Telemóvel</th>
                                         <th>Telefone</th>
+                                        <th>Email</th>
                                         <th>Departamento</th>
                                         <th>Tipo de utilizador</th>
                                         <th>Opções</th>

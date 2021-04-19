@@ -8,6 +8,19 @@ $(document).ready(function () {
           "url":"escolas/getAll", 
           "type": "GET"
         },
+        "columns": [
+            {data: 'nome', name: 'colaborador.nome'},
+            {data: 'telemovel', name: 'colaborador.telemovel'},
+            {data: 'telefone', name: 'colaborador.telefone'},
+            {data: 'contactoAssPais', name: 'escola_solidaria.contactoAssPais'},
+            {data: 'emails', name: '', orderable: false, searchable: false},
+            {data: 'disponibilidade', name: 'colaborador.disponivel'},
+            {data: 'agrupamento', name: '', orderable: false, searchable: false},
+            {data: 'localidade', name: 'cod_postal.localidade'},
+            {data: 'rua', name: 'cod_postal_rua.rua'},
+            {data: 'cod_postal', name: 'cod_postal.codPostal', orderable: false, searchable: false},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",

@@ -48,8 +48,8 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
-                                        <th>Telefone</th>
                                         <th>Telemóvel</th>
+                                        <th>Telefone</th>
                                         <th>Contacto da Associação de Pais</th>
                                         <th>Emails</th>
                                         <th>Disponibilidade</th>

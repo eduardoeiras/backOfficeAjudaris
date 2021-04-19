@@ -10,6 +10,12 @@ function inicializarDataTable() {
           "url":"formacoes/getAll", 
           "type": "GET"
         },
+        "columns": [
+            {data: 'id_formacao', name: 'formacao.id_formacao'},
+            {data: 'nomeInstituicao', name: 'formacao.nomeInstituicao'},
+            {data: 'email', name: 'formacao.email'},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",

@@ -4,6 +4,20 @@ $(document).ready(function () {
 
 function inicializarDataTable() {
     $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"trocasAgrupamento/getAll", 
+          "type": "GET"
+        },
+        "columns": [
+            {data: 'id_troca', name: 'troca_agrupamento.id_troca'},
+            {data: 'nome', name: '', orderable: false, searchable: false},
+            {data: 'agrupamentoAntigo', name: 'troca_agrupamento.agrupamentoAntigo'},
+            {data: 'novoAgrupamento', name: 'troca_agrupamento.novoAgrupamento'},
+            {data: 'observacoes', name: 'troca_agrupamento.observacoes'},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
@@ -11,6 +25,7 @@ function inicializarDataTable() {
             "info": "A mostrar a página _PAGE_ de _PAGES_",
             "infoEmpty": "Nehuns registos disponíveis!",
             "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "processing": "Obtendo registos. Por favor aguarde...",
             "paginate": {
                 "previous": "Anterior",
                 "next": "Seguinte"

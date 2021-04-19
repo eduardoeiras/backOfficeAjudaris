@@ -6,7 +6,7 @@ use App\Models\Formacao;
 use Illuminate\Http\Request;
 use DB;
 use Session;
-use SoulDoit\DataTable\SSP;
+use DataTables;
 
 class FormacaoController extends Controller
 {
@@ -89,51 +89,29 @@ class FormacaoController extends Controller
     }
 
     public function getAll() {
-        $dt = [
-            ['label'=>'Número identificador', 'db'=>'id_formacao', 'dt'=>0, 'formatter'=>function($value, $model){
-                return $value;
-            }],
-            ['label'=>'Nome da Instituição', 'db'=>'nomeInstituicao', 'dt'=>1, 'formatter'=>function($value, $model){
-                if($value != null) {
-                    return $value;
-                }
-                else {
-                    return " --- ";
-                }
-            }],
-            ['label'=>'Email', 'db'=>'email', 'dt'=>2, 'formatter'=>function($value, $model){
-                if($value != null) {
-                    return $value;
-                }
-                else {
-                    return " --- ";
-                }
-            }],
-            ['label'=>'Opções', 'db'=>'id_formacao', 'dt'=>3, 'formatter'=>function($value, $model){ 
-                $user = session()->get("utilizador");
-                $url = 'gerirEscola'.$value;
-                if($user->tipoUtilizador == 0) {
-                    $btns = ['<td>
-                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
-                            class="material-icons" data-toggle="tooltip"
-                            title="Edit">&#xE254;</i></a>
-                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$value.')"><i
-                            class="material-icons" data-toggle="tooltip"
-                            title="Delete">&#xE872;</i></a>
-                    </td>'];
-                }
-                else {
-                    $btns = ['<td>
-                    <a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
-                            class="material-icons" data-toggle="tooltip"
-                            title="Edit">&#xE254;</i></a>
-                    </td>'];
-                }
-                return implode(" ", $btns); 
-            }],
-        ];
-        $dt_obj = new SSP('App\Models\Formacao', $dt);
+        $formacoes = DB::table('formacao')
+        ->select('formacao.*');
 
-        echo json_encode($dt_obj->getDtArr());
+        return Datatables::of($formacoes)
+            ->addColumn('opcoes', function($model){
+                $user = session()->get("utilizador");
+                if($user->tipoUtilizador == 0) {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_formacao.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>
+                    <a href="#delete" class="delete" data-toggle="modal" onclick="remover('.$model->id_formacao.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Delete">&#xE872;</i></a>';
+                }
+                else {
+                    $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_formacao.')"><i
+                    class="material-icons" data-toggle="tooltip"
+                    title="Edit">&#xE254;</i></a>';
+                }
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true);
+
     }
 }

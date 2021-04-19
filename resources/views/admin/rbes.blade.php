@@ -47,14 +47,13 @@
                             <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <tr>
-                                        <th>Número identificador</th>
                                         <th>Região</th>
                                         <th>Nome do Coordenador</th>
                                         <th>Concelhos</th>
-                                        <th>Disponibilidade</th>
-                                        <th>Telemovel</th>
+                                        <th>Telemóvel</th>
                                         <th>Telefone</th>
                                         <th>Emails</th>
+                                        <th>Disponibilidade</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
                                         <th>Código Postal</th>

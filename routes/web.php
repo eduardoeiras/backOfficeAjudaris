@@ -133,6 +133,7 @@ Route::post('admin/profsFaculdade/add', 'ProfessorFaculdadeController@store')->m
 
 Route::get('admin/trocasAgrupamento', 'TrocaAgrupamentoController@index')->name("trocasAgrupamento")->middleware(['checkLogInAdmin']);
 Route::get('admin/trocasAgrupamento/getPorId/{id}', 'TrocaAgrupamentoController@getTrocaPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/trocasAgrupamento/getAll', 'TrocaAgrupamentoController@getAll')->middleware(['checkLogInAdmin']);
 Route::post('admin/trocasAgrupamento/delete/{id}', 'TrocaAgrupamentoController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/trocasAgrupamento/edit/{id}', 'TrocaAgrupamentoController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/trocasAgrupamento/add', 'TrocaAgrupamentoController@store')->middleware(['checkLogInAdmin']);
@@ -312,6 +313,7 @@ Route::post('colaborador/profsFaculdade/edit/{id}', 'ProfessorFaculdadeControlle
 Route::post('colaborador/profsFaculdade/add', 'ProfessorFaculdadeController@store')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/trocasAgrupamento', 'TrocaAgrupamentoController@index')->name("trocasAgrupamentoColaborador")->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/trocasAgrupamento/getAll', 'TrocaAgrupamentoController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/trocasAgrupamento/getPorId/{id}', 'TrocaAgrupamentoController@getTrocaPorId')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/trocasAgrupamento/edit/{id}', 'TrocaAgrupamentoController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/trocasAgrupamento/add', 'TrocaAgrupamentoController@store')->middleware(['CheckLogInColaborador']);

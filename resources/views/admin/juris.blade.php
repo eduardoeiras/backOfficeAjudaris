@@ -51,7 +51,7 @@
                                         <th>Telefone</th>
                                         <th>Emails</th>
                                         <th>Disponibilidade</th>
-                                        <th>Tipo de Participação</th>
+                                        <th>Tipo</th>
                                         <th>Localidade</th>
                                         <th>Rua</th>
                                         <th>Código Postal</th>

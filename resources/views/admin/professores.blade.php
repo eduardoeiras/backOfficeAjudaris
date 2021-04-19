@@ -47,8 +47,8 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
+                                        <th>Telemóvel</th>
                                         <th>Telefone</th>
-                                        <th>Telemovel</th>
                                         <th>Emails</th>
                                         <th>Disponibilidade</th>
                                         <th>Localidade</th>

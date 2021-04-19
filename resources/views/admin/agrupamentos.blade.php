@@ -47,7 +47,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
-                                        <th>Telemovel</th>
+                                        <th>Telemóvel</th>
                                         <th>Telefone</th>
                                         <th>Emails</th>
                                         <th>Nome do Diretor</th>

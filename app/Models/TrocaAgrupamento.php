@@ -16,7 +16,7 @@ class TrocaAgrupamento extends Model
     protected $fillable = [
         'agrupamentoAntigo',
         'novoAgrupamento',
-        'telemovelobservacoes',
+        'observacoes',
         'id_professor'
     ];
 

@@ -38,7 +38,6 @@ $(document).ready(function () {
                 method: "GET",
                 dataType: "json",
                 success: function (existe) {
-                    console.log(editUserName, userInput);
                     if(existe == 1 && userInput != editUserName) {
                         erroUsername = true
                         $('#erroUserExisteEdit').text("Já existe um utilizador com o nome de utilizador introduzido!")
@@ -78,6 +77,17 @@ function inicializarDataTable() {
           "url":"utilizadores/getAll", 
           "type": "GET"
         },
+        "columns": [
+            {data: 'nomeUtilizador', name: 'utilizador.nomeUtilizador'},
+            {data: 'nome', name: 'utilizador.nome'},
+            {data: 'password', name: 'utilizador.password'},
+            {data: 'telemovel', name: 'utilizador.telemovel'},
+            {data: 'telefone', name: 'utilizador.telefone'},
+            {data: 'email', name: 'utilizador.email'},
+            {data: 'departamento', name: 'utilizador.departamento'},
+            {data: 'tipoUtilizador', name: 'utilizador.tipoUtilizador'},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
