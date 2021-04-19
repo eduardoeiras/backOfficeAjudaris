@@ -8,7 +8,7 @@ use App\Models\Colaborador;
 use App\Models\Email;
 use Illuminate\Http\Request;
 use DB;
-use SoulDoit\DataTable\SSP;
+use DataTables;
 
 class ColaboradorController extends Controller
 {
@@ -313,29 +313,19 @@ class ColaboradorController extends Controller
     }
 
     function getColaboradores() {
-        $dt = [
-            ['label'=>'Nome', 'db'=>'nome', 'dt'=>0],
-            ['label'=>'Telefone', 'db'=>'telefone', 'dt'=>1, 'formatter'=>function($value, $model){
-                if($value == null) {
-                    return ' ---- ';
-                }
-                else {
-                    return $value;
-                }
-            }],
-            ['label'=>'Telemovel', 'db'=>'telemovel', 'dt'=>2, 'formatter'=>function($value, $model){
-                if($value == null) {
-                    return ' --- ';
-                }
-                else {
-                    return $value;
-                }
-            }],
-            ['label'=>'Emails', 'db'=>'id_colaborador', 'dt'=>3, 'formatter'=>function($value, $model){
+
+        $colaboradores = DB::table(DB::raw('colaborador', 'cod_postal', 'cod_postal_rua'))
+        ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
+        ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
+        ->select('colaborador.*', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
+        ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal');
+
+        return Datatables::of($colaboradores)
+            ->editColumn('emails', function ($model) {
                 $colabEmails = DB::table('email')
                     ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
                     ->select('email.email')
-                    ->where('email.id_colaborador', '=', intval($value))
+                    ->where('email.id_colaborador', '=', intval($model->id_colaborador))
                     ->get();
                 $returnValue = "";
                 if(count($colabEmails) > 0) {
@@ -347,47 +337,44 @@ class ColaboradorController extends Controller
                 else {
                     return " --- ";
                 }
-            }],
-            ['label'=>'Disponibilidade', 'db'=>'disponivel', 'dt'=>4, 'formatter'=>function($value, $model){
-                if($value == 0) {
+            })
+            ->editColumn('telefone', function ($model) {
+                if($model->telefone != null) {
+                    return $model->telefone;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('telemovel', function ($model) {
+                if($model->telemovel != null) {
+                    return $model->telemovel;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('disponibilidade', function ($model) {
+                if($model->disponivel == 0) {
                     return 'Disponível';
                 }
                 else {
                     return 'Indisponível';
                 }
-            }],
-            ['label'=>'Morada', 'db'=>'id_colaborador', 'dt'=>5, 'formatter'=>function($value, $model){
-                $morada = DB::table(DB::raw('colaborador', 'cod_postal', 'cod_postal_rua'))
-                ->join('cod_postal', 'colaborador.codPostal', '=' ,'cod_postal.codPostal')
-                ->join('cod_postal_rua', 'colaborador.codPostalRua', '=' ,'cod_postal_rua.codPostalRua')
-                ->select('colaborador.codPostal', 'colaborador.codPostalRua', 'cod_postal.localidade', 'cod_postal.distrito', 'cod_postal_rua.rua')
-                ->whereRaw('cod_postal_rua.codPostal = cod_postal.codPostal and colaborador.id_colaborador = '.$value.'')
-                ->first();
-                $returnValue = "";
-                if($morada != null) {
-                    if(isset($morada->rua)) {
-                        $returnValue = $morada->rua.', '.$morada->localidade.', '.$morada->distrito.', '.$morada->codPostal.'-'.$morada->codPostalRua;   
-                    }
-                    else {
-                        $returnValue = $morada->localidade.', '.$morada->distrito.', '.$morada->codPostal.'-'.$morada->codPostalRua;   
-                    }
-                    return $returnValue;   
-                }
-                else {
-                    return " --- ";
-                }
-            }],
-            ['label'=>'Opções', 'db'=>'id_colaborador', 'dt'=>6, 'formatter'=>function($value, $model){ 
-                $btns = [
-                    '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$value.')"><i
-                    class="material-icons" data-toggle="tooltip"
-                    title="Edit">&#xE254;</i></a>',
-                ];
-                return implode(" ", $btns); 
-            }],
-        ];
-        $dt_obj = new SSP('App\Models\Colaborador', $dt);
+            })
+            ->editColumn('cod_postal', function ($model) {
+                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                return $strCodPostal;
+            })
+            ->addColumn('opcoes', function($model){
+                $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_colaborador.')"><i
+                class="material-icons" data-toggle="tooltip"
+                title="Edit">&#xE254;</i></a>';
+                
+                return $btns;
+         })
+            ->rawColumns(['opcoes'])
+            ->make(true);
 
-        echo json_encode($dt_obj->getDtArr());
     }
 }

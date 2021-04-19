@@ -42,11 +42,13 @@
                             <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
                                 <thead>
                                     <th>Nome</th>
+                                    <th>Telemóvel</th>
                                     <th>Telefone</th>
-                                    <th>Telemovel</th>
                                     <th>Emails</th>
                                     <th>Disponibilidade</th>
-                                    <th>Morada</th>
+                                    <th>Localidade</th>
+                                    <th>Rua</th>
+                                    <th>Código Postal</th>
                                     <th>Opções</th>
                                 </thead>
                             </table>
