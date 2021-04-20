@@ -133,11 +133,8 @@ Route::post('admin/profsFaculdade/edit/{id}', 'ProfessorFaculdadeController@upda
 Route::post('admin/profsFaculdade/add', 'ProfessorFaculdadeController@store')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/trocasAgrupamento', 'TrocaAgrupamentoController@index')->name("trocasAgrupamento")->middleware(['checkLogInAdmin']);
-Route::get('admin/trocasAgrupamento/getPorId/{id}', 'TrocaAgrupamentoController@getTrocaPorId')->middleware(['checkLogInAdmin']);
 Route::get('admin/trocasAgrupamento/getAll', 'TrocaAgrupamentoController@getAll')->middleware(['checkLogInAdmin']);
 Route::post('admin/trocasAgrupamento/delete/{id}', 'TrocaAgrupamentoController@destroy')->middleware(['checkLogInAdmin']);
-Route::post('admin/trocasAgrupamento/edit/{id}', 'TrocaAgrupamentoController@update')->middleware(['checkLogInAdmin']);
-Route::post('admin/trocasAgrupamento/add', 'TrocaAgrupamentoController@store')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/codPostal/getAll', 'CodPostalController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/codPostal/add', 'CodPostalController@store')->middleware(['checkLogInAdmin']);
@@ -327,9 +324,6 @@ Route::post('colaborador/profsFaculdade/add', 'ProfessorFaculdadeController@stor
 
 Route::get('colaborador/trocasAgrupamento', 'TrocaAgrupamentoController@index')->name("trocasAgrupamentoColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/trocasAgrupamento/getAll', 'TrocaAgrupamentoController@getAll')->middleware(['CheckLogInColaborador']);
-Route::get('colaborador/trocasAgrupamento/getPorId/{id}', 'TrocaAgrupamentoController@getTrocaPorId')->middleware(['CheckLogInColaborador']);
-Route::post('colaborador/trocasAgrupamento/edit/{id}', 'TrocaAgrupamentoController@update')->middleware(['CheckLogInColaborador']);
-Route::post('colaborador/trocasAgrupamento/add', 'TrocaAgrupamentoController@store')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/codPostal/getAll', 'CodPostalController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/codPostal/add', 'CodPostalController@store')->middleware(['CheckLogInColaborador']);

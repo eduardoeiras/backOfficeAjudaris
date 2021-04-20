@@ -38,10 +38,6 @@
                                     <div class="col-sm-6">
                                         <h2>Gerir <b>Trocas de Agrupamento</b></h2>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <a href="#add" class="btn btn-success" data-toggle="modal"><i
-                                                class="material-icons">&#xE147;</i> <span>Criar uma nova Troca de Agrupamento</span></a>
-                                    </div>
                                 </div>
                             </div>
                             <table class="table table-striped table-hover" style="width:100%" id="tabelaDados">
