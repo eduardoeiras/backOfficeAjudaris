@@ -366,7 +366,7 @@ class ProjetoController extends Controller
             $rbes = DB::table('rbe')
                         ->join('projeto_rbe', 'rbe.id_rbe', '=', 'projeto_rbe.id_rbe')
                         ->join('colaborador', 'rbe.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('rbe.id_rbe' , 'colaborador.nome', 'rbe.regiao', 'projeto_rbe.anoParticipacao', 'colaborador.id_colaborador')
+                        ->select('rbe.id_rbe' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'rbe.regiao', 'projeto_rbe.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_rbe.id_projeto', '=', $id_projeto],
                             ['projeto_rbe.anoParticipacao', '=', $ano],

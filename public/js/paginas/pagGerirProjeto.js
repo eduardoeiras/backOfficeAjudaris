@@ -64,6 +64,9 @@ function inicializarDataTableParticipantes() {
                     var numEmails = data.body.length
                     for(email of data.body) {
                         if(email != "") {
+                            if(email.indexOf(' ') >= 0) {
+                                email.replace(/\s/g, ';')
+                            }
                             if(count == numEmails) {
                                 emails = emails + email
                             }
@@ -201,7 +204,7 @@ function criarLinha(elemento, tipo) {
         linha = linha + verificaNull(entidade.telemovel)
         linha = linha + '<td>'
         emails.forEach(element => {
-            linha = linha + `${element.email}`
+            linha = linha + `${element.email}\n`
         });
         linha = linha + '</td>'
         linha = linha + '<td> --- </td>'
@@ -219,7 +222,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + '</tr>'
                 break;
             case 'contador':
-                linha = linha + `<td>Contador</td>`
+                linha = linha + `<td>Contador de Histórias</td>`
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${ano}</td>`
                 linha = linha + `<td>
@@ -314,10 +317,14 @@ function criarLinha(elemento, tipo) {
         }
     }
     else {
-        linha = linha + `<td>${entidade.nomeCoordenador}</td>`
-        linha = linha + '<td> --- </td>'
-        linha = linha + '<td> --- </td>'
-        linha = linha + '<td> --- </td>'
+        linha = linha + `<td>${entidade.nome}</td>`
+        linha = linha + verificaNull(entidade.telefone)
+        linha = linha + verificaNull(entidade.telemovel)
+        linha = linha + '<td>'
+        emails.forEach(element => {
+            linha = linha + `${element.email}\n`
+        });
+        linha = linha + '</td>'
         linha = linha + `<td>${entidade.regiao}</td>`
         linha = linha + `<td>RBE</td>`
         linha = linha + `<td>Participante</td>`
@@ -413,10 +420,10 @@ function criarLinhasAdd(elementos, rbe) {
             var entidade = elemento.entidade
             var emails = elemento.emails
             let linha = "<tr>";
-            linha = linha + `<td>${entidade.nomeCoordenador}</td>`
+            linha = linha + `<td>${entidade.nome}</td>`
             linha = linha + `<td>${entidade.regiao}</td>`
             linha = linha + `<td>${entidade.nome}</td>`
-            linha = linha + '<td><button onclick="selecionar(' + entidade.id + ', \'' + entidade.nomeCoordenador + '\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>'
+            linha = linha + '<td><button onclick="selecionar(' + entidade.id + ', \'' + entidade.nome + '\')"><img src="http://backofficeAjudaris/images/select.png"></img></a></td>'
             linha = linha + '</tr>'
             $('#tableBodyAdd').append(linha)
         }

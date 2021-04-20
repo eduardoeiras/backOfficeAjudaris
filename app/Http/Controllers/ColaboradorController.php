@@ -330,7 +330,7 @@ class ColaboradorController extends Controller
                 $returnValue = "";
                 if(count($colabEmails) > 0) {
                     foreach($colabEmails as $email) {
-                        $returnValue = $returnValue.$email->email;
+                        $returnValue = $returnValue.$email->email."\n";
                     } 
                     return $returnValue;   
                 }

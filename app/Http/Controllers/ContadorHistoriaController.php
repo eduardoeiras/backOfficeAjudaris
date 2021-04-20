@@ -141,6 +141,34 @@ class ContadorHistoriaController extends Controller
         
     }
 
+    public function getDisponiveis() {
+        $contadores = DB::table('contador_historias')
+                    ->join('colaborador', 'contador_historias.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('contador_historias.id_contadorHistorias as id', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
+                    ->where([
+                        ['colaborador.disponivel', '=', 0]
+                        ])
+                    ->get();
+    
+    $resposta = array();
+
+    foreach($contadores as $entidade) {
+        $emails = DB::table('email')
+        ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+        ->select('email.email')
+        ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+        ->get();
+                    
+        $ent = array(
+            "entidade" => $entidade,
+            "emails" => $emails
+        );
+        array_push($resposta, $ent);
+    }  
+    
+    return \json_encode($resposta);
+}
+
     public function getAll() {
 
         $contadoresHistorias = DB::table(DB::raw('contador_historias', 'colaborador', 'cod_postal', 'cod_postal_rua'))
@@ -160,7 +188,7 @@ class ContadorHistoriaController extends Controller
                 $returnValue = "";
                 if(count($colabEmails) > 0) {
                     foreach($colabEmails as $email) {
-                        $returnValue = $returnValue.$email->email;
+                        $returnValue = $returnValue.$email->email."\n";
                     } 
                     return $returnValue;   
                 }
