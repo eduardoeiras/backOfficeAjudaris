@@ -88,31 +88,34 @@ class ConcelhoController extends Controller
 
     public static function criaAssociaConcelhos($concelhos, $id_rbe)
     {
-        foreach($concelhos as $concelho) {
+        if($concelhos != null) {
+            foreach($concelhos as $concelho) {
 
-            $concelhoBD = DB::table('concelho')
-                        ->where('concelho.nome', '=', $concelho)
-                        ->first(); 
+                $concelhoBD = DB::table('concelho')
+                            ->where('concelho.nome', '=', $concelho)
+                            ->first(); 
 
-            $id_concelho = null;
-                        
-            if($concelhoBD == null) {
-                $con = new Concelho();
-                $con->nome = $concelho;
-                $con->save(); 
-                $id_concelho = self::getLastId();  
-            }
-            else {
-                $id_concelho = $concelhoBD->id_concelho;
-            }
-            
-            if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
-                $associacao = new Rbe_concelho();
-                $associacao->id_rbe = $id_rbe;
-                $associacao->id_concelho = $id_concelho;
-                $associacao->save();    
-            }
+                $id_concelho = null;
+                            
+                if($concelhoBD == null) {
+                    $con = new Concelho();
+                    $con->nome = $concelho;
+                    $con->save(); 
+                    $id_concelho = self::getLastId();  
+                }
+                else {
+                    $id_concelho = $concelhoBD->id_concelho;
+                }
+                
+                if(!self::verificaAssociacao($id_concelho, $id_rbe)) {
+                    $associacao = new Rbe_concelho();
+                    $associacao->id_rbe = $id_rbe;
+                    $associacao->id_concelho = $id_concelho;
+                    $associacao->save();    
+                }
+            }    
         }
+        
     }
 
     public static function removeAssociaConcelhos($concelhos, $id_rbe)

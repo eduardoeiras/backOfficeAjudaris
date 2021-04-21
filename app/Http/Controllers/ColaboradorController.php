@@ -24,16 +24,22 @@ class ColaboradorController extends Controller
         $colaborador->disponivel = $disponibilidade;
         $colaborador->observacoes = $observacoes;
         
-        $cod_postal = CodPostal::find($codPostal);
-        $cod_postal_rua = DB::table('cod_postal_rua')
-                                    ->where([
-                                        ['cod_postal_rua.codPostal', '=', $codPostal],
-                                        ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
-                                        ]);
+        if($codPostal != null && $codPostalRua != null) {
+            $cod_postal = CodPostal::find($codPostal);
+            $cod_postal_rua = DB::table('cod_postal_rua')
+                                        ->where([
+                                            ['cod_postal_rua.codPostal', '=', $codPostal],
+                                            ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
+                                            ]);
 
-        ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
-        ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
-
+            ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
+            ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
+        }
+        else {
+            $colaborador->codPostal = ' ';
+            $colaborador->codPostalRua = ' ';
+        }
+    
         $colaborador->save();
 
         $idColab = ColaboradorController::getLastId()[0]->id_colaborador;
@@ -54,14 +60,7 @@ class ColaboradorController extends Controller
     public static function update($idColaborador, $nome, $observacoes, $telemovel, $telefone, $numPorta, $disponibilidade, $codPostal,
     $codPostalRua, $rua, $localidade, $distrito, $emails, $emailsToDelete) {
         $colaborador = Colaborador::find($idColaborador);
-
-        $cod_postal = CodPostal::find($codPostal);
-        $cod_postal_rua = DB::table('cod_postal_rua')
-                                    ->where([
-                                        ['cod_postal_rua.codPostal', '=', $codPostal],
-                                        ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
-                                        ]);
-
+        
         if($colaborador != null) {
             $colaborador->telefone = $telefone;
             $colaborador->telemovel = $telemovel;
@@ -91,9 +90,21 @@ class ColaboradorController extends Controller
                     }  
                 } 
             }
-            
-            ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
-            ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
+
+            if($codPostal != null && $codPostalRua != null) {
+                $cod_postal = CodPostal::find($codPostal);
+                $cod_postal_rua = DB::table('cod_postal_rua')
+                                        ->where([
+                                            ['cod_postal_rua.codPostal', '=', $codPostal],
+                                            ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
+                                            ]); 
+                ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
+                ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
+            }
+            else {
+                $colaborador->codPostal = ' ';
+                $colaborador->codPostalRua = ' ';
+            }
 
             $colaborador->save();
         }
@@ -116,13 +127,6 @@ class ColaboradorController extends Controller
 
         $colaborador = Colaborador::find($idColaborador);
 
-        $cod_postal = CodPostal::find($codPostal);
-        $cod_postal_rua = DB::table('cod_postal_rua')
-                                    ->where([
-                                        ['cod_postal_rua.codPostal', '=', $codPostal],
-                                        ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
-                                        ]);
-
         if($colaborador != null) {
             $colaborador->telefone = $telefone;
             $colaborador->telemovel = $telemovel;
@@ -152,9 +156,22 @@ class ColaboradorController extends Controller
                     }  
                 } 
             }
-            
-            ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
-            ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
+
+            if($codPostal != null && $codPostalRua != null) {
+                $cod_postal = CodPostal::find($codPostal);
+                $cod_postal_rua = DB::table('cod_postal_rua')
+                                        ->where([
+                                            ['cod_postal_rua.codPostal', '=', $codPostal],
+                                            ['cod_postal_rua.codPostalRua', '=', $codPostalRua],
+                                            ]);
+    
+                ColaboradorController::updateCodPostal($colaborador, $cod_postal, $codPostal, $localidade, $distrito);
+                ColaboradorController::updateCodPostalRua($colaborador, $cod_postal_rua, $codPostalRua, $codPostal, $rua);
+            }
+            else {
+                $colaborador->codPostal = ' ';
+                $colaborador->codPostalRua = ' ';
+            }
 
             $colaborador->save();
             
@@ -362,8 +379,30 @@ class ColaboradorController extends Controller
                     return 'Indisponível';
                 }
             })
+            ->editColumn('rua', function ($model) {
+                if($model->rua != null) {
+                    return $model->rua;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('localidade', function ($model) {
+                if($model->localidade != null) {
+                    return $model->localidade;
+                }
+                else {
+                    return " --- ";
+                }
+            })
             ->editColumn('cod_postal', function ($model) {
-                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                if($model->codPostal != ' ' && $model->codPostalRua != ' ') {
+                    $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                }
+                else {
+                    $strCodPostal = " --- ";
+                }
+                
                 return $strCodPostal;
             })
             ->addColumn('opcoes', function($model){

@@ -68,7 +68,7 @@
                 <div id="add" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" action="juris/add">
+                            <form method="POST" action="juris/add" onsubmit="return verificaValidadeMoradas(true)">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Adicionar Juri/Revisor</h4>
@@ -134,19 +134,22 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Localidade</label>
-                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70" required>
+                                        <input type="text" id="localidadeAdd" name="localidade" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
                                         <label>Distrito</label>
-                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70" required>
+                                        <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70">
                                     </div>
                                     <br>
                                     <div class="form-group">
+                                        <label style="font-size: 16px">Código Postal</label>
+                                        <br><br>
                                         <label>Primeiros dígitos</label>
-                                        <input type="number" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10" required>
+                                        <input type="text" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10">
                                         <label>Segundos dígitos</label>
-                                        <input type="number" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6" required>
+                                        <input type="text" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6">
                                     </div>
+                                    <label style="color: red; margin-top: 10px" id="erroMoradaAdd"></label>
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
@@ -159,7 +162,7 @@
                 <div id="edit" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" action="" id="formEditar">
+                            <form method="POST" action="" id="formEditar" onsubmit="return verificaValidadeMoradas(false)">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Editar Juri/Revisor</h4>
@@ -225,18 +228,21 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Localidade</label>
-                                        <input type="text" id="localidade" name="localidade" class="form-control" maxlength="50" required>
+                                        <input type="text" id="localidade" name="localidade" class="form-control" maxlength="50">
                                     </div>
                                     <div class="form-group">
                                         <label>Distrito</label>
-                                        <input type="text" id="distrito" name="distrito" class="form-control" maxlength="70" required>
+                                        <input type="text" id="distrito" name="distrito" class="form-control" maxlength="70">
                                     </div>
                                     <div class="form-group">
+                                        <label style="font-size: 16px">Código Postal</label>
+                                        <br><br>
                                         <label>Primeiros dígitos</label>
-                                        <input type="text" id="codPostal" name="codPostal" class="form-control" maxlength="10" required>
+                                        <input type="text" id="codPostal" name="codPostal" class="form-control" maxlength="10">
                                         <label>Segundos dígitos</label>
-                                        <input type="text" id="codPostalRua" name="codPostalRua" class="form-control" maxlength="6" required>
+                                        <input type="text" id="codPostalRua" name="codPostalRua" class="form-control" maxlength="6">
                                     </div>
+                                    <label style="color: red; margin-top: 10px" id="erroMorada"></label>
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
@@ -273,6 +279,7 @@
     </div>
     </div>
     <script src="{{ asset('js/edicaoEmails.js') }}"></script>
+    <script src="{{ asset('js/validacaoMoradas.js') }}"></script>
     <script src="{{ asset('js/paginas/pagJuris.js') }}"></script>
 </body>
 

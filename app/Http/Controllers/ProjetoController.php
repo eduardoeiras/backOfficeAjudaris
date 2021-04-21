@@ -63,7 +63,9 @@ class ProjetoController extends Controller
 
         $projeto->nome = $request->nome;
         $projeto->objetivos = $request->objetivos;
-        $projeto->regulamento = $request->urlFicheiro;
+        if($request->urlFicheiro != '') {
+            $projeto->regulamento = $request->urlFicheiro;    
+        }
         $projeto->publicoAlvo = $request->publicoAlvo;
         $projeto->observacoes = $request->observacoes;
 

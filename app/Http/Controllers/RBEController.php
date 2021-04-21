@@ -277,11 +277,17 @@ class RBEController extends Controller
                     ->select('concelho.nome')
                     ->where('rbe_concelho.id_rbe', '=', $model->id_rbe)
                     ->get();
-                $strLinha = "";
-                foreach($concelhos as $concelho) {
-                    $strLinha = $strLinha.$concelho->nome."\n";
+                
+                if(count($concelhos) > 0) {
+                    $strLinha = "";
+                    foreach($concelhos as $concelho) {
+                        $strLinha = $strLinha.$concelho->nome."\n";
+                    } 
+                    return $strLinha;       
                 }
-                return $strLinha;
+                else {
+                    return " --- ";
+                }
             })
             ->editColumn('disponibilidade', function ($model) {
                 if($model->disponivel == 0) {
@@ -291,8 +297,30 @@ class RBEController extends Controller
                     return 'Indisponível';
                 }
             })
+            ->editColumn('rua', function ($model) {
+                if($model->rua != null) {
+                    return $model->rua;
+                }
+                else {
+                    return " --- ";
+                }
+            })
+            ->editColumn('localidade', function ($model) {
+                if($model->localidade != null) {
+                    return $model->localidade;
+                }
+                else {
+                    return " --- ";
+                }
+            })
             ->editColumn('cod_postal', function ($model) {
-                $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                if($model->codPostal != ' ' && $model->codPostalRua != ' ') {
+                    $strCodPostal = $model->codPostal."-".$model->codPostalRua;
+                }
+                else {
+                    $strCodPostal = " --- ";
+                }
+                
                 return $strCodPostal;
             })
             ->addColumn('opcoes', function($model){

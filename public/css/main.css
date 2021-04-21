@@ -170,6 +170,18 @@ iframe {
   padding: 50px 50px 50px 50px;
 }
 
+.wrap-pageNotFound {
+  width: 800px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .login100-pic {
   width: 316px;
 }

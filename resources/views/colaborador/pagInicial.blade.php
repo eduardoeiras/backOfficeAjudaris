@@ -64,7 +64,12 @@
                                                 $dados = $dados.'<td>'.$projeto->id_projeto.'</td>';
                                                 $dados = $dados.'<td>'.$projeto->nome.'</td>';
                                                 $dados = $dados.'<td>'.$projeto->objetivos.'</td>';
-                                                $dados = $dados.'<td><a id="'.$projeto->id_projeto.'" href="'.$projeto->regulamento.'">Visualizar Regulamento</a></td>';
+                                                if($projeto->regulamento != null) {
+                                                    $dados = $dados.'<td><a id="'.$projeto->id_projeto.'" href="'.$projeto->regulamento.'">Visualizar Regulamento</a></td>';  
+                                                }
+                                                else {
+                                                    $dados = $dados.'<td> --- </td>';  
+                                                }
                                                 $dados = $dados.'<td>'.$projeto->publicoAlvo.'</td>';
                                                 $dados = $dados.verificaNull($projeto->observacoes);
                                                 $url = 'gerirProjeto'.$projeto->id_projeto;
@@ -110,7 +115,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Objetivos</label>
-                                        <input type="text" name="objetivos" class="form-control" maxlength="400" required>
+                                        <input type="text" name="objetivos" class="form-control" maxlength="200" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Publico Alvo</label>
@@ -118,7 +123,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Observações</label>
-                                        <textarea class="form-control" name="observacoes" maxlength="200"></textarea> 
+                                        <textarea class="form-control" name="observacoes" maxlength="500"></textarea> 
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>
@@ -150,7 +155,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Objetivos</label>
-                                        <input id="edit_Obj" type="text" name="objetivos" class="form-control" maxlength="400" required>
+                                        <input id="edit_Obj" type="text" name="objetivos" class="form-control" maxlength="200" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Publico Alvo</label>
@@ -158,7 +163,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Observações</label>
-                                        <textarea id="edit_Obs" class="form-control" name="observacoes" maxlength="200"></textarea> 
+                                        <textarea id="edit_Obs" class="form-control" name="observacoes" maxlength="500"></textarea> 
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>

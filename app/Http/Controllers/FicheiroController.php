@@ -11,16 +11,25 @@ class FicheiroController extends Controller
     {
         if($request->file('upload_file')->isValid()) {
             $nomeUnico = uniqid() . $request->file('upload_file')->getClientOriginalName();
+            if(strlen($nomeUnico) < 164) {
+                $request->file('upload_file')->move(public_path('ficheiros\\'), $nomeUnico);
+                
+                $urlParaFicheiro = 'http://backofficeajudaris/ficheiros/'.$nomeUnico;
 
-            $request->file('upload_file')->move(public_path('ficheiros\\'), $nomeUnico);
-            
-            $urlParaFicheiro = 'http://backofficeajudaris/ficheiros/'.$nomeUnico;
-
-            $resposta = [
-                'cod' => 200,
-                'msg' => 'Ficheiro guardado com êxito!',
-                'url' => $urlParaFicheiro
-            ];
+                $resposta = [
+                    'cod' => 200,
+                    'msg' => 'Ficheiro guardado com êxito!',
+                    'url' => $urlParaFicheiro
+                ];    
+            }
+            else {
+                $resposta = [
+                    'cod' => 500,
+                    'msg' => 'Nome do ficheiro original demasiado grande!\n
+                    Por favor reduza o nome do ficheiro e tente novamente.',
+                    'url' => ''
+                ];
+            }
         }
         else {
             $resposta = [

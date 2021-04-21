@@ -26,9 +26,9 @@
 
 <body>
     <div class="d-flex" id="wrapper">
-        @include("admin/sideBar")
+        @include("colaborador/sideBar")
         <div id="page-content-wrapper">
-            @include("admin/topBar")
+            @include("colaborador/topBar")
             <?php
                 if(isset($title)) {
                     echo '<h1 style="padding: 3%">'.$title.'</h1>';
