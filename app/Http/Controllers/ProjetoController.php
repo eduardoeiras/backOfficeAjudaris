@@ -87,6 +87,9 @@ class ProjetoController extends Controller
             if($projeto->utilizadores()->first() != null) {
                 $projeto->utilizadores()->where('id_projeto', $id)->delete();
             } 
+            if($projeto->agrupamentos()->first() != null) {
+                $projeto->agrupamentos()->where('id_projeto', $id)->delete();
+            } 
             if($projeto->ilustradores()->first() != null) {
                 $projeto->ilustradores()->where('id_projeto', $id)->delete();
             }
@@ -150,15 +153,14 @@ class ProjetoController extends Controller
 
     public function getParticipantes() {
         $id = intval(\session('id_projeto'));
-        $anoAtual = \intval(date("Y"));
         $id_projeto = \intval($id);
 
-        $data = self::criarRespostaParticipantes($id_projeto, $anoAtual);
+        $data = self::criarRespostaParticipantes($id_projeto);
 
         return \json_encode($data);
     }
 
-    public function criarRespostaParticipantes($id_projeto, $anoAtual) {
+    public function criarRespostaParticipantes($id_projeto) {
         $entidades = null;
         $escolas = null;
         $ilustradores = null;
@@ -168,20 +170,21 @@ class ProjetoController extends Controller
         $profsFacul = null;
         $rbes = null;
         $universidades = null;
+        $agrupamentos = null;
         
-        $entidades = self::getEntidadesDoProjeto($id_projeto, $anoAtual);
-        $escolas = self::getEscolasDoProjeto($id_projeto, $anoAtual);
-        $ilustradores = self::getIlustradoresDoProjeto($id_projeto, $anoAtual);
-        $contadores = self::getContadoresDoProjeto($id_projeto, $anoAtual);
-        $juris = self::getJurisDoProjeto($id_projeto, $anoAtual);
-        $professores = self::getProfessoresDoProjeto($id_projeto, $anoAtual);
-        $profsFacul = self::getProfessoresFacDoProjeto($id_projeto, $anoAtual);
-        $rbes = self::getRbesDoProjeto($id_projeto, $anoAtual);
-        $universidades = self::getUniversidadesDoProjeto($id_projeto, $anoAtual);    
+        $entidades = self::getEntidadesDoProjeto($id_projeto);
+        $escolas = self::getEscolasDoProjeto($id_projeto);
+        $ilustradores = self::getIlustradoresDoProjeto($id_projeto);
+        $contadores = self::getContadoresDoProjeto($id_projeto);
+        $juris = self::getJurisDoProjeto($id_projeto);
+        $professores = self::getProfessoresDoProjeto($id_projeto);
+        $profsFacul = self::getProfessoresFacDoProjeto($id_projeto);
+        $rbes = self::getRbesDoProjeto($id_projeto);
+        $universidades = self::getUniversidadesDoProjeto($id_projeto);
+        $agrupamentos = self::getAgrupamentosDoProjeto($id_projeto);    
         
         $data = array(
             'id_projeto' => $id_projeto,
-            'ano' => $anoAtual,
             'entidades' => $entidades,
             'escolas' => $escolas,
             'ilustradores' => $ilustradores,
@@ -190,7 +193,8 @@ class ProjetoController extends Controller
             'professores' => $professores,
             'profsFac' => $profsFacul,
             'rbes' => $rbes,
-            'universidades' =>$universidades
+            'universidades' =>$universidades,
+            'agrupamentos' => $agrupamentos
         );
 
         return $data;
@@ -214,7 +218,7 @@ class ProjetoController extends Controller
         return $resposta;  
     }
 
-    public function getEntidadesDoProjeto($id_projeto, $ano)
+    public function getEntidadesDoProjeto($id_projeto)
     {
             $entidades = DB::table('entidade_oficial')
                         ->join('projeto_entidade', 'entidade_oficial.id_entidadeOficial', '=', 'projeto_entidade.id_entidadeOficial')
@@ -222,7 +226,6 @@ class ProjetoController extends Controller
                         ->select('entidade_oficial.id_entidadeOficial' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_entidade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_entidade.id_projeto', '=', $id_projeto],
-                            ['projeto_entidade.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -235,7 +238,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getEscolasDoProjeto($id_projeto, $ano)
+    public function getEscolasDoProjeto($id_projeto)
     {
             $escolas = DB::table('escola_solidaria')
                         ->join('projeto_escola', 'escola_solidaria.id_escolaSolidaria', '=', 'projeto_escola.id_escolaSolidaria')
@@ -243,7 +246,6 @@ class ProjetoController extends Controller
                         ->select('escola_solidaria.id_escolaSolidaria' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_escola.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_escola.id_projeto', '=', $id_projeto],
-                            ['projeto_escola.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -256,7 +258,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getIlustradoresDoProjeto($id_projeto, $ano)
+    public function getIlustradoresDoProjeto($id_projeto)
     {
             $ilustradores = DB::table('ilustrador_solidario')
                         ->join('projeto_ilustrador', 'ilustrador_solidario.id_ilustradorSolidario', '=', 'projeto_ilustrador.id_ilustradorSolidario')
@@ -264,7 +266,6 @@ class ProjetoController extends Controller
                         ->select('ilustrador_solidario.id_ilustradorSolidario' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_ilustrador.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_ilustrador.id_projeto', '=', $id_projeto],
-                            ['projeto_ilustrador.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -277,7 +278,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getContadoresDoProjeto($id_projeto, $ano)
+    public function getContadoresDoProjeto($id_projeto)
     {
             $contadores = DB::table('contador_historias')
                     ->join('projeto_contador', 'contador_historias.id_contadorHistorias', '=', 'projeto_contador.id_contador')
@@ -285,7 +286,6 @@ class ProjetoController extends Controller
                     ->select('contador_historias.id_contadorHistorias' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_contador.anoParticipacao', 'colaborador.id_colaborador')
                     ->where([
                         ['projeto_contador.id_projeto', '=', $id_projeto],
-                        ['projeto_contador.anoParticipacao', '=', $ano],
                         ['colaborador.disponivel', '=', 0]
                         ])
                     ->get();
@@ -298,7 +298,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getJurisDoProjeto($id_projeto, $ano)
+    public function getJurisDoProjeto($id_projeto)
     {
             $juris = DB::table('juri')
                         ->join('projeto_juri', 'juri.id_juri', '=', 'projeto_juri.id_juri')
@@ -306,7 +306,6 @@ class ProjetoController extends Controller
                         ->select('juri.id_juri' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_juri.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_juri.id_projeto', '=', $id_projeto],
-                            ['projeto_juri.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -320,7 +319,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getProfessoresDoProjeto($id_projeto, $ano)
+    public function getProfessoresDoProjeto($id_projeto)
     {
             $professores = DB::table('professor')
                         ->join('projeto_professor', 'professor.id_professor', '=', 'projeto_professor.id_professor')
@@ -328,7 +327,6 @@ class ProjetoController extends Controller
                         ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_professor.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_professor.id_projeto', '=', $id_projeto],
-                            ['projeto_professor.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -341,7 +339,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getProfessoresFacDoProjeto($id_projeto, $ano)
+    public function getProfessoresFacDoProjeto($id_projeto)
     {
             $profsFac = DB::table('professor_faculdade')
                         ->join('projeto_prof_faculdade', 'professor_faculdade.id_professorFaculdade', '=', 'projeto_prof_faculdade.id_professorFaculdade')
@@ -349,7 +347,6 @@ class ProjetoController extends Controller
                         ->select('professor_faculdade.id_professorFaculdade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_prof_faculdade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_prof_faculdade.id_projeto', '=', $id_projeto],
-                            ['projeto_prof_faculdade.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -363,7 +360,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getRbesDoProjeto($id_projeto, $ano)
+    public function getRbesDoProjeto($id_projeto)
     {
             $rbes = DB::table('rbe')
                         ->join('projeto_rbe', 'rbe.id_rbe', '=', 'projeto_rbe.id_rbe')
@@ -371,7 +368,6 @@ class ProjetoController extends Controller
                         ->select('rbe.id_rbe' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'rbe.regiao', 'projeto_rbe.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_rbe.id_projeto', '=', $id_projeto],
-                            ['projeto_rbe.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -384,7 +380,7 @@ class ProjetoController extends Controller
         return $resposta;
     }
 
-    public function getUniversidadesDoProjeto($id_projeto, $ano)
+    public function getUniversidadesDoProjeto($id_projeto)
     {
             $universidades = DB::table('universidade')
                         ->join('projeto_universidade', 'universidade.id_universidade', '=', 'projeto_universidade.id_universidade')
@@ -392,7 +388,6 @@ class ProjetoController extends Controller
                         ->select('universidade.id_universidade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_universidade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_universidade.id_projeto', '=', $id_projeto],
-                            ['projeto_universidade.anoParticipacao', '=', $ano],
                             ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
@@ -400,6 +395,26 @@ class ProjetoController extends Controller
             $resposta = array();
             if($universidades != null && count($universidades) > 0) {
                 $resposta = self::construirEntidadesComEmails($universidades);   
+            }
+            
+        return $resposta;
+    }
+
+    public function getAgrupamentosDoProjeto($id_projeto)
+    {
+            $agrupamentos = DB::table('agrupamento')
+                        ->join('projeto_agrupamento', 'agrupamento.id_agrupamento', '=', 'projeto_agrupamento.id_agrupamento')
+                        ->join('colaborador', 'agrupamento.id_colaborador', '=', 'colaborador.id_colaborador')
+                        ->select('agrupamento.id_agrupamento' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_agrupamento.anoParticipacao', 'colaborador.id_colaborador')
+                        ->where([
+                            ['projeto_agrupamento.id_projeto', '=', $id_projeto],
+                            ['colaborador.disponivel', '=', 0]
+                            ])
+                        ->get();
+            
+            $resposta = array();
+            if($agrupamentos != null && count($agrupamentos) > 0) {
+                $resposta = self::construirEntidadesComEmails($agrupamentos);   
             }
             
         return $resposta;

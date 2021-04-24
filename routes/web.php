@@ -71,6 +71,7 @@ Route::post('admin/escolas/add', 'EscolaSolidariaController@store')->middleware(
 Route::get('admin/agrupamentos','AgrupamentoController@index')->name("agrupamentos")->middleware(['checkLogInAdmin']);
 Route::get('admin/agrupamentos/getAllComLocalidade', 'AgrupamentoController@getAllComLocalidade')->middleware(['checkLogInAdmin']);
 Route::get('admin/agrupamentos/getAll', 'AgrupamentoController@getAll')->middleware(['checkLogInAdmin']);
+Route::get('admin/agrupamentos/getDisponiveis', 'AgrupamentoController@getDisponiveis')->middleware(['checkLogInAdmin']);
 Route::get('admin/agrupamentos/getPorId/{id}', 'AgrupamentoController@getAgrupamentoPorId')->middleware(['checkLogInAdmin']);
 Route::post('admin/agrupamentos/delete/{id}', 'AgrupamentoController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/agrupamentos/edit/{id}', 'AgrupamentoController@update')->middleware(['checkLogInAdmin']);
@@ -158,6 +159,7 @@ Route::get('admin/projetoRbe/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoRBECo
 Route::get('admin/projetoUniversidade/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoUniversidadeController@verificaAssociacao')->middleware(['checkLogInAdmin']);
 Route::get('admin/projetoProfFac/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoProfessorFaculController@verificaAssociacao')->middleware(['checkLogInAdmin']);
 Route::get('admin/projetoProfessor/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoProfessorController@verificaAssociacao')->middleware(['checkLogInAdmin']);
+Route::get('admin/projetoAgrupamento/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoAgrupamentoController@verificaAssociacao')->middleware(['checkLogInAdmin']);
 
 //ROUTES PARA A ADIÇÃO DE ASSOCIAÇÕES AOS PROJETOS
 
@@ -170,6 +172,7 @@ Route::post('admin/projetoRbe/add', 'ProjetoRBEController@store')->middleware(['
 Route::post('admin/projetoUniversidade/add', 'ProjetoUniversidadeController@store')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetoProfFac/add', 'ProjetoProfessorFaculController@store')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetoProfessor/add', 'ProjetoProfessorController@store')->middleware(['checkLogInAdmin']);
+Route::post('admin/projetoAgrupamento/add', 'ProjetoAgrupamentoController@store')->middleware(['checkLogInAdmin']);
 
 Route::get('admin/cargosProfessor/getAll', 'CargoProfController@getAll')->middleware(['checkLogInAdmin']);
 Route::get('admin/cargosProfessor/getPorIdProfessor/{id}-{id_projeto}-{ano}', 'CargoProfController@getPorIdProf')->middleware(['checkLogInAdmin']);
@@ -185,6 +188,8 @@ Route::post('admin/projetoRbe/delete/{id}-{id_projeto}-{ano}', 'ProjetoRBEContro
 Route::post('admin/projetoUniversidade/delete/{id}-{id_projeto}-{ano}', 'ProjetoUniversidadeController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetoProfFac/delete/{id}-{id_projeto}-{ano}', 'ProjetoProfessorFaculController@destroy')->middleware(['checkLogInAdmin']);
 Route::post('admin/projetoProfessor/delete/{id}-{id_projeto}-{ano}', 'ProjetoProfessorController@destroy')->middleware(['checkLogInAdmin']);
+Route::post('admin/projetoAgrupamento/delete/{id}-{id_projeto}-{ano}', 'ProjetoAgrupamentoController@destroy')->middleware(['checkLogInAdmin']);
+
 
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS ESCOLAS
 
@@ -269,6 +274,7 @@ Route::post('colaborador/escolas/add', 'EscolaSolidariaController@store')->middl
 Route::get('colaborador/agrupamentos','AgrupamentoController@index')->name("agrupamentosColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/agrupamentos/getAllComLocalidade', 'AgrupamentoController@getAllComLocalidade')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/agrupamentos/getAll', 'AgrupamentoController@getAll')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/agrupamentos/getDisponiveis', 'AgrupamentoController@getDisponiveis')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/agrupamentos/getPorId/{id}', 'AgrupamentoController@getAgrupamentoPorId')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/agrupamentos/edit/{id}', 'AgrupamentoController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/agrupamentos/add', 'AgrupamentoController@store')->middleware(['CheckLogInColaborador']);
@@ -346,6 +352,7 @@ Route::get('colaborador/projetoRbe/jaAssociado/{id}-{id_projeto}-{ano}', 'Projet
 Route::get('colaborador/projetoUniversidade/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoUniversidadeController@verificaAssociacao')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/projetoProfFac/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoProfessorFaculController@verificaAssociacao')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/projetoProfessor/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoProfessorController@verificaAssociacao')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/projetoAgrupamento/jaAssociado/{id}-{id_projeto}-{ano}', 'ProjetoAgrupamentoController@verificaAssociacao')->middleware(['CheckLogInColaborador']);
 
 //ROUTES PARA A ADIÇÃO DE ASSOCIAÇÕES AOS PROJETOS
 
@@ -358,6 +365,8 @@ Route::post('colaborador/projetoRbe/add', 'ProjetoRBEController@store')->middlew
 Route::post('colaborador/projetoUniversidade/add', 'ProjetoUniversidadeController@store')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetoProfFac/add', 'ProjetoProfessorFaculController@store')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetoProfessor/add', 'ProjetoProfessorController@store')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoAgrupamento/add', 'ProjetoAgrupamentoController@store')->middleware(['CheckLogInColaborador']);
+
 
 Route::get('colaborador/cargosProfessor/getAll', 'CargoProfController@getAll')->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/cargosProfessor/getPorIdProfessor/{id}-{id_projeto}-{ano}', 'CargoProfController@getPorIdProf')->middleware(['CheckLogInColaborador']);
@@ -373,6 +382,8 @@ Route::post('colaborador/projetoRbe/delete/{id}-{id_projeto}-{ano}', 'ProjetoRBE
 Route::post('colaborador/projetoUniversidade/delete/{id}-{id_projeto}-{ano}', 'ProjetoUniversidadeController@destroy')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetoProfFac/delete/{id}-{id_projeto}-{ano}', 'ProjetoProfessorFaculController@destroy')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetoProfessor/delete/{id}-{id_projeto}-{ano}', 'ProjetoProfessorController@destroy')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetoAgrupamento/delete/{id}-{id_projeto}-{ano}', 'ProjetoAgrupamentoController@destroy')->middleware(['CheckLogInColaborador']);
+
 
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS ESCOLAS
 

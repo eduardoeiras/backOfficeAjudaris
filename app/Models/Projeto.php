@@ -25,6 +25,10 @@ class Projeto extends Model
         return $this->hasMany(ProjetoUtilizador::class, 'id_projeto');
     }
 
+    public function agrupamentos() {
+        return $this->hasMany(ProjetoAgrupamento::class, 'id_projeto');
+    }
+
     public function ilustradores() {
         return $this->hasMany(ProjetoIlustrador::class, 'id_projeto');
     }

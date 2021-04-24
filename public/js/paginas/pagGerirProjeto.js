@@ -14,7 +14,6 @@ $(document).ready(function () {
         dataType: "json",
         success: function (response) {
             id_projeto = response.id_projeto
-            ano = response.ano
             carregarEntidades(response)
             carregarContadores(response)
             carregarEscolas(response)
@@ -24,6 +23,7 @@ $(document).ready(function () {
             carregarProfsFac(response)
             carregarRbe(response)
             carregarUniversidade(response)
+            carregarAgrupamentos(response)
             inicializarDataTableParticipantes();
         },
         error: function (error) {
@@ -35,6 +35,10 @@ $(document).ready(function () {
             return false;
         }
     })
+
+    $('.yearpicker').yearpicker({
+        startYear:new Date().getFullYear(),
+    });
 });
 
 function copiarEmais (str) {
@@ -194,6 +198,16 @@ function carregarUniversidade(response) {
     }
 }
 
+function carregarAgrupamentos(response) {
+    let agrupamentos = response.agrupamentos
+    if (agrupamentos != null && agrupamentos.length > 0) {
+        for (uni of agrupamentos) {
+            let linha = criarLinha(uni, 'agrupamento')
+            $('#tableBody').append(linha)
+        }
+    }
+}
+
 function criarLinha(elemento, tipo) {
     var entidade = elemento.entidade
     var emails = elemento.emails
@@ -212,10 +226,10 @@ function criarLinha(elemento, tipo) {
             case 'entidade':
                 linha = linha + `<td>Entidade Oficial</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_entidadeOficial}, 
-                            ${id_projeto}, ${ano}, \'entidade\')"><i
+                            ${id_projeto}, ${entidade.anoParticipacao}, \'entidade\')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
                     </td>`
@@ -224,10 +238,10 @@ function criarLinha(elemento, tipo) {
             case 'contador':
                 linha = linha + `<td>Contador de Histórias</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_contadorHistorias}, 
-                            ${id_projeto}, ${ano}, \'contador\')"><i
+                            ${id_projeto}, ${entidade.anoParticipacao}, \'contador\')"><i
                                 class="material-icons" data-toggle="tooltip"
                                 title="Delete">&#xE872;</i></a>
                     </td>`
@@ -236,10 +250,10 @@ function criarLinha(elemento, tipo) {
             case 'escola':
                 linha = linha + `<td>Escola Solidária</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_escolaSolidaria}, 
-                                    ${id_projeto}, ${ano}, \'escola\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'escola\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
@@ -248,10 +262,10 @@ function criarLinha(elemento, tipo) {
             case 'ilustrador':
                 linha = linha + `<td>Ilustrador Solidário</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_ilustradorSolidario}, 
-                                    ${id_projeto}, ${ano}, \'ilustrador\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'ilustrador\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
@@ -260,17 +274,17 @@ function criarLinha(elemento, tipo) {
             case 'juri':
                 linha = linha + `<td>Juri</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_juri}, 
-                                    ${id_projeto}, ${ano}, \'juri\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'juri\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
                 linha = linha + '</tr>'
                 break;
             case 'professor':
-                var cargoUrl = `cargosProfessor/getPorIdProfessor/` + entidade.id_professor + "-" + id_projeto + "-" + ano;
+                var cargoUrl = `cargosProfessor/getPorIdProfessor/` + entidade.id_professor + "-" + id_projeto + "-" + entidade.anoParticipacao;
                 $.ajax({
                     url: cargoUrl,
                     method: "GET",
@@ -278,10 +292,10 @@ function criarLinha(elemento, tipo) {
                     success: function (response) {
                         linha = linha + `<td>Professor</td>`
                         linha = linha + `<td>${response.nomeCargo}</td>`
-                        linha = linha + `<td>${ano}</td>`
+                        linha = linha + `<td>${entidade.anoParticipacao}</td>`
                         linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_professor}, 
-                                    ${id_projeto}, ${ano}, \'professor\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'professor\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
@@ -293,10 +307,10 @@ function criarLinha(elemento, tipo) {
             case 'profFacul':
                 linha = linha + `<td>Professor de Faculdade</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_professorFaculdade}, 
-                                    ${id_projeto}, ${ano}, \'profFacul\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'profFacul\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
@@ -305,10 +319,22 @@ function criarLinha(elemento, tipo) {
             case 'universidade':
                 linha = linha + `<td>Universidade</td>`
                 linha = linha + `<td>Participante</td>`
-                linha = linha + `<td>${ano}</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_universidade}, 
-                                    ${id_projeto}, ${ano}, \'universidade\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'universidade\')"><i
+                                        class="material-icons" data-toggle="tooltip"
+                                        title="Delete">&#xE872;</i></a>
+                            </td>`
+                linha = linha + '</tr>'
+                break;
+            case 'agrupamento':
+                linha = linha + `<td>Agrupamento</td>`
+                linha = linha + `<td>Participante</td>`
+                linha = linha + `<td>${entidade.anoParticipacao}</td>`
+                linha = linha + `<td>
+                                <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_agrupamento}, 
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'agrupamento\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
@@ -328,10 +354,10 @@ function criarLinha(elemento, tipo) {
         linha = linha + `<td>${entidade.regiao}</td>`
         linha = linha + `<td>RBE</td>`
         linha = linha + `<td>Participante</td>`
-        linha = linha + `<td>${ano}</td>`
+        linha = linha + `<td>${entidade.anoParticipacao}</td>`
         linha = linha + `<td>
                                 <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${entidade.id_rbe}, 
-                                    ${id_projeto}, ${ano}, \'rbe\')"><i
+                                    ${id_projeto}, ${entidade.anoParticipacao}, \'rbe\')"><i
                                         class="material-icons" data-toggle="tooltip"
                                         title="Delete">&#xE872;</i></a>
                             </td>`
@@ -373,6 +399,10 @@ function remover(id_elemento, id_projeto, ano, tipo) {
         break;
         case 'universidade':
             var urlDelete = 'projetoUniversidade/delete/' + id_elemento + "-" + id_projeto + "-" + ano
+            $('#formDelete').attr('action', urlDelete)
+        break;
+        case 'agrupamento':
+            var urlDelete = 'projetoAgrupamento/delete/' + id_elemento + "-" + id_projeto + "-" + ano
             $('#formDelete').attr('action', urlDelete)
         break;
         case 'rbe':
@@ -636,6 +666,22 @@ function carregarTabela(tipo) {
                 }
             })
             break;
+        case 'agrupamentos':
+            idTipo = 'id_agrupamento'
+            $.ajax({
+                url: 'agrupamentos/getDisponiveis',
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    $("#tableBodyAdd").empty();
+                    tipoSelect = "agrupamento"
+                    criarLinhasAdd(response, false)
+                    inicializarDataTable()
+                },
+                error: function (error) {
+                }
+            })
+            break;
     }
 }
 
@@ -647,7 +693,6 @@ function selecionar(id, nome) {
     $('#anoParticipacao').val(ano);
     $('#id_projeto').val(id_projeto);
     $('#id_elemento').val(id);
-    console.log(id, ano, nome, id_projeto);
     switch (tipoSelect) {
         case 'ilustrador':
             var url = 'projetoIlustrador/jaAssociado/' + id + "-" + id_projeto + "-" + ano
@@ -852,6 +897,27 @@ function selecionar(id, nome) {
                     }
                 },
             })
+            break;
+            case 'agrupamento':
+                var url = 'projetoAgrupamento/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                $.ajax({
+                    url: url,
+                    method: "GET",
+                    dataType: "json",
+                    success: function (response) {
+                        if (!response) {
+                            $('#formAdd').attr('action', 'projetoAgrupamento/add')
+                            existe = false;
+                        }
+                        else {
+                            var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                            $('#divForm').hide()
+                            $('#divErro').append(msg);
+                            $('#divErro').show();
+                            existe = true;
+                        }
+                    },
+                })
             break;
     }
 }

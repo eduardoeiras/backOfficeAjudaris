@@ -15,7 +15,9 @@
     <link href="{{asset('css/sideBarImg.css')}}" rel="stylesheet">
     <link type="text/css" href="{{asset('css/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <link type="text/css" href="{{asset('css/form-pesquisa.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/yearpicker.css') }}">
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/yearpicker.js') }}" async></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{asset('js/jquery-3.5.1.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
@@ -92,6 +94,7 @@
                                                 <option value="ilustradores">Ilustradores Solidários</option>
                                                 <option value="contadores">Contador de Histórias</option>
                                                 <option value="entidades">Entidade Oficial</option>
+                                                <option value="agrupamentos">Agrupamentos</option>
                                                 <option value="escolas">Escola Solidária</option>
                                                 <option value="juris">Juri</option>
                                                 <option value="professores">Professor</option>
@@ -132,11 +135,19 @@
                                     <div id="divForm" class="formAdicionar">
                                         <h4>Participante selecionado a adicionar ao projeto:</h4>
                                         <br>
-                                        <label>Nome:</label>
-                                        <input type="text" name="nome" id="nome" value="" readonly>
-                                        <br><br>
-                                        <label>Ano:</label>
-                                        <input type="number" name="anoParticipacao" id="anoParticipacao" value="" readonly>
+                                        <div class="form-group row" style="margin-right: 3%">
+                                            <label for="nome" class="col-2 col-form-label">Nome:</label>
+                                            <div class="col-10">
+                                                <input class="form-control" type="text" name="nome" id="nome" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="form-group row" style="margin-right: 3%">
+                                            <label for="anoParticipacao" class="col-2 col-form-label">Ano de Participação:</label>
+                                            <div class="col-10">
+                                              <input class="form-control yearpicker" type="text" name="anoParticipacao" id="anoParticipacao" required>
+                                            </div>
+                                        </div>
                                         <input type="hidden" name="id_projeto" id="id_projeto" value="" readonly>
                                         <input type="hidden" name="id_elemento" id="id_elemento" value="" readonly>
                                     </div>

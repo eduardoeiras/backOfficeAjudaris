@@ -202,6 +202,34 @@ class AgrupamentoController extends Controller
         }
     }
 
+    public function getDisponiveis() {
+        $contadores = DB::table('agrupamento')
+                    ->join('colaborador', 'agrupamento.id_colaborador', '=', 'colaborador.id_colaborador')
+                    ->select('agrupamento.id_agrupamento as id', 'colaborador.telemovel', 'colaborador.telefone', 'colaborador.nome', 'colaborador.id_colaborador')
+                    ->where([
+                        ['colaborador.disponivel', '=', 0]
+                        ])
+                    ->get();
+    
+        $resposta = array();
+
+        foreach($contadores as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }  
+        
+        return \json_encode($resposta);
+    }
+
     public function getAll() {
 
         $agrupamentos = DB::table(DB::raw('agrupamento', 'colaborador', 'cod_postal', 'cod_postal_rua'))

@@ -109,7 +109,7 @@
                                     <div class="form-group row">
                                         <label for="dataComunicacaoAdd" class="col-2 col-form-label">Data de Comunicação:</label>
                                         <div class="col-10">
-                                          <input class="form-control" type="datetime-local" name="data" id="dataComunicacaoAdd" required>
+                                          <input class="form-control" type="text" name="data" id="dataComunicacaoAdd" required>
                                         </div>
                                     </div>
                                     <br>

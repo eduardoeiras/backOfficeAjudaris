@@ -150,24 +150,24 @@ class ContadorHistoriaController extends Controller
                         ])
                     ->get();
     
-    $resposta = array();
+        $resposta = array();
 
-    foreach($contadores as $entidade) {
-        $emails = DB::table('email')
-        ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
-        ->select('email.email')
-        ->where('email.id_colaborador', '=', $entidade->id_colaborador)
-        ->get();
-                    
-        $ent = array(
-            "entidade" => $entidade,
-            "emails" => $emails
-        );
-        array_push($resposta, $ent);
-    }  
-    
-    return \json_encode($resposta);
-}
+        foreach($contadores as $entidade) {
+            $emails = DB::table('email')
+            ->join('colaborador', 'email.id_colaborador', '=' , 'colaborador.id_colaborador')
+            ->select('email.email')
+            ->where('email.id_colaborador', '=', $entidade->id_colaborador)
+            ->get();
+                        
+            $ent = array(
+                "entidade" => $entidade,
+                "emails" => $emails
+            );
+            array_push($resposta, $ent);
+        }  
+        
+        return \json_encode($resposta);
+    }
 
     public function getAll() {
 
