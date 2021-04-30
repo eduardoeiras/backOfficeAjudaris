@@ -5,6 +5,8 @@ var tipoSelect = "";
 var inicializada = false;
 var existe = false;
 var dtTable;
+var id = 0;
+var nome = "";
 
 $(document).ready(function () {
 
@@ -35,9 +37,246 @@ $(document).ready(function () {
             return false;
         }
     })
+    ano = new Date().getFullYear()
+    $("#anoParticipacao").datepicker({
+        format: "yyyy",
+        viewMode: "years", 
+        minViewMode: "years",
+        autoclose: true,
+        startDate: ano.toString(),
+        date: '',
+    });
 
-    $('.yearpicker').yearpicker({
-        startYear:new Date().getFullYear(),
+    $('#anoParticipacao').change(function () {
+        var anoSelecionado = $('#anoParticipacao').val();
+        ano = anoSelecionado
+            switch (tipoSelect) {
+                case 'ilustrador':
+                    var url = 'projetoIlustrador/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoIlustrador/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'contador':
+                    var url = 'projetoContador/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoContador/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'entidade':
+                    var url = 'projetoEntidade/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoEntidade/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'escola':
+                    var url = 'projetoEscola/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoEscola/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'juri':
+                    var url = 'projetoJuri/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoJuri/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'professor':
+                    var url = 'projetoProfessor/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoProfessor/add')
+                                existe = false;
+                                $.ajax({
+                                    url: 'cargosProfessor/getAll',
+                                    method: "GET",
+                                    dataType: "json",
+                                    success: function (response) {
+                                       var inputCargo = `<br><br><label>Cargo do professor no projeto:</label>
+                                                <select name="cargo" id="cargos">
+                                                </select>`
+                                        $('#divForm').append(inputCargo);
+                                        for(cargo of response) {
+                                            opcao = `<option value="${cargo.id_cargoProfessor}">${cargo.nomeCargo}</option>`
+                                            $('#cargos').append(opcao);
+                                        }
+                                    },
+                                })
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'profFac':
+                    var url = 'projetoProfFac/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoProfFac/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'rbe':
+                    var url = 'projetoRbe/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoRbe/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                case 'universidade':
+                    var url = 'projetoUniversidade/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                    $.ajax({
+                        url: url,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (response) {
+                            if (!response) {
+                                $('#formAdd').attr('action', 'projetoUniversidade/add')
+                                existe = false;
+                            }
+                            else {
+                                var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                $('#divForm').hide()
+                                $('#divErro').append(msg);
+                                $('#divErro').show();
+                                existe = true;
+                            }
+                        },
+                    })
+                    break;
+                    case 'agrupamento':
+                        var url = 'projetoAgrupamento/jaAssociado/' + id + "-" + id_projeto + "-" + ano
+                        $.ajax({
+                            url: url,
+                            method: "GET",
+                            dataType: "json",
+                            success: function (response) {
+                                if (!response) {
+                                    $('#formAdd').attr('action', 'projetoAgrupamento/add')
+                                    existe = false;
+                                }
+                                else {
+                                    var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
+                                    $('#divForm').hide()
+                                    $('#divErro').append(msg);
+                                    $('#divErro').show();
+                                    existe = true;
+                                }
+                            },
+                        })
+                    break;
+            }
     });
 });
 
@@ -685,239 +924,16 @@ function carregarTabela(tipo) {
     }
 }
 
-function selecionar(id, nome) {
+function selecionar(idSelecionado, nomeSelecionado) {
     $('#divForm').show();
     $('#divErro').hide();
     $('#divErro').empty();
-    $('#nome').val(nome);
-    $('#anoParticipacao').val(ano);
+    $('#nome').val(nomeSelecionado);
+    $('#anoParticipacao').val('');
     $('#id_projeto').val(id_projeto);
-    $('#id_elemento').val(id);
-    switch (tipoSelect) {
-        case 'ilustrador':
-            var url = 'projetoIlustrador/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoIlustrador/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'contador':
-            var url = 'projetoContador/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoContador/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'entidade':
-            var url = 'projetoEntidade/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoEntidade/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'escola':
-            var url = 'projetoEscola/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoEscola/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'juri':
-            var url = 'projetoJuri/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoJuri/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'professor':
-            var url = 'projetoProfessor/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoProfessor/add')
-                        existe = false;
-                        $.ajax({
-                            url: 'cargosProfessor/getAll',
-                            method: "GET",
-                            dataType: "json",
-                            success: function (response) {
-                               var inputCargo = `<br><br><label>Cargo do professor no projeto:</label>
-                                        <select name="cargo" id="cargos">
-                                        </select>`
-                                $('#divForm').append(inputCargo);
-                                for(cargo of response) {
-                                    opcao = `<option value="${cargo.id_cargoProfessor}">${cargo.nomeCargo}</option>`
-                                    $('#cargos').append(opcao);
-                                }
-                            },
-                        })
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'profFac':
-            var url = 'projetoProfFac/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoProfFac/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'rbe':
-            var url = 'projetoRbe/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoRbe/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-        case 'universidade':
-            var url = 'projetoUniversidade/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-            $.ajax({
-                url: url,
-                method: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (!response) {
-                        $('#formAdd').attr('action', 'projetoUniversidade/add')
-                        existe = false;
-                    }
-                    else {
-                        var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                        $('#divForm').hide()
-                        $('#divErro').append(msg);
-                        $('#divErro').show();
-                        existe = true;
-                    }
-                },
-            })
-            break;
-            case 'agrupamento':
-                var url = 'projetoAgrupamento/jaAssociado/' + id + "-" + id_projeto + "-" + ano
-                $.ajax({
-                    url: url,
-                    method: "GET",
-                    dataType: "json",
-                    success: function (response) {
-                        if (!response) {
-                            $('#formAdd').attr('action', 'projetoAgrupamento/add')
-                            existe = false;
-                        }
-                        else {
-                            var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
-                            $('#divForm').hide()
-                            $('#divErro').append(msg);
-                            $('#divErro').show();
-                            existe = true;
-                        }
-                    },
-                })
-            break;
-    }
+    $('#id_elemento').val(idSelecionado);
+    id = idSelecionado
+    nome = nomeSelecionado
+    existe = true
+    
 }
