@@ -196,6 +196,7 @@ Route::post('admin/projetoAgrupamento/delete/{id}-{id_projeto}-{ano}', 'ProjetoA
 Route::get('admin/gerirEscola{id}', 'EscolaSolidariaController@gerirEscola')->name("gerirEscola")->middleware(['checkLogInAdmin']);
 Route::get('admin/gerirEscola/getProfessores/{id}', 'EscolaSolidariaController@getProfessores')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirEscola/delete/{id}-{id_escola}', 'EscolaSolidariaController@deleteAssociacao')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirEscola/changeInterlocutor/{id}-{id_escola}', 'EscolaSolidariaController@changeInterlocutor')->middleware(['checkLogInAdmin']);
 Route::get('admin/professores/getDisponiveisSemEscola/{id}','ProfessorController@getDisponiveisSemEscola')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirEscola/add','EscolaSolidariaController@associarProfessor')->middleware(['checkLogInAdmin']);
 

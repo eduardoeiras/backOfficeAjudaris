@@ -56,6 +56,11 @@ function criarLinha(professor) {
     var elemento = professor.entidade
     var emails = professor.emails
     var linha = "<tr>"
+    if(elemento.interlocutor == 0){
+        linha = linha + `<td>Não</td>`
+    }else {
+        linha = linha + `<td>Sim</td>`
+    }
     linha = linha + `<td>${elemento.nome}</td>`
     linha = linha + verificaNull(elemento.telefone)
     linha = linha + verificaNull(elemento.telemovel)
@@ -67,7 +72,9 @@ function criarLinha(professor) {
     linha = linha + `<td>
         <a href="#delete" class="delete" data-toggle="modal" onclick="remover(${elemento.id_professor}, ${id_escola})">
         <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-        </a></td>`;
+        </a>
+        <img src="http://backofficeAjudaris/images/mudarInterlocutor.png" onclick="mudarInterlocutor(${elemento.id_professor}, ${id_escola})"></img>
+        </td>`;   
     linha = linha + '</tr>'
     $('#tableBody').append(linha)
 }
@@ -76,6 +83,28 @@ function remover(id_professor, id_escola) {
     var urlDelete = 'gerirEscola/delete/' + id_professor + "-" + id_escola
     $('#formDelete').attr('action', urlDelete)
 
+}
+
+function mudarInterlocutor(id_professor, id_escola){
+    var urlChange = 'gerirEscola/changeInterlocutor/' + id_professor + "-" + id_escola
+    $.ajax({
+        url: urlChange,
+        method: "POST",
+        dataType: "json",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response){
+            if(response == 1){
+                alert("Mudado o Interlocutor!!!");
+                location.reload()
+            }else{
+                alert("Ocorreu um erro na mudança do interlocutor!!!");
+            }
+        },
+        error: function (error) {
+        }
+    })
 }
 
 function verificaNull(valor) {

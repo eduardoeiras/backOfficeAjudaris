@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Gerir Professores</title>
     <link rel="stylesheet" href="{{ asset('fonts/font-roboto-varela-round.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
@@ -55,6 +56,7 @@
                             <table class="table table-striped table-hover" id="tabelaProfsAssociados">
                                 <thead>
                                     <tr>
+                                        <th>Interlocutor</th>
                                         <th>Nome</th>
                                         <th>Telefone</th>
                                         <th>Telemóvel</th>
