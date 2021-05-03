@@ -96,10 +96,10 @@ function mudarInterlocutor(id_professor, id_escola){
         },
         success: function(response){
             if(response == 1){
-                alert("Mudado o Interlocutor!!!");
+                alert("Alterado o estado de interlocutor!");
                 location.reload()
             }else{
-                alert("Ocorreu um erro na mudança do interlocutor!!!");
+                alert("Ocorreu um erro na mudança do estado de interlocutor!");
             }
         },
         error: function (error) {
