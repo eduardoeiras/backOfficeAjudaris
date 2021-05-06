@@ -115,6 +115,29 @@ class EscolaSolidariaController extends Controller
         return redirect()->route("escolas");
     }
 
+    public function changeInterlocutor($id_professor, $id_escola)
+    {
+        $associacao = DB::table('escola_professor')
+                    ->where([
+                        ['escola_professor.id_escola', '=', $id_escola],
+                        ['escola_professor.id_professor', '=', $id_professor]
+                    ]);
+        
+        //$associacao = $query->first();
+        
+        if($associacao->first() != null){
+            if($associacao->first()->interlocutor == 0){
+                $associacao->update(['interlocutor' => 1]);
+            }else {
+                $associacao->update(['interlocutor' => 0]);
+            }
+            return 1;
+        }else {
+            return 0;
+        }
+        
+    }
+
     public function getEscolaPorId($id) {
 
         $escola = EscolaSolidaria::find($id);
@@ -206,7 +229,7 @@ class EscolaSolidariaController extends Controller
         $professores = DB::table('professor')
                         ->join('escola_professor', 'professor.id_professor', '=', 'escola_professor.id_professor')
                         ->join('colaborador', 'professor.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.id_colaborador')
+                        ->select('escola_professor.interlocutor', 'professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'colaborador.id_colaborador')
                         ->where([
                             ['escola_professor.id_escola', '=', $id]
                             ])
