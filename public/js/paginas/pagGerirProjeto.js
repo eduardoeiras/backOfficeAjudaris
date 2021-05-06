@@ -280,7 +280,7 @@ $(document).ready(function () {
     });
 });
 
-function copiarEmais (str) {
+function copiarEmais (str, numEmaisCopiados) {
     var el = document.createElement('textarea');
     el.value = str;
     el.setAttribute('readonly', '');
@@ -289,6 +289,7 @@ function copiarEmais (str) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+    alert(`Copiados ${numEmaisCopiados} emails!`)
  }
 
 function inicializarDataTableParticipantes() {
@@ -304,22 +305,30 @@ function inicializarDataTableParticipantes() {
                     });
                     var emails = ""
                     var count = 1
+                    var emailsCopiados = 0
                     var numEmails = data.body.length
                     for(email of data.body) {
                         if(email != "") {
-                            if(email.indexOf(' ') >= 0) {
-                                email.replace(/\s/g, ';')
+                            let str = email[0]
+                            if(/\s/.test(str)) {
+                                str = str.replace(/\s/g, ';')
                             }
                             if(count == numEmails) {
-                                emails = emails + email
+                                emails = emails + str
                             }
                             else {
-                                emails = emails + email + ";"
-                            }    
+                                emails = emails + str + ";"
+                            }
+                            if(str.split(";").length > 0) {
+                                emailsCopiados = emailsCopiados + str.split(";").length
+                            }
+                            else {
+                                emailsCopiados++
+                            }
                         }
                         count++;
                     }
-                    copiarEmais(emails)
+                    copiarEmais(emails, emailsCopiados)
                   },
             },
             {
