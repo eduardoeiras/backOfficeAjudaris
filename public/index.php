@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+/* BACKOFFICE - VERSÃO 0.3 */
+
 /*
 |--------------------------------------------------------------------------
 | Check If Application Is Under Maintenance
