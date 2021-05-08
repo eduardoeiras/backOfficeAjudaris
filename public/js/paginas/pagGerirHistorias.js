@@ -1,4 +1,6 @@
 var urlDocRegulamento = ""
+var id_escola = 0;
+var ano = 0;
 
 $("#menu-toggle").click(function (e) {
     e.preventDefault();
@@ -6,11 +8,35 @@ $("#menu-toggle").click(function (e) {
 });
 
 $(document).ready(function () {
+    id_escola = $('#idEscola').val();
+    ano = new Date().getFullYear()
+    $("#anoHistoria").datepicker({
+        format: "yyyy",
+        viewMode: "years", 
+        minViewMode: "years",
+        autoclose: true,
+        startDate: ano.toString(),
+        date: '',
+    });
+    $("#erroFicheiro").hide
     inicializarDataTable();
 });
 
 function inicializarDataTable() {
     $('#tabelaDados').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url":"gerirHistorias/getAll" + id_escola, 
+          "type": "GET"
+        },
+        "columns": [
+            {data: 'id_historia', name: 'id_historia'},
+            {data: 'titulo', name: 'titulo'},
+            {data: 'ano', name: 'ano'},
+            {data: 'ficheiro', name: '', orderable: false, searchable: false},
+            {data: 'opcoes', name: '', orderable: false, searchable: false},
+        ],
         "language": {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
@@ -26,20 +52,18 @@ function inicializarDataTable() {
     });
 }
 
-function editarProjeto(id) {
-    var url = "projetos/getPorId/" + id;
+function editar(id) {
+    var url = "gerirHistorias/getPorId/" + id;
     $.ajax({
         url: url,
         method: "GET",
         dataType: "json",
         success: function (response) {
             if (response != null) {
-                $('#editPorjetoId').val(response.projeto.id_projeto)
-                $('#edit_Nome').val(response.projeto.nome)
-                $('#edit_Obj').val(response.projeto.objetivos)
-                $('#edit_PublicoAlvo').val(response.projeto.publicoAlvo)
-                $('#edit_Obs').val(response.projeto.observacoes)
-                urlDocRegulamento = response.projeto.regulamento
+                $('#edit_titulo').val(response.titulo)
+                $('#edit_ano').val(response.ano)
+                $('#editHistoriaId').val(response.id_historia)
+                urlDocRegulamento = response.urlFicheiro
             }
         },
         error: function (error) {
@@ -48,17 +72,18 @@ function editarProjeto(id) {
     })
 }
 
-function removerProjeto(id) {
-    url = 'projetos/delete/' + id
+function remover(id) {
+    url = 'gerirHistorias/delete/' + id
     $('#formDelete').attr('action', url)
 }
 
 function submeterNovo() {
-    if(document.getElementById('regulamento').files[0] != null) {
+    var validade = document.forms['formAdd'].reportValidity();
+    if(document.getElementById('historia').files[0] != null && validade) {
         var formDataFicheiro = new FormData()
-        formDataFicheiro.append("upload_file", document.getElementById('regulamento').files[0]);
+        formDataFicheiro.append("upload_file", document.getElementById('historia').files[0]);
         $.ajax({
-            url: 'projetos/submeterFicheiro',
+            url: 'gerirHistorias/submeterFicheiro',
             method: "POST",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -71,13 +96,11 @@ function submeterNovo() {
             success: function (response) {
                 if (response != null) {
                     var formData = new FormData()
-                    formData.append('nome', $('#nome').val())
-                    formData.append('objetivos', $('#objetivos').val())
-                    formData.append('publicoAlvo', $('#publicoAlvo').val())
-                    formData.append('observacoes', $('#observacoes').val())
+                    formData.append('titulo', $('#titulo').val())
+                    formData.append('anoHistoria', $('#anoHistoria').val())
                     formData.append('urlFicheiro', response.url)
                     $.ajax({
-                        url: 'projetos/add',
+                        url: 'gerirHistorias/add',
                         method: "POST",
                         data: formData,
                         headers: {
@@ -86,55 +109,36 @@ function submeterNovo() {
                         processData: false, 
                         contentType: false,
                         success: function (response) {
+                            alert("História adicionada com sucesso!")
                             location.reload();
 
                         },
                         error: function (error) {
-                            alert("Erro na criação do projeto!")
+                            alert("Erro na submissão da história!")
                         }
+                        
                     })
                 }
             },
             error: function (error) {
-                alert("Ocorreu um erro na submissão do regulamento! \n\nPor favor contacte o técnico se o problema persistir." + 
+                alert("Ocorreu um erro na submissão da história! \n\nPor favor contacte o técnico se o problema persistir." + 
                 "\n\n" + error.toString());
             }
         })    
     }
     else {
-        var formData = new FormData()
-        formData.append('nome', $('#nome').val())
-        formData.append('objetivos', $('#objetivos').val())
-        formData.append('publicoAlvo', $('#publicoAlvo').val())
-        formData.append('observacoes', $('#observacoes').val())
-        formData.append('urlFicheiro', '')
-        $.ajax({
-            url: 'projetos/add',
-            method: "POST",
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            processData: false, 
-            contentType: false,
-            success: function (response) {
-                location.reload();
-
-            },
-            error: function (error) {
-                alert("Erro na criação do projeto!")
-            }
-        })
+        $("#erroFicheiro").text("É necessário selecionar um ficheiro para adicionar a história!")
+        $("#erroFicheiro").show
     }
-    
 }
 
 function submeterEditar() {
-    if(document.getElementById('edit_regulamento').files[0] != null) {
+    var validade = document.forms['formEditar'].reportValidity();
+    if(document.getElementById('edit_historia').files[0] != null && validade) {
         var formDataFicheiro = new FormData()
-        formDataFicheiro.append("upload_file", document.getElementById('edit_regulamento').files[0]);
+        formDataFicheiro.append("upload_file", document.getElementById('edit_historia').files[0]);
         $.ajax({
-            url: 'projetos/submeterFicheiro',
+            url: 'gerirHistorias/submeterFicheiro',
             method: "POST",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -147,12 +151,10 @@ function submeterEditar() {
             success: function (response) {
                 if (response != null) {
                     var formData = new FormData()
-                    formData.append('nome', $('#edit_Nome').val())
-                    formData.append('objetivos', $('#edit_Obj').val())
-                    formData.append('publicoAlvo', $('#edit_PublicoAlvo').val())
-                    formData.append('observacoes', $('#edit_Obs').val())
+                    formData.append('titulo', $('#edit_titulo').val())
+                    formData.append('anoHistoria', $('#edit_ano').val())
                     formData.append('urlFicheiro', response.url)
-                    let editURL = 'projetos/edit/' + $('#editPorjetoId').val()
+                    let editURL = 'gerirHistorias/edit/' + $('#editHistoriaId').val()
                     $.ajax({
                         url: editURL,
                         method: "POST",
@@ -163,30 +165,28 @@ function submeterEditar() {
                         processData: false, 
                         contentType: false,
                         success: function (response) {
-                            alert("Projeto atualizado com sucesso!")
+                            alert("História atualizada com sucesso!")
                             location.reload();
 
                         },
                         error: function (error) {
-                            alert("Erro na atualização das informações do projeto!")
+                            alert("Erro na atualização das informações da história!")
                         }
                     })
                 }
             },
             error: function (error) {
-                alert("Ocorreu um erro na submissão do regulamento! \n\nPor favor contacte o técnico se o problema persistir."  + 
+                alert("Ocorreu um erro na submissão da história! \n\nPor favor contacte o técnico se o problema persistir."  + 
                 "\n\n" + error.toString());
             }
         })
     }
-    else {
+    else if(document.getElementById('edit_historia').files[0] == null && validade) {
         var formData = new FormData()
-        formData.append('nome', $('#edit_Nome').val())
-        formData.append('objetivos', $('#edit_Obj').val())
-        formData.append('publicoAlvo', $('#edit_PublicoAlvo').val())
-        formData.append('observacoes', $('#edit_Obs').val())
+        formData.append('titulo', $('#edit_titulo').val())
+        formData.append('anoHistoria', $('#edit_ano').val())
         formData.append('urlFicheiro', urlDocRegulamento)
-        let editURL = 'projetos/edit/' + $('#editPorjetoId').val()
+        let editURL = 'gerirHistorias/edit/' + $('#editHistoriaId').val()
         $.ajax({
             url: editURL,
             method: "POST",
@@ -197,12 +197,12 @@ function submeterEditar() {
             processData: false, 
             contentType: false,
             success: function (response) {
-                alert("Projeto atualizado com sucesso!")
+                alert("História atualizada com sucesso!")
                 location.reload();
 
             },
             error: function (error) {
-                alert("Erro na atualização das informações do projeto!")
+                alert("Erro na atualização das informações da história!")
             }
         })
     }  
