@@ -101,7 +101,7 @@
                 <div id="addProjeto" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form enctype="multipart/form-data">
+                            <form id="formAdd" enctype="multipart/form-data"> 
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Adicionar Projeto</h4>
@@ -111,29 +111,29 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label>Nome do Projeto</label>
-                                        <input type="text" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Objetivos</label>
-                                        <input type="text" name="objetivos" class="form-control" maxlength="200" required>
+                                        <input type="text" id="objetivos" name="objetivos" class="form-control" maxlength="200" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Publico Alvo</label>
-                                        <input type="text" name="publicoAlvo" class="form-control" maxlength="45" required>
+                                        <input type="text" id="publicoAlvo" name="publicoAlvo" class="form-control" maxlength="45" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Observações</label>
-                                        <textarea class="form-control" name="observacoes" maxlength="500"></textarea> 
+                                        <textarea class="form-control" id="observacoes" name="observacoes" maxlength="500"></textarea> 
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>
-                                        <input type="file" name="regulamento" class="form-control-file">
+                                        <input type="file" id="regulamento" name="regulamento" class="form-control-file">
                                     </div>
                                 </div>
                             </form>
                             <div class="modal-footer">
                                 <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                                <input type="submit" class="btn btn-success" value="Adicionar" onclick="submeterEditar()">
+                                <input class="btn btn-success" value="Adicionar" onclick="submeterNovo()">
                             </div>
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                 <div id="edit" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="POST" id="formEditar" action="" enctype="multipart/form-data">
+                            <form method="POST" id="formEditar" enctype="multipart/form-data">
                                 @csrf
                                 <div class="modal-header">
                                     <h4 class="modal-title">Editar Projeto</h4>
@@ -167,14 +167,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>
-                                        <input type="file" name="regulamento" class="form-control">
+                                        <input type="file" id="edit_regulamento" name="regulamento" class="form-control">
                                     </div>
                                     <input type="hidden" id="editPorjetoId" name="id_projeto" value="">
                                 </div>
                             </form>
                             <div class="modal-footer">
                                 <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                                <input type="submit" class="btn btn-info" value="Guardar Alterações" onclick="submeter()">
+                                <input class="btn btn-info" value="Guardar Alterações" onclick="submeterEditar()">
                             </div>
                         </div>
                     </div>

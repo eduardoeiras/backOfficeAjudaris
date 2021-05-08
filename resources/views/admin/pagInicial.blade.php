@@ -64,7 +64,7 @@
                                                 $dados = $dados.'<td>'.$projeto->id_projeto.'</td>';
                                                 $dados = $dados.'<td>'.$projeto->nome.'</td>';
                                                 $dados = $dados.'<td>'.$projeto->objetivos.'</td>';
-                                                if($projeto->regulamento != null) {
+                                                if($projeto->regulamento != '') {
                                                     $dados = $dados.'<td><a id="'.$projeto->id_projeto.'" href="'.$projeto->regulamento.'">Visualizar Regulamento</a></td>';  
                                                 }
                                                 else {
@@ -130,7 +130,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Regulamento</label>
-                                        <input type="file" id="regulamento" name="regulamento" class="form-control-file" required>
+                                        <input type="file" id="regulamento" name="regulamento" class="form-control-file">
                                     </div>
                                 </div>
                             </form>

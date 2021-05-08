@@ -54,55 +54,86 @@ function removerProjeto(id) {
 }
 
 function submeterNovo() {
-    var formDataFicheiro = new FormData()
-    formDataFicheiro.append("upload_file", document.getElementById('regulamento').files[0]);
-    $.ajax({
-        url: 'projetos/submeterFicheiro',
-        method: "POST",
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: formDataFicheiro,
-        cache: false,
-        contentType: false,
-        processData: false,
-        enctype: 'multipart/form-data',
-        success: function (response) {
-            if (response != null) {
-                var formData = new FormData()
-                formData.append('nome', $('#nome').val())
-                formData.append('objetivos', $('#objetivos').val())
-                formData.append('publicoAlvo', $('#publicoAlvo').val())
-                formData.append('observacoes', $('#observacoes').val())
-                formData.append('urlFicheiro', response.url)
-                $.ajax({
-                    url: 'projetos/add',
-                    method: "POST",
-                    data: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    processData: false, 
-                    contentType: false,
-                    success: function (response) {
-                        location.reload();
+    var validade = document.forms['formAdd'].reportValidity();
+    if(document.getElementById('regulamento').files[0] != null && validade) {
+        var formDataFicheiro = new FormData()
+        formDataFicheiro.append("upload_file", document.getElementById('regulamento').files[0]);
+        $.ajax({
+            url: 'projetos/submeterFicheiro',
+            method: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: formDataFicheiro,
+            cache: false,
+            contentType: false,
+            processData: false,
+            enctype: 'multipart/form-data',
+            success: function (response) {
+                if (response != null) {
+                    var formData = new FormData()
+                    formData.append('nome', $('#nome').val())
+                    formData.append('objetivos', $('#objetivos').val())
+                    formData.append('publicoAlvo', $('#publicoAlvo').val())
+                    formData.append('observacoes', $('#observacoes').val())
+                    formData.append('urlFicheiro', response.url)
+                    $.ajax({
+                        url: 'projetos/add',
+                        method: "POST",
+                        data: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        processData: false, 
+                        contentType: false,
+                        success: function (response) {
+                            alert("Projeto adicionado com sucesso!")
+                            location.reload();
 
-                    },
-                    error: function (error) {
-                        alert("Erro na atualização das informações do projeto!")
-                    }
-                })
+                        },
+                        error: function (error) {
+                            alert("Erro na adição do projeto!")
+                        }
+                    })
+                }
+            },
+            error: function (error) {
+                alert("Ocorreu um erro na submissão do regulamento! \n\nPor favor contacte o técnico se o problema persistir." + 
+                "\n\n" + error.toString());
             }
-        },
-        error: function (error) {
-            alert("Ocorreu um erro na submissão da imagem! \n\nPor favor contacte o técnico se o problema persistir." + 
-            "\n\n" + error.toString());
-        }
-    })
+        })    
+    }
+    else if(document.getElementById('regulamento').files[0] == null && validade){
+        var formData = new FormData()
+        formData.append('nome', $('#nome').val())
+        formData.append('objetivos', $('#objetivos').val())
+        formData.append('publicoAlvo', $('#publicoAlvo').val())
+        formData.append('observacoes', $('#observacoes').val())
+        formData.append('urlFicheiro', '')
+        $.ajax({
+            url: 'projetos/add',
+            method: "POST",
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            processData: false, 
+            contentType: false,
+            success: function (response) {
+                alert("Projeto adicionado com sucesso!")
+                location.reload();
+
+            },
+            error: function (error) {
+                alert("Erro na adição das informações do projeto!")
+            }
+        })
+    }
 }
 
 function submeterEditar() {
-    if(document.getElementById('edit_regulamento').files[0] != null) {
+    var validade = document.forms['formEditar'].reportValidity();
+    if(document.getElementById('edit_regulamento').files[0] != null && validade) {
         var formDataFicheiro = new FormData()
         formDataFicheiro.append("upload_file", document.getElementById('edit_regulamento').files[0]);
         $.ajax({
@@ -135,7 +166,7 @@ function submeterEditar() {
                         processData: false, 
                         contentType: false,
                         success: function (response) {
-                            alert("Projeto Atualizado com sucesso!")
+                            alert("Projeto atualizado com sucesso!")
                             location.reload();
 
                         },
@@ -146,12 +177,12 @@ function submeterEditar() {
                 }
             },
             error: function (error) {
-                alert("Ocorreu um erro na submissão da imagem! \n\nPor favor contacte o técnico se o problema persistir."  + 
+                alert("Ocorreu um erro na submissão do regulamento! \n\nPor favor contacte o técnico se o problema persistir."  + 
                 "\n\n" + error.toString());
             }
         })
     }
-    else {
+    else if(document.getElementById('edit_regulamento').files[0] == null && validade) {
         var formData = new FormData()
         formData.append('nome', $('#edit_Nome').val())
         formData.append('objetivos', $('#edit_Obj').val())
@@ -169,7 +200,7 @@ function submeterEditar() {
             processData: false, 
             contentType: false,
             success: function (response) {
-                alert("Projeto Atualizado com sucesso!")
+                alert("Projeto atualizado com sucesso!")
                 location.reload();
 
             },

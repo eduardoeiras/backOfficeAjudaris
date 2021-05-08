@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Projeto;
 use Illuminate\Http\Request;
+use App\Models\ProjetoUtilizador;
 use DB;
 use Session;
 
@@ -76,8 +77,23 @@ class ProjetoController extends Controller
                 return redirect()->route("dashboardAdmin");
             }
             else {
+                $projutilizador = new ProjetoUtilizador();
+                $projutilizador->id_projeto = intval(self::getLastId());
+                $projutilizador->id_utilizador = $user->id_utilizador;
+                $projutilizador->save();
                 return redirect()->route("dashboardColaborador");
             }
+    }
+
+    public static function getLastId() {
+        $id = DB::select('SELECT MAX(id_projeto) as id_projeto FROM projeto');
+
+        if($id != null) {
+            return $id[0]->id_projeto;
+        }
+        else {
+            return null;
+        }
     }
 
     public function destroy($id)

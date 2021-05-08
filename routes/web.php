@@ -253,6 +253,9 @@ Route::get('colaborador/dashboardColaborador','ProjetoController@index')->name("
 Route::get('colaborador/projetos/getPorId/{id}', 'ProjetoController@getProjetoPorId')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetos/edit/{id}', 'ProjetoController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/projetos/add', 'ProjetoController@store')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/projetos/submeterFicheiro', 'FicheiroController@receberFicheiro')->middleware(['CheckLogInColaborador']);
+
+Route::get('colaborador/projetos/getLastId', 'ProjetoController@getLastId')->middleware(['CheckLogInColaborador']);
 
 Route::get('colaborador/gerirProjeto{id}', 'ProjetoController@gerirParticipantes')->name("gerirProjetoColaborador")->middleware(['CheckLogInColaborador']);
 Route::get('colaborador/gerirProjeto/getParticipantes', 'ProjetoController@getParticipantes')->middleware(['CheckLogInColaborador']);
