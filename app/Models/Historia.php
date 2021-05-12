@@ -15,11 +15,12 @@ class Historia extends Model
 
     protected $fillable = [
         'ano',
+        'titulo',
         'urlFicheiro',
         'id_escolaSolidaria'
     ];
 
     public function escola() {
-        return $this->hasOne(EscolaSolidaria::class, 'id_colaborador');
+        return $this->hasOne(EscolaSolidaria::class, 'id_escolaSolidaria');
     }
 }

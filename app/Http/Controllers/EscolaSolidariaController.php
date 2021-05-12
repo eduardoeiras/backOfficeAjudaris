@@ -420,7 +420,8 @@ class EscolaSolidariaController extends Controller
                     title="Delete">&#xE872;</i></a>
                     <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
                     <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
-                    <a href="gerirLivrosAno-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>';
+                    <a href="gerirLivrosAno-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>
+                    <a href="gerirHistorias-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_historias.png"></img></a>';
                 }
                 else {
                     $btns = '<a href="#edit" class="edit" data-toggle="modal" onclick="editar('.$model->id_escolaSolidaria.')"><i
@@ -428,7 +429,8 @@ class EscolaSolidariaController extends Controller
                     title="Edit">&#xE254;</i></a>
                     <a href="'.$url.'"><img src="http://backofficeAjudaris/images/gerir_professores.png"></img></a>
                     <a href="gerirComunicacoes-'.$model->id_colaborador.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_comunicacoes.png"></img></a>
-                    <a href="gerirLivrosAno-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>';
+                    <a href="gerirLivrosAno-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_livros_ano.png"></img></a>
+                    <a href="gerirHistorias-'.$model->id_escolaSolidaria.'-'.$model->nome.'"><img src="http://backofficeAjudaris/images/gerir_historias.png"></img></a>';
                 }
                 return $btns;
          })

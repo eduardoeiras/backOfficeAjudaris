@@ -208,6 +208,15 @@ Route::post('admin/gerirLivrosAno/add','LivrosAnoController@store')->middleware(
 Route::post('admin/gerirLivrosAno/edit/{ano}-{id}','LivrosAnoController@update')->middleware(['checkLogInAdmin']);
 Route::post('admin/gerirLivrosAno/delete/{ano}-{id}','LivrosAnoController@destroy')->middleware(['checkLogInAdmin']);
 
+//ROUTES PARA A GESTÃO DE HISTÓRIAS DAS ESCOLAS
+Route::get('admin/gerirHistorias-{id}-{nome}', 'HistoriaController@index')->name("gerirHistorias")->middleware(['checkLogInAdmin']);
+Route::get('admin/gerirHistorias/getPorId/{id}', 'HistoriaController@getPorId')->middleware(['checkLogInAdmin']);
+Route::get('admin/gerirHistorias/getAll{id}', 'HistoriaController@getAll')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirHistorias/submeterFicheiro', 'FicheiroController@receberHistoria')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirHistorias/edit/{id}', 'HistoriaController@update')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirHistorias/add', 'HistoriaController@store')->middleware(['checkLogInAdmin']);
+Route::post('admin/gerirHistorias/delete/{id}', 'HistoriaController@destroy')->middleware(['checkLogInAdmin']);
+
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS UNIVERSIDADES
 
 Route::get('admin/gerirUniversidade{id}', 'UniversidadeController@gerirProfessoresUniversidade')->name("gerirUniversidade")->middleware(['checkLogInAdmin']);
@@ -405,6 +414,15 @@ Route::get('colaborador/gerirLivrosAno/existeAssociacao/{ano}-{id}', 'LivrosAnoC
 Route::post('colaborador/gerirLivrosAno/add','LivrosAnoController@store')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirLivrosAno/edit/{ano}-{id}','LivrosAnoController@update')->middleware(['CheckLogInColaborador']);
 Route::post('colaborador/gerirLivrosAno/delete/{ano}-{id}','LivrosAnoController@destroy')->middleware(['CheckLogInColaborador']);
+
+//ROUTES PARA A GESTÃO DE HISTÓRIAS DAS ESCOLAS
+Route::get('colaborador/gerirHistorias-{id}-{nome}', 'HistoriaController@index')->name("gerirHistoriasColaborador")->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/gerirHistorias/getPorId/{id}', 'HistoriaController@getPorId')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/gerirHistorias/getAll{id}', 'HistoriaController@getAll')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirHistorias/submeterFicheiro', 'FicheiroController@receberHistoria')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirHistorias/edit/{id}', 'HistoriaController@update')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirHistorias/add', 'HistoriaController@store')->middleware(['CheckLogInColaborador']);
+Route::post('colaborador/gerirHistorias/delete/{id}', 'HistoriaController@destroy')->middleware(['CheckLogInColaborador']);
 
 //ROUTES PARA A GESTÃO DOS PROFESSORES DAS UNIVERSIDADES
 

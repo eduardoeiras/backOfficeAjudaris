@@ -14,6 +14,6 @@
         <a href="http://backofficeajudaris/admin/universidades" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/universidade.png')}}" class="sideBarImg">Universidades</a>
         <a href="http://backofficeajudaris/admin/profsFaculdade" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/professor_faculdade.png')}}" class="sideBarImg">Professores de Faculdades</a>
         <a href="http://backofficeajudaris/admin/trocasAgrupamento" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/troca_agrupamento.png')}}" class="sideBarImg">Trocas Agrupamento</a>
-        <a href="http://backofficeajudaris/admin/formacoes" class="list-group-item list-group-item-action bg-light">Formações</a>
+        <a href="http://backofficeajudaris/admin/formacoes" class="list-group-item list-group-item-action bg-light"><img src="{{asset('images/icons/formacao.png')}}" class="sideBarImg">Formações</a>
       </div>
 </div>
