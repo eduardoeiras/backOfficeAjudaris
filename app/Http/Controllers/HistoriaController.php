@@ -57,14 +57,14 @@ class HistoriaController extends Controller
             $historia->save();
         }
         
-        /*
+        
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
             return redirect()->route("gerirHistorias", ["id" => session()->get('id_escola'), "nome" => session()->get('nome')]);
             }
         else {
              return redirect()->route("gerirHistoriasColaborador", ["id" => session()->get('id_escola'), "nome" => session()->get('nome')]);
-        }*/
+        }
         
     }
 

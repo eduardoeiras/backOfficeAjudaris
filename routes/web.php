@@ -252,6 +252,13 @@ Route::get('admin/pesquisaGeral', function () {
 Route::get('admin/colaboradores/getPorId/{id}', 'ColaboradorController@getPorId')->middleware(['checkLogInAdmin']);
 Route::post('admin/colaboradores/edit/{id}', 'ColaboradorController@edit')->middleware(['checkLogInAdmin']);
 
+//ROUTES PARA A MIGRAÇÃO DE DADOS
+Route::get('admin/dashboardAdmin/migracaoDados', function () {
+    return view("migracao/migracaoDados");
+})->name("migracao")->middleware(['checkLogInAdmin']);
+Route::post('admin/dashboardAdmin/iniciarMigracao', 'MigracaoController@iniciarMigracao')->middleware(['checkLogInAdmin']);
+
+
 /*  _______________________________________________________________________________________________________________________________________
    |                                                                                                                                       |
    |-------------------------------------------------- ROUTES PARA O USER COLABORADOR -----------------------------------------------------|
