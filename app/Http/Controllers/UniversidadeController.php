@@ -110,7 +110,9 @@ class UniversidadeController extends Controller
        $universidade = Universidade::find($id);
        if($universidade != null) {
         $idColaborador = $universidade->id_colaborador;
-        
+        if($universidade->professores()->first() != null) {
+            $universidade->professores()->where('id_universidade', $id)->delete();
+        }
         $universidade->delete();
         ColaboradorController::delete($idColaborador);
     }

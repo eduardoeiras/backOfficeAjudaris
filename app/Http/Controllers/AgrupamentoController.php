@@ -114,11 +114,8 @@ class AgrupamentoController extends Controller
         $agrupamento = Agrupamento::find($id);
         if($agrupamento != null) {
             $idColaborador = $agrupamento->id_colaborador;
-            if($agrupamento->escolas()->first() != null) {
-                $agrupamento->escolas()->where('id_agrupamento', $id)->delete();
-            }
             if($agrupamento->professores()->first() != null) {
-                $agrupamento->professores()->where('id_agrupamento', $id)->delete();
+                $agrupamento->professores()->where('id_agrupamento', $id)->id_agrupamento = null;
             }
             $agrupamento->delete();   
             ColaboradorController::delete($idColaborador);

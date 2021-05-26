@@ -50,7 +50,7 @@ class ProjetoProfessorController extends Controller
         }
     }
 
-    public function verificaAssociacao($id, $id_projeto, $ano)
+    public static function verificaAssociacao($id, $id_projeto, $ano)
     {
         $exite = false;
         $linha = DB::table('projeto_professor')

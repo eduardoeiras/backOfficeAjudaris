@@ -31,6 +31,10 @@ class EscolaSolidaria extends Model
         return $this->hasMany(Historia::class, 'id_escolaSolidaria');
     }
 
+    public function livrosAno() {
+        return $this->hasMany(Livros_Ano::class, 'id_escola', 'id_escolaSolidaria');
+    }
+
     public function agrupamento() {
         return $this->belongsTo(Agrupamento::class, 'id_agrupamento');
     }

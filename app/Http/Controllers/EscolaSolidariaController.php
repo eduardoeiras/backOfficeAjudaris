@@ -109,6 +109,12 @@ class EscolaSolidariaController extends Controller
             if($escola->projetos()->first() != null) {
                 $escola->projetos()->where('id_escolaSolidaria', $id)->delete();
             }
+            if($escola->historias()->first() != null) {
+                $escola->historias()->where('id_escolaSolidaria', $id)->delete();
+            }
+            if($escola->livrosAno()->first() != null) {
+                $escola->livrosAno()->where('id_escola', $id)->delete();
+            }
             $escola->delete();
             ColaboradorController::delete($idColaborador);    
         }
@@ -122,8 +128,6 @@ class EscolaSolidariaController extends Controller
                         ['escola_professor.id_escola', '=', $id_escola],
                         ['escola_professor.id_professor', '=', $id_professor]
                     ]);
-        
-        //$associacao = $query->first();
         
         if($associacao->first() != null){
             if($associacao->first()->interlocutor == 0){
