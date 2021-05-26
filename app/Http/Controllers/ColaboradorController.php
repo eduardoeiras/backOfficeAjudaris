@@ -46,10 +46,13 @@ class ColaboradorController extends Controller
         
         if($emails != null) {
             foreach($emails as $email) {
-                $newEmail = new Email();
-                $newEmail->email = $email;
-                $newEmail->id_colaborador = $idColab;
-                $newEmail->save();   
+                $existeEmail = ColaboradorController::existeEmail($email, $idColab);
+                if(!$existeEmail) {
+                    $newEmail = new Email();
+                    $newEmail->email = $email;
+                    $newEmail->id_colaborador = $idColab;
+                    $newEmail->save();       
+                }
             }    
         }
         

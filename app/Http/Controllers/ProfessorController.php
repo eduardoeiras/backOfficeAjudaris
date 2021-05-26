@@ -202,7 +202,7 @@ class ProfessorController extends Controller
         
     }
 
-    public function existeAssociacao($id_professor, $id_escola) {
+    public static function existeAssociacao($id_professor, $id_escola) {
         
         $professor = DB::table('professor')
                     ->join('escola_professor', 'professor.id_professor', '=', 'escola_professor.id_professor')
