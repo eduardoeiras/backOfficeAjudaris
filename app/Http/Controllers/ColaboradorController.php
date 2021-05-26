@@ -196,13 +196,13 @@ class ColaboradorController extends Controller
         if($colaborador->codPostalRua != null){
             $colaborador->codPostalRua = null;    
         }
-        $colaborador->save();
         if($colaborador->comunicacoes()->first() != null) {
             $colaborador->comunicacoes()->where('id_colaborador', $idColaborador)->delete();
         }
         if($colaborador->emails()->first() != null) {
             $colaborador->emails()->where('id_colaborador', $idColaborador)->delete();
         } 
+        $colaborador->save();
         $colaborador->delete();
     }
 

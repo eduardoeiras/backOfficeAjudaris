@@ -13,6 +13,7 @@ use App\Models\Comunicacao;
 use App\Models\CargoProf;
 use App\Models\ProjetoProfessor;
 use App\Models\ProjetoEscola;
+use App\Models\Projeto;
 use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\ProjetoProfessorController;
@@ -63,11 +64,11 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             }
             $diretor = $row[7];
             $disponibilidade = false;
-            if(strtoupper($row[21]) == "SIM") {
-                $disponibilidade = false;
+            if(strtolower($row[21]) == "sim") {
+                $disponibilidade = true;
             }
             else {
-                $disponibilidade = true;
+                $disponibilidade = false;
             }
 
             //VERIFICAÇÃO SE O AGRUPAMENTO JÁ FOI INSERIDO
@@ -216,7 +217,7 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                 }
                 if(!$existeCargo) {
                     $cargoProf = new CargoProf();
-                    $cargoProf->nomeCargo = $funcaoProjeto
+                    $cargoProf->nomeCargo = $funcaoProjeto;
                     $cargoProf->save();
                     $idCargo = $cargoProf->getKey();
                     $cargoInserido = array("id" => $idCargo,"nome" => $funcaoProjeto);
@@ -262,6 +263,7 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                 $novaAssoc = new EscolaSolidariaProf();
                 $novaAssoc->id_escola = $idEscola;
                 $novaAssoc->id_professor = $idProfessor;
+                $novaAssoc->interlocutor = 1;
                 $novaAssoc->save();
 
                 $professor = Professor::find($idProfessor);
@@ -271,11 +273,13 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             }
 
             //CRIAÇÃO DAS ASSOCIAÇÕES DO PROFESSOR E ESCOLA ASSOCIADA AO PROJETO
+            $ano = 2021;
             for($i = 21; $i < 33; ++$i) {
                 if($row[$i] != null) {
-                    if(strtoupper($row[$i]) == "SIM") {
-                        $ano = $row[$i];
-                        if(!ProjetoProfessorController::verificaAssociacao($idProfessor, $idProjeto, $ano)) {
+                    if(strtolower($row[$i]) == "sim") {
+                        $existeAssociacaoProj = ProjetoProfessorController::verificaAssociacao($idProfessor, $idProjeto, $ano);
+                        $existeAssociacaoProj = ($existeAssociacaoProj === "true");
+                        if(!$existeAssociacaoProj) {
                             $projcontador = new ProjetoProfessor();
                             $projcontador->id_projeto = $idProjeto;
                             $projcontador->id_professor = $idProfessor;
@@ -283,13 +287,16 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                             $projcontador->id_cargo = $idCargo;
                             $projcontador->save();
                         }
-                        if(!ProjetoEscolaController::verificaAssociacao($idEscola, $idProjeto, $ano)) {
+                        $existeAssociacaoProj = ProjetoEscolaController::verificaAssociacao($idEscola, $idProjeto, $ano);
+                        $existeAssociacaoProj = ($existeAssociacaoProj === "true");
+                        if(!$existeAssociacaoProj) {
                             $projescola = new ProjetoEscola();
                             $projescola->id_projeto = $idProjeto;
                             $projescola->id_escolaSolidaria = $idEscola;
                             $projescola->anoParticipacao = $ano;
                             $projescola->save();
                         }
+                        $ano = $ano - 1;
                     }
                 }
             }

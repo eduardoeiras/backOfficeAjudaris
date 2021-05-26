@@ -16,7 +16,8 @@ class EscolaSolidariaProf extends Model
 
     protected $fillable = [
         'id_escola', 
-        'id_professor'
+        'id_professor',
+        'interlocutor'
     ];
 
     public function escola() {

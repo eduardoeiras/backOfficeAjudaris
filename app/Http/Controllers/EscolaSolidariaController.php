@@ -115,6 +115,8 @@ class EscolaSolidariaController extends Controller
             if($escola->livrosAno()->first() != null) {
                 $escola->livrosAno()->where('id_escola', $id)->delete();
             }
+            $escola->id_agrupamento = null;
+            $escola->save();
             $escola->delete();
             ColaboradorController::delete($idColaborador);    
         }
@@ -278,6 +280,7 @@ class EscolaSolidariaController extends Controller
 
         $novaAssoc->id_escola = $request->id_escola;
         $novaAssoc->id_professor = $request->id_professor;
+        $novaAssoc->interlocutor = 0;
 
         $novaAssoc->save();
 
