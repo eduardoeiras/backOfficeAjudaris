@@ -94,7 +94,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
-                                        <select name="disponibilidade">
+                                        <select name="disponibilidade" class="form-control">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>
@@ -188,7 +188,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
-                                        <select name="disponibilidade" id="disponibilidade">
+                                        <select name="disponibilidade" id="disponibilidade" class="form-control">
                                             <option value="0">Disponivel</option>
                                             <option value="1">Indisponivel</option>
                                         </select>

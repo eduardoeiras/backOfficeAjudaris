@@ -104,7 +104,7 @@ class EscolaSolidariaController extends Controller
         if($escola != null) {
             $idColaborador = $escola->id_colaborador;
             if($escola->professores()->first() != null) {
-                return redirect()->route("escolas");
+                $escola->professores()->where('id_escola', $id)->delete();
             }
             if($escola->projetos()->first() != null) {
                 $escola->projetos()->where('id_escolaSolidaria', $id)->delete();

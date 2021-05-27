@@ -121,7 +121,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Tipo de Utilizador</label>
-                                        <select name="tipoUtilizador">
+                                        <select name="tipoUtilizador" class="form-control">
                                             <option value="0">Administrador</option>
                                             <option value="1">Colaborador</option>
                                         </select>
@@ -177,7 +177,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label id="editTipoUserLabel">Tipo de Utilizador</label>
-                                        <select id="tipoUtilizador" name="tipoUtilizador" required>
+                                        <select id="tipoUtilizador" name="tipoUtilizador" required class="form-control">
                                             <option value="0">Administrador</option>
                                             <option value="1">Colaborador</option>
                                         </select>

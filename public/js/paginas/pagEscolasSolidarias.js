@@ -74,45 +74,55 @@ function editar(id) {
         success: function (resposta) {
             if (resposta != null) {
                 var escola = resposta[0]
-                getNomeAgrupamento = 'agrupamentos/getPorId/' + escola.id_agrupamento;
-                $.ajax({
-                    url: getNomeAgrupamento,
-                    method: "GET",
-                    dataType: "json",
-                    success: function (agrupamento) {
-                        url = 'escolas/edit/' + escola.id_escolaSolidaria
-                        $('#formEditar').attr('action', url)
-                        $('#nome').val(escola.nome)
-                        $('#disponibilidade').val(escola.disponivel.toString())
-                        $('#observacoes').val(escola.observacoes)
-                        $('#telefone').val(escola.telefone)
-                        $('#telemovel').val(escola.telemovel)
-                        $('#contactoAssPais').val(escola.contactoAssPais)
-                        escola.emails.original.forEach(linha => {
-                            emailsAdicionadosEdit.push(linha.email)
-                            let index = emailsAdicionadosEdit.indexOf(linha.email)
-                            linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
-                            <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
-                            $('#emailsAssociadosEdit').append(linha)
-                        });
-                        $('#numPorta').val(escola.numPorta)
-                        $('#rua').val(escola.rua)
-                        $('#localidade').val(escola.localidade)
-                        $('#distrito').val(escola.distrito)
-                        $('#codPostal').val(escola.codPostal)
-                        $('#codPostalRua').val(escola.codPostalRua)
-                        carregarAgrupamentosEdit()
-                        selecionar(false, escola.id_agrupamento, agrupamento[0].nome)
-                        
-                    },
-                    error: function (error) {
-                    }
-                })
+                if(escola.id_agrupamento != null) {
+                    getNomeAgrupamento = 'agrupamentos/getPorId/' + escola.id_agrupamento;
+                    $.ajax({
+                        url: getNomeAgrupamento,
+                        method: "GET",
+                        dataType: "json",
+                        success: function (agrupamento) {
+                            apresentarFormEditar(escola, agrupamento)
+                        },
+                        error: function (error) {
+                        }
+                    })
+                }
+                else {
+                    apresentarFormEditar(escola, null);
+                }
             }
         },
         error: function (error) {
         }
     })
+}
+
+function apresentarFormEditar(escola, agrupamento) {
+    url = 'escolas/edit/' + escola.id_escolaSolidaria
+    $('#formEditar').attr('action', url)
+    $('#nome').val(escola.nome)
+    $('#disponibilidade').val(escola.disponivel.toString())
+    $('#observacoes').val(escola.observacoes)
+    $('#telefone').val(escola.telefone)
+    $('#telemovel').val(escola.telemovel)
+    $('#contactoAssPais').val(escola.contactoAssPais)
+    escola.emails.original.forEach(linha => {
+        emailsAdicionadosEdit.push(linha.email)
+        let index = emailsAdicionadosEdit.indexOf(linha.email)
+        linha = `<div id="emailEdit_${index}"><input id="email_${index}" type="checkbox" name="emails[]" style="display: none;" value="${linha.email}" checked>
+        <label style="font-size: 14px" onclick="removerEmail(false, true, ${index})">${linha.email}</label></div>`
+        $('#emailsAssociadosEdit').append(linha)
+        });
+        $('#numPorta').val(escola.numPorta)
+        $('#rua').val(escola.rua)
+        $('#localidade').val(escola.localidade)
+        $('#distrito').val(escola.distrito)
+        $('#codPostal').val(escola.codPostal)
+        $('#codPostalRua').val(escola.codPostalRua)
+        carregarAgrupamentosEdit()
+        if(escola.id_agrupamento != null && agrupamento != null) {
+            selecionar(false, escola.id_agrupamento, agrupamento[0].nome)
+        }
 }
 
 function remover(id) {

@@ -8,15 +8,21 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="http://backofficeAjudaris/colaborador/pesquisaGeral">Colaboradores - Pesquisa Global<span class="sr-only"></span></a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="http://backofficeAjudaris/colaborador/dashboardColaborador">Página Inicial<span class="sr-only"></span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="http://backofficeAjudaris/colaborador/terminarSessao">Terminar Sessão<span class="sr-only"></span></a>
-            </li>
+            <div>
+                <li class="nav-item active" style="margin: 2px;background-color: rgb(240, 240, 240);border: 1;border-color: rgb(226, 226, 226);border-radius: 15px">
+                    <a class="nav-link" style="text-align:center" href="http://backofficeAjudaris/colaborador/pesquisaGeral">Colaboradores - Pesquisa Global<span class="sr-only"></span></a>
+                </li>
+            </div>
+            <div>
+                <li class="nav-item active"style="margin: 2px;background-color: rgb(240, 240, 240);border: 1;border-color: rgb(226, 226, 226);border-radius: 15px">
+                    <a class="nav-link" style="text-align:center" href="http://backofficeAjudaris/colaborador/dashboardColaborador">Página Inicial<span class="sr-only"></span></a>
+                </li>
+            </div>
+            <div>
+                <li class="nav-item active" style="margin: 2px;background-color: rgb(240, 240, 240);border: 1;border-color: rgb(226, 226, 226);border-radius: 15px">
+                    <a class="nav-link" style="text-align:center" href="http://backofficeAjudaris/colaborador/terminarSessao">Terminar Sessão<span class="sr-only"></span></a>
+                </li>
+            </div>
         </ul>
     </div>
 </nav>
