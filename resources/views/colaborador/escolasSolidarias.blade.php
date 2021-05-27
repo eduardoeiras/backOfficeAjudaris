@@ -215,11 +215,11 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Telefone</label>
-                                        <input type="tel" id="telefone"  name="telefone" class="form-control" maxlength="15">
+                                        <input type="tel" id="telefone"  name="telefone" class="form-control" maxlength="15" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label>Telemóvel</label>
-                                        <input type="tel" id="telemovel" name="telemovel" class="form-control" maxlength="15">
+                                        <input type="tel" id="telemovel" name="telemovel" class="form-control" maxlength="15" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label>Contacto da Associação de Pais</label>
