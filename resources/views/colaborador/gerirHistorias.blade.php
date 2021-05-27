@@ -90,7 +90,7 @@
                                     <div class="form-group row" style="margin-right: 3%">
                                         <label for="anoHistoria" class="col-2 col-form-label">Ano</label>
                                         <div class="col-10">
-                                          <input class="form-control" type="text" name="anoHistoria" id="anoHistoria" autocomplete="no_autocomplete" required>
+                                          <input class="form-control" type="text" name="anoHistoria" id="anoHistoria" autocomplete="autocomplete_no" required>
                                         </div>
                                     </div>
                                     <br>

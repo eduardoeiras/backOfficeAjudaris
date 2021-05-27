@@ -58,7 +58,6 @@ function editar(id) {
         success: function (resposta) {
             if (resposta != null) {
                 rbe = resposta[0]
-                console.log(rbe);
                 $('#emailsAssociadosEdit').empty()
                 $('#concelhosAssociadosEdit').empty()
                 url = 'rbes/edit/' + rbe.id_rbe
@@ -154,16 +153,19 @@ function removerConcelho(adicionar, jaExistente, index) {
         }
     }
     else {
-        if(index != -1) {
-            if(jaExistente) {
-                concelhosAdicionadosEdit.splice(index, 1)
-                $(`#concelho_${index}`).attr('name', 'deletedConcelhos[]');
-                $(`#concelhoEdit_${index}`).hide()    
-            }
-            else {
-                concelhosAdicionadosEdit.splice(index, 1)
-                $(`#concelhoEdit_${index}`).remove()    
-            }
-        }
+        let confirmacao = confirm("Tem a certeza que pretende remover o concelho selecionado?");
+        if(confirmacao) {
+           if(index != -1) {
+                if(jaExistente) {
+                    concelhosAdicionadosEdit.splice(index, 1)
+                    $(`#concelho_${index}`).attr('name', 'deletedConcelhos[]');
+                    $(`#concelhoEdit_${index}`).hide()    
+                }
+                else {
+                    concelhosAdicionadosEdit.splice(index, 1)
+                    $(`#concelhoEdit_${index}`).remove()    
+                }
+            }   
+        }     
     }
 }

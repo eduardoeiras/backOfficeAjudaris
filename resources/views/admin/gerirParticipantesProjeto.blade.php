@@ -145,7 +145,7 @@
                                         <div class="form-group row" style="margin-right: 3%">
                                             <label for="anoParticipacao" class="col-2 col-form-label">Ano de Participação:</label>
                                             <div class="col-10">
-                                              <input class="form-control" type="text" name="anoParticipacao" id="anoParticipacao" required>
+                                              <input class="form-control" type="text" name="anoParticipacao" id="anoParticipacao" autocomplete="no_autocomplete" required>
                                             </div>
                                         </div>
                                         <input type="hidden" name="id_projeto" id="id_projeto" value="" readonly>

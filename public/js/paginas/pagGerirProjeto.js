@@ -43,7 +43,6 @@ $(document).ready(function () {
         viewMode: "years", 
         minViewMode: "years",
         autoclose: true,
-        startDate: ano.toString(),
         date: '',
     });
 
@@ -294,7 +293,9 @@ function copiarEmais (str, numEmaisCopiados) {
 
 function inicializarDataTableParticipantes() {
     dtTable = $('#tabelaDados').DataTable({
-        "dom": 'Bfrtip',  
+        "dom": "<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4'B><'col-sm-12 col-md-4'f>>" +
+        "<'row'<'col-sm-12'tr>>" +
+        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", 
         "buttons": [
             {
                 extend: 'copy',
@@ -346,9 +347,9 @@ function inicializarDataTableParticipantes() {
             "sSearch": "Pesquisar",
             "lengthMenu": "Mostrar _MENU_ registos por página",
             "zeroRecords": "Nehum registo encontrado!",
-            "info": "A mostrar a página _PAGE_ de _PAGES_",
+            "info": "A mostrar os registos _START_ a _END_.",
             "infoEmpty": "Nehuns registos disponíveis!",
-            "infoFiltered": "(filtrados _MAX_ do total de registos)",
+            "infoFiltered": "(filtrados de um total de _MAX_)",
             "paginate": {
                 "previous": "Anterior",
                 "next": "Seguinte"

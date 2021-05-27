@@ -39,7 +39,7 @@
                                         <h2>Gerir <b>Redes de Bibliotecas Escolares</b></h2>
                                     </div>
                                     <div class="col-sm-6">
-                                        <a href="#add" class="btn btn-success" data-toggle="modal" onclick="carregarConcelhos(true)"><i
+                                        <a href="#add" class="btn btn-success" data-toggle="modal"><i
                                             class="material-icons">&#xE147;</i> <span>Criar um nova Rede de Biblioteca Escolar</span></a>
                                     </div>
                                 </div>
@@ -88,10 +88,6 @@
                                         <input type="text" name="nome" class="form-control" maxlength="70" requied>
                                     </div>
                                     <div class="form-group">
-                                        <label>Observações</label>
-                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
-                                    </div>
-                                    <div class="form-group">
                                         <label>Disponibilidade</label>
                                         <select name="disponibilidade" class="form-control">
                                             <option value="0">Disponivel</option>
@@ -99,8 +95,13 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        <label>Observações</label>
+                                        <textarea name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
+                                    </div>
+                                    <br><br>
+                                    <div class="form-group">
                                         <div style="padding-top: 5px">
-                                            <label>Concelhos:</label>
+                                            <label>Concelhos Associados:</label>
                                             <div id="concelhosAssociadosAdd">   
                                             </div>
                                             <input type="text" id="concelhoFormAdd" name="concelho" style="margin-top: 10px;margin-bottom: 20px" class="form-control" maxlength="70" placeholder="Novo Concelho">
@@ -109,7 +110,6 @@
                                     </div>
                                     <br><br>
                                     <label style="font-size: 18px">Contactos</label>
-                                    <br><br>
                                     <div class="form-group">
                                         <label>Telefone</label>
                                         <input type="tel" id="telefoneAdd" name="telefone" class="form-control" maxlength="15">
@@ -128,8 +128,9 @@
                                             <label style="color: red; margin-top: 10px" id="erroEmailAdd"></label>
                                         </div>
                                     </div>
-                                    <label style="font-size: 18px">Morada</label>
                                     <br><br>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br>
                                     <div class="form-group">
                                         <label>Número da Porta</label>
                                         <input type="text" id="numPortaAdd" name="numPorta" class="form-control">
@@ -146,12 +147,12 @@
                                         <label>Distrito</label>
                                         <input type="text" id="distritoAdd" name="distrito" class="form-control" maxlength="70">
                                     </div>
-                                    <br>
                                     <div class="form-group">
                                         <label style="font-size: 16px">Código Postal</label>
-                                        <br><br>
+                                        <br>
                                         <label>Primeiros dígitos</label>
                                         <input type="text" id="codPostalAdd" name="codPostal" class="form-control" maxlength="10">
+                                        <br>
                                         <label>Segundos dígitos</label>
                                         <input type="text" id="codPostalRuaAdd" name="codPostalRua" class="form-control" maxlength="6">
                                     </div>
@@ -196,6 +197,7 @@
                                         <label>Observações</label>
                                         <textarea id="observacoes" name="observacoes" class="form-control" placeholder="Observações" maxlength="200"></textarea>
                                     </div>
+                                    <br><br>
                                     <div class="form-group">
                                         <div style="padding-top: 5px">
                                             <label style="font-size: 18px">Concelhos Associados:</label>
@@ -207,7 +209,6 @@
                                     </div>
                                     <br><br>
                                     <label style="font-size: 18px">Contactos</label>
-                                    <br><br>
                                     <div class="form-group">
                                         <label>Telefone</label>
                                         <input type="tel" id="telefone" name="telefone" class="form-control" maxlength="15">
@@ -226,8 +227,9 @@
                                             <label style="color: red; margin-top: 10px" id="erroEmailEdit"></label>
                                         </div>
                                     </div>
-                                    <label style="font-size: 18px">Morada</label>
                                     <br><br>
+                                    <label style="font-size: 18px">Morada</label>
+                                    <br>
                                     <div class="form-group">
                                         <label>Número da Porta</label>
                                         <input type="text" id="numPorta" name="numPorta" class="form-control">
@@ -246,9 +248,10 @@
                                     </div>
                                     <div class="form-group">
                                         <label style="font-size: 16px">Código Postal</label>
-                                        <br><br>
+                                        <br>
                                         <label>Primeiros dígitos</label>
                                         <input type="text" id="codPostal" name="codPostal" class="form-control" maxlength="10">
+                                        <br>
                                         <label>Segundos dígitos</label>
                                         <input type="text" id="codPostalRua" name="codPostalRua" class="form-control" maxlength="6">
                                     </div>
