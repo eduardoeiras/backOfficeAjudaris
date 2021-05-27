@@ -85,7 +85,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Coordenador</label>
-                                        <input type="text" name="nome" class="form-control" maxlength="70" requied>
+                                        <input type="text" name="nome" class="form-control" maxlength="85" requied>
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
@@ -185,7 +185,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Coordenador</label>
-                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>

@@ -79,7 +79,7 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" id="nomeAdd" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nomeAdd" name="nome" class="form-control" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>
@@ -173,7 +173,7 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Nome do Diretor</label>

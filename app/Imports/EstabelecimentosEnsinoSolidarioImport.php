@@ -27,15 +27,11 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
         //REMOÇÃO DA PRIMEIRA LINHA COM A DESIGNAÇÃO DAS COLUNAS
         unset($rows[0]);
 
-        //CRIAÇÃO DOS ARRAYS PARA OS AGRUPAMENTOS E ESCOLAS INSERIDOS
+        //CRIAÇÃO DOS ARRAYS PARA OS AGRUPAMENTOS, ESCOLAS, PROFESSORES E CARGOS INSERIDOS
         $agrupInseridos = array();
         $escolasInseridas = array();
         $professoresInseridos = array();
         $cargosInseridos = array();
-        
-        //PARA TESTAR SÓ PARA A PRIMEIRA LINHA - REMOVER QUANDO COCLUÍDO E DESCOMENTAR O FOREACH
-        $row = $rows[1];
-        //var_dump($row);
 
         //CRIAÇÃO DO PROJETO AO QUAL OS PARTICIPANTES SERÃO ASSOCIADOS
         $projeto = new Projeto();
@@ -47,14 +43,18 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
         $projeto->save();
         $idProjeto = $projeto->getKey();
 
-        //foreach($rows as $row) {
+        foreach($rows as $row) {
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM AGRUPAMENTO */
             $nomeAgrup = $row[0];
             $rua = $row[1];
-            $codArray = explode("-", $row[2], 2);
-            $codPostal = $codArray[0];
-            $codPostalRua = $codArray[1];
+            $codPostal = null;
+            $codPostalRua = null;
+            if($row[2] != null) {
+                $codArray = explode("-", $row[2], 2);
+                $codPostal = $codArray[0];
+                $codPostalRua = $codArray[1];   
+            }
             $localidade = $row[3];
             $distrito = $row[4];
             $telefone = $row[5];
@@ -65,10 +65,10 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             $diretor = $row[7];
             $disponibilidade = false;
             if(strtolower($row[21]) == "sim") {
-                $disponibilidade = true;
+                $disponibilidade = false;
             }
             else {
-                $disponibilidade = false;
+                $disponibilidade = true;
             }
 
             //VERIFICAÇÃO SE O AGRUPAMENTO JÁ FOI INSERIDO
@@ -300,8 +300,7 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                     }
                 }
             }
-
-        //}
+        }
     }
 
     public function obterData($observacoes) {

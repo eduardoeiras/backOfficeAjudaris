@@ -242,7 +242,6 @@ class ProjetoController extends Controller
                         ->select('entidade_oficial.id_entidadeOficial' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_entidade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_entidade.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
             
@@ -262,7 +261,6 @@ class ProjetoController extends Controller
                         ->select('escola_solidaria.id_escolaSolidaria' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_escola.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_escola.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
             
@@ -282,7 +280,6 @@ class ProjetoController extends Controller
                         ->select('ilustrador_solidario.id_ilustradorSolidario' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_ilustrador.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_ilustrador.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
 
@@ -322,7 +319,6 @@ class ProjetoController extends Controller
                         ->select('juri.id_juri' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_juri.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_juri.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
 
@@ -343,7 +339,6 @@ class ProjetoController extends Controller
                         ->select('professor.id_professor' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_professor.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_professor.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
 
@@ -363,7 +358,6 @@ class ProjetoController extends Controller
                         ->select('professor_faculdade.id_professorFaculdade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_prof_faculdade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_prof_faculdade.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
             
@@ -384,7 +378,6 @@ class ProjetoController extends Controller
                         ->select('rbe.id_rbe' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'rbe.regiao', 'projeto_rbe.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_rbe.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
 
@@ -404,7 +397,6 @@ class ProjetoController extends Controller
                         ->select('universidade.id_universidade' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_universidade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_universidade.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
             
@@ -424,7 +416,6 @@ class ProjetoController extends Controller
                         ->select('agrupamento.id_agrupamento' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_agrupamento.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_agrupamento.id_projeto', '=', $id_projeto],
-                            ['colaborador.disponivel', '=', 0]
                             ])
                         ->get();
             
