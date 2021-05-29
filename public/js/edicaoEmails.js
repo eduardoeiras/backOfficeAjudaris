@@ -35,12 +35,16 @@ function adicionarEmail(adicionar) {
                 }
             }
             if(!existe && !existeEmailBd) {
-                emailsAdicionadosEdit.push(email) 
-                let index = emailsAdicionadosEdit.indexOf(email)
-                let linha = `<div id="emailEdit_${index}"><input type="checkbox" name="emails[]" style="display: none;" value="${email}" checked>
-                <label style="font-size: 14px" onclick="removerEmail(false, false, ${index})">${email}</label></div>`
-                $('#emailsAssociadosEdit').append(linha)
-                $('#emailFormEdit').val("")
+                if(getTipoUser() === 0){
+                    emailsAdicionadosEdit.push(email) 
+                    let index = emailsAdicionadosEdit.indexOf(email)
+                    let linha = `<div id="emailEdit_${index}"><input type="checkbox" name="emails[]" style="display: none;" value="${email}" checked>
+                    <label style="font-size: 14px" onclick="removerEmail(false, false, ${index})">${email}</label></div>`
+                    $('#emailsAssociadosEdit').append(linha)
+                    $('#emailFormEdit').val("")
+                }else{
+                    alert("Nao pode remover os emails");
+                }
             }   
         }
     }
@@ -100,5 +104,14 @@ function existeEmailBD(email, adicionar) {
             alert("Erro na verificação da existência do email na base de dados, por favor tente novamente!");
             existeEmailBd = true
         }
+    })
+}
+
+function getTipoUser(id){
+    let url = 'getTipoUser/'
+    $.ajax({
+        url: url,
+        method: "GET",
+        dataType: "json"
     })
 }

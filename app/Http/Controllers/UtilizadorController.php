@@ -148,6 +148,17 @@ class UtilizadorController extends Controller
 
     }
 
+    public function getTipoUser()
+    {
+        $user = DB::table('utilizador')->select('utilizador.tipoUtilizador')->
+        where(session()->get('utilizador'));
+        if($user != null){
+            return response()->json($user);
+        }else {
+            return null;
+        }
+    }
+
     public function getUserPorId($id) {
         
         $user = DB::table('utilizador')->where('id_utilizador', $id)->first();
