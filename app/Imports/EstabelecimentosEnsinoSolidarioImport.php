@@ -63,12 +63,12 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                 array_push($emails, $row[6]);    
             }
             $diretor = $row[7];
-            $disponibilidade = false;
+            $disponibilidade = 0;
             if(strtolower($row[21]) == "sim") {
-                $disponibilidade = false;
+                $disponibilidade = 0;
             }
             else {
-                $disponibilidade = true;
+                $disponibilidade = 1;
             }
 
             //VERIFICAÇÃO SE O AGRUPAMENTO JÁ FOI INSERIDO

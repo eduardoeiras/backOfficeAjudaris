@@ -11,7 +11,9 @@ class ExcelImport implements WithMultipleSheets
     {
         return [
             //0 => new EstabelecimentosEnsinoSolidarioImport(),
-            1 => new IlustradorSolidarioImport(),
+            //1 => new IlustradorSolidarioImport(),
+            //2 => new ContadoresHistoriasImport(),
+            3 => new RBEImport()
         ];
     }
 }
