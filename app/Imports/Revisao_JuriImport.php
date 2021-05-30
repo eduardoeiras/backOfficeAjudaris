@@ -43,24 +43,21 @@ class Revisao_JuriImport implements ToCollection
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
             $nome = $row[0];
-            $rua = $row[1];
-            $codArray = explode("-", $row[3], 2);
-            $codPostal = $codArray[0];
-            $codPostalRua = $codArray[1];
-            $localidade = $row[3];
-            $distrito = $row[4];
+            $observacoes = $row[19];
             $telefone = $row[2];
             $emails = array();
-            if($row[6] != null) {
+            if($row[1] != null) {
                 array_push($emails, $row[1]);    
             }
             $tipoJuri = $row[7];
             $disponibilidade = false;
-            if(strtolower($row[21]) == "sim") {
-                $disponibilidade = true;
-            }
-            else {
-                $disponibilidade = false;
+            for($i = 4; $i < 19; ++$i) {
+                if(strtolower($row[$i]) == "sim") {
+                    $disponibilidade = true;
+                }
+                else {
+                    $disponibilidade = false;
+                }
             }
 
             //VERIFICAÇÃO SE O AGRUPAMENTO JÁ FOI INSERIDO
@@ -78,8 +75,8 @@ class Revisao_JuriImport implements ToCollection
               DE JURIS JÁ INSERIDOS  */
             $idColabJuri = -1;
             if(!$existe) {
-                $idColabJuri = ColaboradorController::create($nome, null, null, $telefone, null, $disponibilidade, 
-                $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
+                $idColabJuri = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
+                null, null, null, null, null, $emails);
 
                 $juri = new Juri();
                 $juri->tipoJuri = $tipoJuri;
@@ -95,94 +92,23 @@ class Revisao_JuriImport implements ToCollection
                 $idColabJuri = $juri->id_colaborador;
             }
 
-            /* OBTER AS INFORMAÇÕES DA COMUNICAÇÃO, REALIZANDO A SUA CRIAÇÃO
-               SE ESTA EXISTIR E SE POSSÍVEL */
-            $observacoes = str_split($row[11]);
-            if($observacoes != null) {
-                $data = self::obterData($observacoes);
-                $obs = $row[11];
-
-                $comunicacao = new Comunicacao();
-                $comunicacao->data = $data;
-                $comunicacao->observacoes = $obs;
-                $comunicacao->id_colaborador = $idColabJuri;
-                $comunicacao->save();        
-            }
-
-            //CRIAÇÃO DAS ASSOCIAÇÕES DO JURI ASSOCIADA AO PROJETO
             $ano = 2021;
-            for($i = 21; $i < 33; ++$i) {
+            for($i = 4; $i < 19; ++$i) {
                 if($row[$i] != null) {
                     if(strtolower($row[$i]) == "sim") {
                         $existeAssociacaoProj = ProjetoJuriController::verificaAssociacao($idJuri, $idProjeto, $ano);
                         $existeAssociacaoProj = ($existeAssociacaoProj === "true");
                         if(!$existeAssociacaoProj) {
-                            $projcontador = new ProjetoJuri();
-                            $projcontador->id_projeto = $idProjeto;
-                            $projcontador->id_juri = $idJuri;
-                            $projcontador->anoParticipacao = $ano;
-                            $projcontador->save();
+                            $projuri = new ProjetoJuri();
+                            $projuri->id_projeto = $idProjeto;
+                            $projuri->id_professor = $idJuri;
+                            $projuri->anoParticipacao = $ano;
+                            $projuri->save();
                         }
                         $ano = $ano - 1;
                     }
                 }
             }
-
         //}
-    }
-
-    public function obterData($observacoes) {
-        $data = "";
-        $metodo1 = "";
-        $metodo2 = "";
-        $metodo3 = "";
-        $metodo4 = "";
-        $metodo5 = "";
-        $metodos = array();
-        for ($i = 0; $i < 10; ++$i) {
-                $metodo1 = $metodo1.$observacoes[$i];
-        }
-        for ($i = 0; $i < 8; ++$i) {
-                $metodo2 = $metodo2.$observacoes[$i];
-        }
-        for ($i = 0; $i < 7; ++$i) {
-                $metodo3 = $metodo3.$observacoes[$i];
-        }
-        for ($i = 0; $i < 6; ++$i) {
-                $metodo4 = $metodo4.$observacoes[$i];
-        }
-        for ($i = 0; $i < 4; ++$i) {
-                $metodo5 = $metodo5.$observacoes[$i];
-        }
-        array_push($metodos, $metodo1, $metodo2, $metodo3, $metodo4, $metodo5);
-        for ($i = 0; $i < count($metodos); ++$i) {
-            $metodo = $metodos[$i];
-            $metodo = trim($metodo, " ");
-            if(is_numeric($metodo[0]) && is_numeric(substr($metodo, -1))) {
-                $metodo = str_replace("/", "-", $metodo);
-                if($i == 0 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 1 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 2 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 3 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 4 && count(explode("-", $metodo, 2)) == 2) {
-                    $metodo = $metodo."-2021";
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-            }    
-        }
-        return $data;
     }
 }

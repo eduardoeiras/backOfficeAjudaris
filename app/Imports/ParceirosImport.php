@@ -10,24 +10,21 @@ use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\ProjetoEntidadeController;
 use App\Models\EntidadeOficial;
 use App\Models\ProjetoEntidade;
-use DateTime;
 use DB;
 
-class EntidadesOficiaisImport implements ToCollection
+class ParceirosImport implements ToCollection
 {
     public function collection(Collection $rows)
     {
         //REMOÇÃO DA PRIMEIRA LINHA COM A DESIGNAÇÃO DAS COLUNAS
         unset($rows[0]);
-        unset($rows[1]);
-        unset($rows[2]);
-
+        
         //CRIAÇÃO DOS ARRAYS PARA O JURI
-        $entidadeInseridas = array();
+        $parceirosInseridos = array();
         
         
         //PARA TESTAR SÓ PARA A PRIMEIRA LINHA - REMOVER QUANDO COCLUÍDO E DESCOMENTAR O FOREACH
-        $row = $rows[3];
+        $row = $rows[1];
         //var_dump($row);
 
         //CRIAÇÃO DO PROJETO AO QUAL OS PARTICIPANTES SERÃO ASSOCIADOS
@@ -43,52 +40,59 @@ class EntidadesOficiaisImport implements ToCollection
         //foreach($rows as $row) {
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
-            $nome = $row[2];
-            $nomeEntidade = $row[1];
-            $observacoes = $row[5];
-            $telefone = $row[4];
+            $nome = $row[1];
+            $nomeEntidade = $row[0];
+            $categoria = "\nCategoria: ".$row[9];
+            $observacoes = $categoria.$row[10];
+            $rua = $row[5];
+            $codArray = explode("-", $row[6], 2);
+            $localidade = $row[7];
+            $distrito = $row[8];
+            $codPostal = $codArray[0];
+            $codPostalRua = $codArray[1];
+            $telefone = $row[3];
             $emails = array();
-            if($row[3] != null) {
-                array_push($emails, $row[3]);    
+            if($row[4] != null) {
+                array_push($emails, $row[4]);    
             }
-            /*$disponibilidade = false;
-            if(strtolower($row[21]) == "sim") {
+            $disponibilidade = false;
+            if(strtolower($row[11]) == "sim") {
                 $disponibilidade = true;
             }
             else {
                 $disponibilidade = false;
-            }*/
+            }
 
             //VERIFICAÇÃO SE A ENTIDADE JÁ FOI INSERIDO
-            $idEntidade = -1;
+            $idParceiro = -1;
             $existe = false;
-            foreach($entidadeInseridas as $entidade) {
-                if($entidade["nome"] == $nome) {
+            foreach($parceirosInseridos as $parceiro) {
+                if($parceiro["nome"] == $nome) {
                     $existe = true;
-                    $idEntidade = $entidade["id"];
+                    $idParceiro = $parceiro["id"];
                     break;
                 }
             }
 
             /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
               DE JURIS JÁ INSERIDOS  */
-            $idColabEntidade = -1;
+            $idColabParceiro = -1;
             if(!$existe) {
-                $idColabEntidade = ColaboradorController::create($nome, $observacoes, null, $telefone, null, null, 
-                null, null, null, null, null, $emails);
+                $idColabParceiro = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
+                $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
 
-                $entidade = new EntidadeOficial();
-                $entidade->id_colaborador = $idColabEntidade;
-                $entidade->entidade = $nomeEntidade;
-                $entidade->save();
+                $parceiro = new EntidadeOficial();
+                $parceiro->id_colaborador = $idColabParceiro;
+                $parceiro->entidade = $nomeEntidade;
+                $parceiro->save();
 
-                $idEntidade = $entidade->getKey();
-                $entidadeInserida = array("id" => $idEntidade,"nome" => $nome);
-                array_push($entidadeInseridas, $entidadeInserida);
+                $idParceiro = $parceiro->getKey();
+                $parceiroInserido = array("id" => $idParceiro,"nome" => $nome);
+                array_push($parceirosInseridos, $parceiroInserido);
             }
             else {
-                $entidade = EntidadeOficial::find($idEntidade);
-                $idColabEntidade = $entidade->id_colaborador;
+                $parceiro = EntidadeOficial::find($idParceiro);
+                $idColabParceiro = $parceiro->id_colaborador;
             }
         //}
     }
