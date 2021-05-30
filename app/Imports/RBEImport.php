@@ -13,7 +13,7 @@ class RBEImport implements ToCollection
 {
     public function collection(Collection $rows)
     {
-        //REMOÇÃO DA PRIMEIRA E SEGUNDA LINHA COM A DESIGNAÇÃO DAS COLUNAS
+        //UNSET DA PRIMEIRA E SEGUNDA LINHA COM A DESIGNAÇÃO DAS COLUNAS
         unset($rows[0]);
         unset($rows[1]);
 

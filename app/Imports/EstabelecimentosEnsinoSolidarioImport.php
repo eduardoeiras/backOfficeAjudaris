@@ -19,12 +19,13 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\ProjetoProfessorController;
 use App\Http\Controllers\ProjetoEscolaController;
 use DateTime;
+use DB;
 
 class EstabelecimentosEnsinoSolidarioImport implements ToCollection
 {
     public function collection(Collection $rows)
     {
-        //REMOÇÃO DA PRIMEIRA LINHA COM A DESIGNAÇÃO DAS COLUNAS
+        //UNSET DA PRIMEIRA LINHA COM A DESIGNAÇÃO DAS COLUNAS
         unset($rows[0]);
 
         //CRIAÇÃO DOS ARRAYS PARA OS AGRUPAMENTOS, ESCOLAS, PROFESSORES E CARGOS INSERIDOS
@@ -47,22 +48,80 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM AGRUPAMENTO */
             $nomeAgrup = $row[0];
+            if(sizeof(explode(",", $row[0])) > 1) {
+                $nomeArray = explode(",", $row[0]);
+                $nomeAgrup = $nomeArray[0];
+            }
+            if(strlen($nomeAgrup) > 70) {
+                $nomeAgrup = substr($nomeAgrup,0,70);
+            }
             $rua = $row[1];
+            if(sizeof(explode(",", $rua)) > 1) {
+                $ruaArray = explode(",", $rua);
+                $rua = $ruaArray[0];
+            }
             $codPostal = null;
             $codPostalRua = null;
             if($row[2] != null) {
                 $codArray = explode("-", $row[2], 2);
-                $codPostal = $codArray[0];
-                $codPostalRua = $codArray[1];   
+                if(count($codArray) == 2) {
+                    if(is_numeric($codArray[0]) && is_numeric($codArray[1])) {
+                       $codPostal = $codArray[0]; 
+                       $codPostalRua = $codArray[1];  
+                    }
+                }   
             }
             $localidade = $row[3];
             $distrito = $row[4];
             $telefone = $row[5];
-            $emails = array();
-            if($row[6] != null) {
-                array_push($emails, $row[6]);    
+            if($telefone != null) {
+                $telefone = trim($telefone);
+                if(!is_numeric($telefone)) {
+                    $telefone = null;
+                }
             }
-            $diretor = $row[7];
+            $emails = array();
+            $emailObs = null;
+            if($row[6] != null) {
+                if(sizeof(explode(";", $row[6])) > 1) {
+                    $emailArray = explode(";", $row[6]);
+                    foreach($emailArray as $emailStr) {
+                        $email = DB::table('email')
+                        ->where('email.email', '=', "$emailStr")
+                        ->first();
+                        if($email != null) {
+                            $emailObs = $emailObs.$email->email."; ";
+                        }
+                        else {
+                            if(strlen($emailStr) < 70) {
+                                array_push($emails, $emailStr);
+                            }
+                        }
+                    }
+                }
+                else {
+                    if(sizeof(explode(" ", $row[6])) <= 1) {
+                        if(strlen($row[6]) <= 70) {
+                            $emailStr = $row[6];
+                            $email = DB::table('email')
+                                ->where('email.email', '=', "$emailStr")
+                                ->first();
+                            if($email != null) {
+                                $emailObs = "Email: ".$email->email;
+                            }
+                            else {
+                                if(strlen($emailStr) < 70) {
+                                    array_push($emails, $emailStr);
+                                }
+                            }  
+                        } 
+                    }       
+                } 
+            }
+            $diretor = null;
+            if(strlen($row[7]) <= 70) {
+                $diretor = $row[7];
+            }
             $disponibilidade = 0;
             if(strtolower($row[21]) == "sim") {
                 $disponibilidade = 0;
@@ -86,17 +145,20 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
               DE AGRUPAMENTOS JÁ INSERIDOS  */
             $idColabAgrupamento = -1;
             if(!$existe) {
-                $idColabAgrupamento = ColaboradorController::create($nomeAgrup, null, null, $telefone, null, $disponibilidade, 
-                $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
+                if($nomeAgrup != null && $nomeAgrup != "") {
+                    // VERIFICAR SE O EMAIL JÁ EXISTE, VISTO EXISTIREM EMAILS REPETIDOS PARA DIFERENTES COLABORADORES
+                    $idColabAgrupamento = ColaboradorController::create($nomeAgrup, $emailObs, null, $telefone, null, $disponibilidade, 
+                    $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
 
-                $agrupamento = new Agrupamento();
-                $agrupamento->nomeDiretor = $diretor;
-                $agrupamento->id_colaborador = $idColabAgrupamento;
-                $agrupamento->save();
+                    $agrupamento = new Agrupamento();
+                    $agrupamento->nomeDiretor = $diretor;
+                    $agrupamento->id_colaborador = $idColabAgrupamento;
+                    $agrupamento->save();
 
-                $idAgrupamento = $agrupamento->getKey();
-                $agrupInserido = array("id" => $idAgrupamento,"nome" => $nomeAgrup);
-                array_push($agrupInseridos, $agrupInserido);
+                    $idAgrupamento = $agrupamento->getKey();
+                    $agrupInserido = array("id" => $idAgrupamento,"nome" => $nomeAgrup);
+                    array_push($agrupInseridos, $agrupInserido);    
+                }
             }
             else {
                 $agrupamento = Agrupamento::find($idAgrupamento);
@@ -105,7 +167,16 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
 
             /* OBTENÇÃO DAS INFORMAÇÕES DAS ESCOLA */
             $nomeEscola = $row[8];
+            if(strlen($nomeEscola) > 70) {
+                $nomeEscola = substr($nomeEscola,0,70);
+            }
             $telefone = $row[9];
+            if($telefone != null) {
+                $telefone = trim($telefone);
+                if(!is_numeric($telefone)) {
+                    $telefone = null;
+                }
+            }
             $contAssPaisArray = str_split($row[19]);
             $contAssPais = "";
             for ($i = 0; $i < count($contAssPaisArray); ++$i) {
@@ -124,7 +195,7 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             $distrito = null; 
             if($row[10] != null) {
                 $moradaEscola = explode(",", $row[10]);
-                if($moradaEscola != null) {
+                if($moradaEscola != null && count($moradaEscola) == 5) {
                     if($moradaEscola[0] != null) {
                        $rua = $moradaEscola[0]; 
                     }
@@ -161,22 +232,24 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                INSERINDO-A NO ARRAY DE ESCOLAS INSERIDAS */
             $idColabEscola = -1;
             if(!$existeEscola) {
-                $idColabEscola = ColaboradorController::create($nomeEscola, null, null, $telefone, $numeroPorta, $disponibilidade,
-                $codPostal, $codPostalRua, $rua, $localidade, $distrito, null);
+                if($nomeEscola != null && $nomeEscola != "") {
+                    $idColabEscola = ColaboradorController::create($nomeEscola, null, null, $telefone, $numeroPorta, $disponibilidade,
+                    $codPostal, $codPostalRua, $rua, $localidade, $distrito, null);
 
-                $escsolidarias = new EscolaSolidaria();
-                $escsolidarias->contactoAssPais = $contAssPais;
-                $escsolidarias->id_agrupamento = $idAgrupamento;
-                $escsolidarias->id_colaborador = $idColabEscola;
-                $escsolidarias->save();
+                    $escsolidarias = new EscolaSolidaria();
+                    $escsolidarias->contactoAssPais = $contAssPais;
+                    $escsolidarias->id_agrupamento = $idAgrupamento;
+                    $escsolidarias->id_colaborador = $idColabEscola;
+                    $escsolidarias->save();
 
-                $idEscola = $escsolidarias->getKey();
+                    $idEscola = $escsolidarias->getKey();
 
-                $escolaInserida = array("id" => $idEscola,"nome" => $nomeEscola);
-                array_push($escolasInseridas, $escolaInserida);
+                    $escolaInserida = array("id" => $idEscola,"nome" => $nomeEscola);
+                    array_push($escolasInseridas, $escolaInserida);    
+                }
             }
             else {
-                $escola = Escola::find($idEscola);
+                $escola = EscolaSolidaria::find($idEscola);
                 $idColabEscola = $escola->id_colaborador;
             }
 
@@ -186,9 +259,14 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             if($observacoes != null) {
                 $data = self::obterData($observacoes);
                 $obs = $row[18];
-
+                
                 $comunicacao = new Comunicacao();
-                $comunicacao->data = $data;
+                if($data != null) {
+                    $comunicacao->data = $data;    
+                }
+                else {
+                    $comunicacao->data = null;
+                }
                 $comunicacao->observacoes = $obs;
                 $comunicacao->id_colaborador = $idColabEscola;
                 $comunicacao->save();        
@@ -198,10 +276,42 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             $nomeProf = $row[11];
             $funcaoProjeto = $row[12];
             $emails = array();
-            if($row[14] != null) {
-               array_push($emails, $row[13]); 
+            $emailObs = null;
+            if($row[13] != null) {
+                if(sizeof(explode(";", $row[13])) > 1) {
+                    $emailArray = explode(";", $row[13]);
+                    foreach($emailArray as $emailStr) {
+                        $email = DB::table('email')
+                        ->where('email.email', '=', "$emailStr")
+                        ->first();
+                        if($email != null) {
+                            $emailObs = $emailObs.$email->email."; ";
+                        }
+                        else {
+                            array_push($emails, $emailStr); 
+                        }
+                    }
+                }
+                else {
+                    $emailStr = $row[13];
+                    $email = DB::table('email')
+                        ->where('email.email', '=', "$emailStr")
+                        ->first();
+                    if($email != null) {
+                        $emailObs = "Email: ".$email->email;
+                    }
+                    else {
+                        array_push($emails, $emailStr); 
+                    }       
+                }  
             }
             $telemovel = $row[14];
+            if($telemovel != null) {
+                $telemovel = trim($telemovel);
+                if(!is_numeric($telefone)) {
+                    $telefone = null;
+                }
+            }
 
             //CRIAÇÃO DO CARGO ASSOCIADO AO PROJETO, CASO NÃO EXISTA
             $idCargo = -1;
@@ -240,16 +350,18 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
             /* INSERIR O PROFESSOR SE ELE NÃO EXISTIR NA BASE DE DADOS */
             $idColabProf = -1;
             if(!$existeProfessor) {
-                $idColabProf = ColaboradorController::create($nomeProf, null, $telemovel, null, null, $disponibilidade,
-                null, null, null, null, null, $emails);
-    
-                $professor = new Professor();
-                $professor->id_colaborador = $idColabProf;
-                $professor->save();
-    
-                $idProfessor = $professor->getKey();
-                $professorInserido = array("id" => $idProfessor,"nome" => $nomeProf);
-                array_push($professoresInseridos, $professorInserido);
+                if($nomeProf != null && $nomeProf != "") {
+                    $idColabProf = ColaboradorController::create($nomeProf, $emailObs, $telemovel, null, null, $disponibilidade,
+                    null, null, null, null, null, $emails);
+        
+                    $professor = new Professor();
+                    $professor->id_colaborador = $idColabProf;
+                    $professor->save();
+        
+                    $idProfessor = $professor->getKey();
+                    $professorInserido = array("id" => $idProfessor,"nome" => $nomeProf);
+                    array_push($professoresInseridos, $professorInserido);    
+                }
             }
             else {
                 $professor = Professor::find($idProfessor);
@@ -284,7 +396,12 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                             $projcontador->id_projeto = $idProjeto;
                             $projcontador->id_professor = $idProfessor;
                             $projcontador->anoParticipacao = $ano;
-                            $projcontador->id_cargo = $idCargo;
+                            if($idCargo != -1) {
+                                $projcontador->id_cargo = $idCargo;    
+                            }
+                            else {
+                                $projcontador->id_cargo = null;
+                            }
                             $projcontador->save();
                         }
                         $existeAssociacaoProj = ProjetoEscolaController::verificaAssociacao($idEscola, $idProjeto, $ano);
@@ -312,48 +429,67 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
         $metodo5 = "";
         $metodos = array();
         for ($i = 0; $i < 10; ++$i) {
+            if(isset($observacoes[$i])) {
                 $metodo1 = $metodo1.$observacoes[$i];
+            }
         }
         for ($i = 0; $i < 8; ++$i) {
-                $metodo2 = $metodo2.$observacoes[$i];
+            if(isset($observacoes[$i])) {
+                $metodo2 = $metodo2.$observacoes[$i]; 
+            }
         }
         for ($i = 0; $i < 7; ++$i) {
-                $metodo3 = $metodo3.$observacoes[$i];
+            if(isset($observacoes[$i])) {
+                $metodo3 = $metodo3.$observacoes[$i];    
+            }
         }
         for ($i = 0; $i < 6; ++$i) {
-                $metodo4 = $metodo4.$observacoes[$i];
+            if(isset($observacoes[$i])) {
+                $metodo4 = $metodo4.$observacoes[$i];    
+            } 
         }
         for ($i = 0; $i < 4; ++$i) {
-                $metodo5 = $metodo5.$observacoes[$i];
+            if(isset($observacoes[$i])) {
+                $metodo5 = $metodo5.$observacoes[$i];    
+            }
         }
         array_push($metodos, $metodo1, $metodo2, $metodo3, $metodo4, $metodo5);
         for ($i = 0; $i < count($metodos); ++$i) {
             $metodo = $metodos[$i];
-            $metodo = trim($metodo, " ");
-            if(is_numeric($metodo[0]) && is_numeric(substr($metodo, -1))) {
-                $metodo = str_replace("/", "-", $metodo);
-                if($i == 0 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
+            if(!empty($metodo)) {
+                $metodo = trim($metodo, " ");
+                if(is_numeric($metodo[0]) && is_numeric(substr($metodo, -1))) {
+                    $metodo = str_replace("/", "-", $metodo);
+                    if($i == 0 && count(explode("-", $metodo, 3)) == 3) {
+                        $data = DateTime::createFromFormat('d-m-Y', $metodo);
+                        break;
+                    }
+                    elseif($i == 1 && count(explode("-", $metodo, 3)) == 3) {
+                        $data = DateTime::createFromFormat('d-m-Y', $metodo);
+                        break;
+                    }
+                    elseif($i == 2 && count(explode("-", $metodo, 3)) == 3) {
+                        $data = DateTime::createFromFormat('d-m-Y', $metodo);
+                        break;
+                    }
+                    elseif($i == 3 && count(explode("-", $metodo, 3)) == 3) {
+                        $data = DateTime::createFromFormat('d-m-Y', $metodo);
+                        break;
+                    }
+                    elseif($i == 4 && count(explode("-", $metodo, 2)) == 2) {
+                        $metodo = $metodo."-2021";
+                        $data = DateTime::createFromFormat('d-m-Y', $metodo);
+                        break;
+                    }
                 }
-                elseif($i == 1 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 2 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 3 && count(explode("-", $metodo, 3)) == 3) {
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-                elseif($i == 4 && count(explode("-", $metodo, 2)) == 2) {
-                    $metodo = $metodo."-2021";
-                    $data = DateTime::createFromFormat('d-m-Y', $metodo);
-                    break;
-                }
-            }    
+                else {
+                    $data = null;
+                }   
+            }
+            else {
+                $data = null;
+            }
+                
         }
         return $data;
     }

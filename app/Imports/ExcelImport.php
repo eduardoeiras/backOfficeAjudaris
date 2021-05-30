@@ -13,7 +13,8 @@ class ExcelImport implements WithMultipleSheets
             //0 => new EstabelecimentosEnsinoSolidarioImport(),
             //1 => new IlustradorSolidarioImport(),
             //2 => new ContadoresHistoriasImport(),
-            3 => new RBEImport()
+            //3 => new RBEImport(),
+            //8 => new TrocasAgrupamentoImport(),
         ];
     }
 }
