@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', 'UtilizadorController@realizarLogin')->name('login');
 Route::get('admin/terminarSessao', 'UtilizadorController@realizarLogout')->middleware(['checkLogInAdmin']);
 Route::get('colaborador/terminarSessao', 'UtilizadorController@realizarLogout')->middleware(['CheckLogInColaborador']);
-Route::get('colaborador/getTipoUser/', 'UtilizadorController@getTipoUser')->middleware(['CheckLogInColaborador']);
+Route::get('colaborador/getTipoUser', 'UtilizadorController@getTipoUser')->middleware(['CheckLogInColaborador']);
+Route::get('admin/getTipoUser', 'UtilizadorController@getTipoUser')->middleware(['checkLogInAdmin']);
 
 Route::get('/', function () {
     return view("login");
