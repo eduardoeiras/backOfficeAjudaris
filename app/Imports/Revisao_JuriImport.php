@@ -39,76 +39,78 @@ class Revisao_JuriImport implements ToCollection
             $idProjeto = $projeto->id_projeto;
         }
 
-        //foreach($rows as $row) {
+        foreach($rows as $row) {
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
             $nome = $row[0];
-            $observacoes = $row[19];
-            $telefone = $row[2];
-            $emails = array();
-            if($row[1] != null) {
-                array_push($emails, $row[1]);    
-            }
-            $tipoJuri = $row[7];
-            $disponibilidade = false;
-            for($i = 4; $i < 19; ++$i) {
-                if(strtolower($row[$i]) == "sim") {
-                    $disponibilidade = true;
+            if($nome != null) {
+                $observacoes = $row[19];
+                $telefone = $row[2];
+                $emails = array();
+                if($row[1] != null) {
+                    array_push($emails, $row[1]);    
+                }
+                $tipoJuri = $row[7];
+                $disponibilidade = false;
+                for($i = 4; $i < 19; ++$i) {
+                    if(strtolower($row[$i]) == "sim") {
+                        $disponibilidade = true;
+                    }
+                    else {
+                        $disponibilidade = false;
+                    }
+                }
+    
+                //VERIFICAÇÃO SE O AGRUPAMENTO JÁ FOI INSERIDO
+                $idJuri = -1;
+                $existe = false;
+                foreach($juriInseridos as $juri) {
+                    if($juri["nome"] == $nome) {
+                        $existe = true;
+                        $idJuri = $juri["id"];
+                        break;
+                    }
+                }
+    
+                /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
+                  DE JURIS JÁ INSERIDOS  */
+                $idColabJuri = -1;
+                if(!$existe) {
+                    $idColabJuri = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
+                    null, null, null, null, null, $emails);
+    
+                    $juri = new Juri();
+                    $juri->tipoJuri = $tipoJuri;
+                    $juri->id_colaborador = $idColabJuri;
+                    $juri->save();
+    
+                    $idJuri = $juri->getKey();
+                    $juriInserido = array("id" => $idJuri,"nome" => $nome);
+                    array_push($juriInseridos, $juriInserido);
                 }
                 else {
-                    $disponibilidade = false;
+                    $juri = Juri::find($idJuri);
+                    $idColabJuri = $juri->id_colaborador;
                 }
-            }
-
-            //VERIFICAÇÃO SE O AGRUPAMENTO JÁ FOI INSERIDO
-            $idJuri = -1;
-            $existe = false;
-            foreach($juriInseridos as $juri) {
-                if($juri["nome"] == $nome) {
-                    $existe = true;
-                    $idJuri = $juri["id"];
-                    break;
-                }
-            }
-
-            /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
-              DE JURIS JÁ INSERIDOS  */
-            $idColabJuri = -1;
-            if(!$existe) {
-                $idColabJuri = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
-                null, null, null, null, null, $emails);
-
-                $juri = new Juri();
-                $juri->tipoJuri = $tipoJuri;
-                $juri->id_colaborador = $idColabJuri;
-                $juri->save();
-
-                $idJuri = $juri->getKey();
-                $juriInserido = array("id" => $idJuri,"nome" => $nome);
-                array_push($juriInseridos, $juriInserido);
-            }
-            else {
-                $juri = Juri::find($idJuri);
-                $idColabJuri = $juri->id_colaborador;
-            }
-
-            $ano = 2021;
-            for($i = 4; $i < 19; ++$i) {
-                if($row[$i] != null) {
-                    if(strtolower($row[$i]) == "sim") {
-                        $existeAssociacaoProj = ProjetoJuriController::verificaAssociacao($idJuri, $idProjeto, $ano);
-                        $existeAssociacaoProj = ($existeAssociacaoProj === "true");
-                        if(!$existeAssociacaoProj) {
-                            $projuri = new ProjetoJuri();
-                            $projuri->id_projeto = $idProjeto;
-                            $projuri->id_professor = $idJuri;
-                            $projuri->anoParticipacao = $ano;
-                            $projuri->save();
+    
+                $ano = 2021;
+                for($i = 4; $i < 19; ++$i) {
+                    if($row[$i] != null) {
+                        if(strtolower($row[$i]) == "sim") {
+                            $existeAssociacaoProj = ProjetoJuriController::verificaAssociacao($idJuri, $idProjeto, $ano);
+                            $existeAssociacaoProj = ($existeAssociacaoProj === "true");
+                            if(!$existeAssociacaoProj) {
+                                $projuri = new ProjetoJuri();
+                                $projuri->id_projeto = $idProjeto;
+                                $projuri->id_professor = $idJuri;
+                                $projuri->anoParticipacao = $ano;
+                                $projuri->save();
+                            }
+                            $ano = $ano - 1;
                         }
-                        $ano = $ano - 1;
                     }
                 }
             }
-        //}
+        }
     }
 }

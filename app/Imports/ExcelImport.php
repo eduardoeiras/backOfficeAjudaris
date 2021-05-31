@@ -14,8 +14,8 @@ class ExcelImport implements WithMultipleSheets
             //1 => new IlustradorSolidarioImport(),
             //4 => new Revisao_JuriImport(),
             //5 => new EntidadesOficiaisImport(),
-            //6 => new ParceirosImport(),
-            7 => new UniversidadesImport(),
+            6 => new ParceirosImport(),
+            //7 => new UniversidadesImport(),
         ];
     }
 }

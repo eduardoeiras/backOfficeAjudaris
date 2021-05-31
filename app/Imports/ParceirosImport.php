@@ -37,63 +37,66 @@ class ParceirosImport implements ToCollection
             $idProjeto = $projeto->id_projeto;
         }
 
-        //foreach($rows as $row) {
+        foreach($rows as $row) {
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
-            $nome = $row[1];
             $nomeEntidade = $row[0];
-            $categoria = "\nCategoria: ".$row[9];
-            $observacoes = $categoria.$row[10];
-            $rua = $row[5];
-            $codArray = explode("-", $row[6], 2);
-            $localidade = $row[7];
-            $distrito = $row[8];
-            $codPostal = $codArray[0];
-            $codPostalRua = $codArray[1];
-            $telefone = $row[3];
-            $emails = array();
-            if($row[4] != null) {
-                array_push($emails, $row[4]);    
-            }
-            $disponibilidade = false;
-            if(strtolower($row[11]) == "sim") {
-                $disponibilidade = true;
-            }
-            else {
-                $disponibilidade = false;
-            }
 
-            //VERIFICAÇÃO SE O PARCEIRO JÁ FOI INSERIDO
-            $idParceiro = -1;
-            $existe = false;
-            foreach($parceirosInseridos as $parceiro) {
-                if($parceiro["nome"] == $nome) {
-                    $existe = true;
-                    $idParceiro = $parceiro["id"];
-                    break;
+            if($nomeEntidade != null) {
+                $nome = $row[1];
+                $categoria = "\nCategoria: ".$row[9];
+                $observacoes = $categoria.$row[10];
+                $rua = $row[5];
+                $codArray = explode("-", $row[6], 2);
+                $codPostal = $codArray[0];
+                $codPostalRua = $codArray[1];
+                $localidade = $row[7];
+                $distrito = $row[8];
+                $telefone = $row[3];
+                $emails = array();
+                if($row[4] != null) {
+                    array_push($emails, $row[4]);    
+                }
+                $disponibilidade = false;
+                if(strtolower($row[11]) == "sim") {
+                    $disponibilidade = true;
+                }
+                else {
+                    $disponibilidade = false;
+                }
+    
+                //VERIFICAÇÃO SE O PARCEIRO JÁ FOI INSERIDO
+                $idParceiro = -1;
+                $existe = false;
+                foreach($parceirosInseridos as $parceiro) {
+                    if($parceiro["nome"] == $nome) {
+                        $existe = true;
+                        $idParceiro = $parceiro["id"];
+                        break;
+                    }
+                }
+    
+                /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
+                  DE JURIS JÁ INSERIDOS  */
+                $idColabParceiro = -1;
+                if(!$existe) {
+                    $idColabParceiro = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
+                    $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
+    
+                    $parceiro = new EntidadeOficial();
+                    $parceiro->id_colaborador = $idColabParceiro;
+                    $parceiro->entidade = $nomeEntidade;
+                    $parceiro->save();
+    
+                    $idParceiro = $parceiro->getKey();
+                    $parceiroInserido = array("id" => $idParceiro,"nome" => $nome);
+                    array_push($parceirosInseridos, $parceiroInserido);
+                }
+                else {
+                    $parceiro = EntidadeOficial::find($idParceiro);
+                    $idColabParceiro = $parceiro->id_colaborador;
                 }
             }
-
-            /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
-              DE JURIS JÁ INSERIDOS  */
-            $idColabParceiro = -1;
-            if(!$existe) {
-                $idColabParceiro = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
-                $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
-
-                $parceiro = new EntidadeOficial();
-                $parceiro->id_colaborador = $idColabParceiro;
-                $parceiro->entidade = $nomeEntidade;
-                $parceiro->save();
-
-                $idParceiro = $parceiro->getKey();
-                $parceiroInserido = array("id" => $idParceiro,"nome" => $nome);
-                array_push($parceirosInseridos, $parceiroInserido);
-            }
-            else {
-                $parceiro = EntidadeOficial::find($idParceiro);
-                $idColabParceiro = $parceiro->id_colaborador;
-            }
-        //}
+        }
     }
 }

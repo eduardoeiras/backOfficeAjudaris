@@ -40,56 +40,53 @@ class EntidadesOficiaisImport implements ToCollection
             $idProjeto = $projeto->id_projeto;
         }
 
-        //foreach($rows as $row) {
+        foreach($rows as $row) {
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
             $nome = $row[2];
-            $nomeEntidade = $row[1];
-            $observacoes = $row[5];
-            $telefone = $row[4];
-            $emails = array();
-            if($row[3] != null) {
-                array_push($emails, $row[3]);    
-            }
-            /*$disponibilidade = false;
-            if(strtolower($row[21]) == "sim") {
-                $disponibilidade = true;
-            }
-            else {
-                $disponibilidade = false;
-            }*/
-
-            //VERIFICAÇÃO SE A ENTIDADE JÁ FOI INSERIDO
-            $idEntidade = -1;
-            $existe = false;
-            foreach($entidadeInseridas as $entidade) {
-                if($entidade["nome"] == $nome) {
-                    $existe = true;
-                    $idEntidade = $entidade["id"];
-                    break;
+            if($nome != null){
+                $nomeEntidade = $row[1];
+                $observacoes = $row[5];
+                $telefone = $row[4];
+                $emails = array();
+                if($row[3] != null) {
+                    array_push($emails, $row[3]);    
+                }
+                $disponibilidade = 1;
+                
+    
+                //VERIFICAÇÃO SE A ENTIDADE JÁ FOI INSERIDO
+                $idEntidade = -1;
+                $existe = false;
+                foreach($entidadeInseridas as $entidade) {
+                    if($entidade["nome"] == $nome) {
+                        $existe = true;
+                        $idEntidade = $entidade["id"];
+                        break;
+                    }
+                }
+    
+                /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
+                  DE JURIS JÁ INSERIDOS  */
+                $idColabEntidade = -1;
+                if(!$existe) {
+                    $idColabEntidade = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
+                    null, null, null, null, null, $emails);
+    
+                    $entidade = new EntidadeOficial();
+                    $entidade->id_colaborador = $idColabEntidade;
+                    $entidade->entidade = $nomeEntidade;
+                    $entidade->save();
+    
+                    $idEntidade = $entidade->getKey();
+                    $entidadeInserida = array("id" => $idEntidade,"nome" => $nome);
+                    array_push($entidadeInseridas, $entidadeInserida);
+                }
+                else {
+                    $entidade = EntidadeOficial::find($idEntidade);
+                    $idColabEntidade = $entidade->id_colaborador;
                 }
             }
-
-            /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO JURI COLOCANDO-O NO ARRAY DE
-              DE JURIS JÁ INSERIDOS  */
-            $idColabEntidade = -1;
-            if(!$existe) {
-                $idColabEntidade = ColaboradorController::create($nome, $observacoes, null, $telefone, null, null, 
-                null, null, null, null, null, $emails);
-
-                $entidade = new EntidadeOficial();
-                $entidade->id_colaborador = $idColabEntidade;
-                $entidade->entidade = $nomeEntidade;
-                $entidade->save();
-
-                $idEntidade = $entidade->getKey();
-                $entidadeInserida = array("id" => $idEntidade,"nome" => $nome);
-                array_push($entidadeInseridas, $entidadeInserida);
-            }
-            else {
-                $entidade = EntidadeOficial::find($idEntidade);
-                $idColabEntidade = $entidade->id_colaborador;
-            }
-        //}
+        }
     }
 }
