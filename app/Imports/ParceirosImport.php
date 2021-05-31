@@ -63,7 +63,7 @@ class ParceirosImport implements ToCollection
                 $disponibilidade = false;
             }
 
-            //VERIFICAÇÃO SE A ENTIDADE JÁ FOI INSERIDO
+            //VERIFICAÇÃO SE O PARCEIRO JÁ FOI INSERIDO
             $idParceiro = -1;
             $existe = false;
             foreach($parceirosInseridos as $parceiro) {
