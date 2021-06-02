@@ -48,8 +48,12 @@ class IlustradorSolidarioImport implements ToCollection
                     $codPostalRua = null;
                     if($row[4] != null) {
                         $codArray = explode("-", $row[4], 2);
-                        $codPostal = $codArray[0];
-                        $codPostalRua = $codArray[1];
+                        if(count($codArray) == 2) {
+                            if(is_numeric($codArray[0]) && is_numeric($codArray[1])) {
+                            $codPostal = $codArray[0]; 
+                            $codPostalRua = $codArray[1];  
+                            }
+                        }
                     }
                     $localidade = $row[5];
                     $distrito = $row[6];

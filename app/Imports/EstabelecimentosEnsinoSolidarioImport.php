@@ -212,9 +212,15 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                             $numeroPorta = $moradaEscola[1];
                         }
                         if($moradaEscola[2] != null) {
-                            $codPostalTotal = explode("-", $moradaEscola[2], 2);
-                            $codPostal =  $codPostalTotal[0];
-                            $codPostalRua = $codPostalTotal[1];   
+                            if($moradaEscola[2] != null) {
+                                $codArray = explode("-", $moradaEscola[2], 2);
+                                if(count($codArray) == 2) {
+                                    if(is_numeric($codArray[0]) && is_numeric($codArray[1])) {
+                                    $codPostal = $codArray[0]; 
+                                    $codPostalRua = $codArray[1];  
+                                    }
+                                }   
+                            }  
                         }
                         if($moradaEscola[3] != null) {
                             $localidade = $moradaEscola[3];    
