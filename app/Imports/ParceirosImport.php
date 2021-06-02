@@ -40,16 +40,27 @@ class ParceirosImport implements ToCollection
         foreach($rows as $row) {
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
-            $nomeEntidade = $row[0];
 
-            if($nomeEntidade != null) {
+            if($row[0] != null) {
+                $nomeEntidade = $row[0];
                 $nome = $row[1];
                 $categoria = "\nCategoria: ".$row[9];
                 $observacoes = $categoria.$row[10];
                 $rua = $row[5];
-                $codArray = explode("-", $row[6], 2);
-                $codPostal = $codArray[0];
-                $codPostalRua = $codArray[1];
+                $codPostal = null;
+                $codPostalRua = null;
+                if($row[6] != null) {
+                    $codArray = explode("-", $row[6], 2);
+                    if(count($codArray) == 2) {
+                        if(is_numeric($codArray[0]) && is_numeric($codArray[1])) {
+                        $codPostal = $codArray[0]; 
+                        $codPostalRua = $codArray[1];  
+                        }
+                    }   
+                }
+                //$codArray = explode("-", $row[6], 2);
+                //$codPostal = $codArray[0];
+                //$codPostalRua = $codArray[1];
                 $localidade = $row[7];
                 $distrito = $row[8];
                 $telefone = $row[3];
