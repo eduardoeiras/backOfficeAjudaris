@@ -17,6 +17,7 @@ class ProjetoJuri extends Model
     protected $fillable = [
         'id_projeto',
         'id_juri',
+        'tipoParticipacao',
         'anoParticipacao'
     ];
 

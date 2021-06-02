@@ -45,14 +45,24 @@ class Revisao_JuriImport implements ToCollection
                 if($row[1] != null) {
                     array_push($emails, $row[1]);    
                 }
-                $tipoJuri = $row[7];
-                $disponibilidade = false;
-                for($i = 4; $i < 19; ++$i) {
-                    if(strtolower($row[$i]) == "sim") {
-                        $disponibilidade = true;
+                $tipoJuri = null; 
+                $disponibilidade = 1;
+                if($row[17] != null && $row[18] != null) {
+                    if(strtolower($row[18]) == "sim") {
+                        $tipoJuri = 1;
                     }
-                    else {
-                        $disponibilidade = false;
+                    if(strtolower($row[17]) == "sim") {
+                        $tipoJuri = 0;
+                    }
+                    if(strtolower($row[17]) == "sim" && strtolower($row[18]) == "sim") {
+                        $tipoJuri = 2;
+                    }
+
+                    if(strtolower($row[18]) == "sim") {
+                        $disponibilidade = 0;
+                    }
+                    if(strtolower($row[17]) == "sim") {
+                        $disponibilidade = 0;
                     }
                 }
     
@@ -98,6 +108,7 @@ class Revisao_JuriImport implements ToCollection
                                 $projuri = new ProjetoJuri();
                                 $projuri->id_projeto = $idProjeto;
                                 $projuri->id_professor = $idJuri;
+                                $projuri->tipoParticipacao = $tipoJuri;
                                 $projuri->anoParticipacao = $ano;
                                 $projuri->save();
                             }

@@ -37,12 +37,12 @@ class ParceirosImport implements ToCollection
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
 
             $nomeEntidade = $row[0];
-            if(strlen($nomeEntidade) > 70) {
+            if(strlen($nomeEntidade) > 150) {
                     $nomeEntidade = null;
-                }
+            }
             if($nomeEntidade != null) {
                 $nome = $row[2];
-                $categoria = "\nCategoria: ".$row[9]."\n";
+                $categoria = "Categoria: ".$row[9]."\n";
                 $observacoes = $categoria.$row[10];
                 $rua = $row[5];
                 $rua = $row[1];
@@ -73,12 +73,12 @@ class ParceirosImport implements ToCollection
                 if($row[4] != null) {
                     array_push($emails, $row[4]);    
                 }
-                $disponibilidade = false;
+                $disponibilidade = 1;
                 if(strtolower($row[11]) == "sim") {
-                    $disponibilidade = true;
+                    $disponibilidade = 0;
                 }
                 else {
-                    $disponibilidade = false;
+                    $disponibilidade = 1;
                 }
     
                 //VERIFICAÇÃO SE O PARCEIRO JÁ FOI INSERIDO
@@ -96,12 +96,12 @@ class ParceirosImport implements ToCollection
                   DE JURIS JÁ INSERIDOS  */
                 $idColabParceiro = -1;
                 if(!$existe) {
-                    $idColabParceiro = ColaboradorController::create($nome, $observacoes, null, $telefone, null, $disponibilidade, 
+                    $idColabParceiro = ColaboradorController::create($nomeEntidade, $observacoes, null, $telefone, null, $disponibilidade, 
                     $codPostal, $codPostalRua, $rua, $localidade, $distrito, $emails);
     
                     $parceiro = new EntidadeOficial();
                     $parceiro->id_colaborador = $idColabParceiro;
-                    $parceiro->entidade = $nomeEntidade;
+                    $parceiro->entidade = $nome;
                     $parceiro->save();
     
                     $idParceiro = $parceiro->getKey();

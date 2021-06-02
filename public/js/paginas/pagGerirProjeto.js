@@ -460,6 +460,7 @@ function carregarAgrupamentos(response) {
 function criarLinha(elemento, tipo) {
     var entidade = elemento.entidade
     var emails = elemento.emails
+    console.log(entidade);
     var linha = "<tr>"
     if (tipo != 'rbe') {
         linha = linha + `<td>${entidade.nome}</td>`

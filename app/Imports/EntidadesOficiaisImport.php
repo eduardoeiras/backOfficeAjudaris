@@ -39,8 +39,14 @@ class EntidadesOficiaisImport implements ToCollection
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
             $nome = $row[2];
-            if($nome != null){
-                $nomeEntidade = $row[1];
+            $nomeEntidade = $row[1];
+            if(strlen($nome) > 150) {
+                $nome = null;
+            }
+            if(strlen($nomeEntidade) > 150) {
+                $nomeEntidade = null;
+            }
+            if($nome != null && $nomeEntidade != null){
                 $observacoes = $row[5];
                 $telefone = $row[4];
                 $emails = array();
