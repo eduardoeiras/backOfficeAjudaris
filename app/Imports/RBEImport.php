@@ -25,55 +25,56 @@ class RBEImport implements ToCollection
         $disponibilidade = 1;
 
         foreach($rows as $row) {
-
             $regiao = $row[0];
-            $concelho = $row[3];
+            if($regiao != null) {
+                $concelho = $row[3];
 
-            /* OBTENÇÃO DAS INFORMAÇÕES DE UMA RBE */
-            if($row[1] != null) {
-                $nomeCoordenador = $row[1];
-                $email = $row[2];
-            }
+                /* OBTENÇÃO DAS INFORMAÇÕES DE UMA RBE */
+                if($row[1] != null) {
+                    $nomeCoordenador = $row[1];
+                    $email = $row[2];
+                }
 
-            if(!is_int($regiao)) {
-                /* VERIFICAÇÃO SE A RBE COM NOME DO COORDENADOR E REGIÃO JÁ EXISTE, OBTENDO O SEU ID */
-                $idRbe = -1;
-                $existe = false;
-                foreach($rbesInseridas as $rbe) {
-                    if($rbe["nome"] == $nomeCoordenador) {
-                        if($rbe["regiao"] == $regiao) {
-                            $existe = true;
-                            $idRbe = $rbe["id"];
-                            break;    
+                if(!is_int($regiao)) {
+                    /* VERIFICAÇÃO SE A RBE COM NOME DO COORDENADOR E REGIÃO JÁ EXISTE, OBTENDO O SEU ID */
+                    $idRbe = -1;
+                    $existe = false;
+                    foreach($rbesInseridas as $rbe) {
+                        if($rbe["nome"] == $nomeCoordenador) {
+                            if($rbe["regiao"] == $regiao) {
+                                $existe = true;
+                                $idRbe = $rbe["id"];
+                                break;    
+                            }
                         }
+                    } 
+                    
+                    /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO CONTADOR DE HISTÓRIAS, COLOCANDO-O NO ARRAY DE
+                    DE CONTADORES JÁ INSERIDOS  */
+                    $idColabRbe = -1;
+                    if(!$existe) {
+                        $emailObs = "Email do Coordenador: ".$email;
+
+                        $idColabRbe = ColaboradorController::create($nomeCoordenador, $emailObs, null, null, 
+                        null, $disponibilidade, null, null, null, null, null, null);
+
+                        $rbe = new RBE();
+                        $rbe->regiao = $regiao;
+                        $rbe->id_colaborador = $idColabRbe;
+                        $rbe->save();
+
+                        $idRbe = $rbe->getKey();
+                        $rbeInserida = array("id" => $idRbe,"nome" => $nomeCoordenador, "regiao" => $regiao);
+                        array_push($rbesInseridas, $rbeInserida);
                     }
-                } 
-                
-                /* SE NÃO EXISTE É CRIADO O OBJETO COLABORADOR E O RESPETIVO CONTADOR DE HISTÓRIAS, COLOCANDO-O NO ARRAY DE
-                DE CONTADORES JÁ INSERIDOS  */
-                $idColabRbe = -1;
-                if(!$existe) {
-                    $emailObs = "Email do Coordenador: ".$email;
-
-                    $idColabRbe = ColaboradorController::create($nomeCoordenador, $emailObs, null, null, 
-                    null, $disponibilidade, null, null, null, null, null, null);
-
-                    $rbe = new RBE();
-                    $rbe->regiao = $regiao;
-                    $rbe->id_colaborador = $idColabRbe;
-                    $rbe->save();
-
-                    $idRbe = $rbe->getKey();
-                    $rbeInserida = array("id" => $idRbe,"nome" => $nomeCoordenador, "regiao" => $regiao);
-                    array_push($rbesInseridas, $rbeInserida);
-                }
-                
-                if($concelho != null) {
-                    $concelhosArray = array();
-                    array_push($concelhosArray, $concelho);
-                    ConcelhoController::criaAssociaConcelhos($concelhosArray, $idRbe);  
-                }
-                
+                    
+                    if($concelho != null) {
+                        $concelhosArray = array();
+                        array_push($concelhosArray, $concelho);
+                        ConcelhoController::criaAssociaConcelhos($concelhosArray, $idRbe);  
+                    }
+                    
+                }    
             }
         }
     }

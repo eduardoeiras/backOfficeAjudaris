@@ -38,7 +38,7 @@ class ContadoresHistoriasImport implements ToCollection
                 $morada = $row[5];
                 if($morada != null) {
                     $morada = explode(",", $morada);
-                    if($morada != null) {
+                    if($morada != null && count($morada) == 5) {
                         if($morada[0] != null) {
                            $rua = $morada[0]; 
                         }
