@@ -239,7 +239,7 @@ class ProjetoController extends Controller
             $entidades = DB::table('entidade_oficial')
                         ->join('projeto_entidade', 'entidade_oficial.id_entidadeOficial', '=', 'projeto_entidade.id_entidadeOficial')
                         ->join('colaborador', 'entidade_oficial.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('entidade_oficial.id_entidadeOficial' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_entidade.anoParticipacao', 'colaborador.id_colaborador')
+                        ->select('entidade_oficial.id_entidadeOficial', 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_entidade.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_entidade.id_projeto', '=', $id_projeto],
                             ['colaborador.disponivel', '=', 0]
@@ -319,7 +319,7 @@ class ProjetoController extends Controller
             $juris = DB::table('juri')
                         ->join('projeto_juri', 'juri.id_juri', '=', 'projeto_juri.id_juri')
                         ->join('colaborador', 'juri.id_colaborador', '=', 'colaborador.id_colaborador')
-                        ->select('juri.id_juri' , 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_juri.anoParticipacao', 'colaborador.id_colaborador')
+                        ->select('juri.id_juri' , 'juri.tipoJuri', 'colaborador.nome', 'colaborador.telefone', 'colaborador.telemovel', 'projeto_juri.anoParticipacao', 'colaborador.id_colaborador')
                         ->where([
                             ['projeto_juri.id_projeto', '=', $id_projeto],
                             ['colaborador.disponivel', '=', 0]

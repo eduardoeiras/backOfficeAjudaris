@@ -460,6 +460,7 @@ function carregarAgrupamentos(response) {
 function criarLinha(elemento, tipo) {
     var entidade = elemento.entidade
     var emails = elemento.emails
+    console.log(entidade);
     var linha = "<tr>"
     if (tipo != 'rbe') {
         linha = linha + `<td>${entidade.nome}</td>`
@@ -521,7 +522,15 @@ function criarLinha(elemento, tipo) {
                 linha = linha + '</tr>'
                 break;
             case 'juri':
-                linha = linha + `<td>Juri</td>`
+                if(entidade.tipoJuri == 0) {
+                    linha = linha + `<td>Juri</td>`  
+                }
+                if(entidade.tipoJuri == 1) {
+                    linha = linha + `<td>Revisor</td>`
+                }
+                if(entidade.tipoJuri == 2) {
+                    linha = linha + `<td>Juri e Revisor</td>`
+                }
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
