@@ -52,7 +52,6 @@ function editar(id) {
         success: function (resposta) {
             if (resposta != null) {
                 juri = resposta[0]
-                console.log(juri);
                 $('#emailsAssociadosEdit').empty()
                 url = 'juris/edit/' + juri.id_juri
                 $('#formEditar').attr('action', url)
@@ -62,7 +61,9 @@ function editar(id) {
                 var disp = juri.disponivel
                 $('#disponibilidade').val(disp.toString())
                 var tipo = juri.tipoJuri
-                $('#tipo').val(tipo.toString())
+                if(tipo != null) {
+                   $('#tipo').val(tipo.toString()) 
+                }
                 juri.emails.original.forEach(linha => {
                     emailsAdicionadosEdit.push(linha.email)
                     let index = emailsAdicionadosEdit.indexOf(linha.email)

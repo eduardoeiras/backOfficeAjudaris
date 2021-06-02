@@ -80,7 +80,7 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" id="nomeAdd" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nomeAdd" name="nome" class="form-control" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
@@ -91,7 +91,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Tipo de Participação</label>
-                                        <select name="tipo" id="tipoAdd">
+                                        <select name="tipo" id="tipoAdd" class="form-control">
                                             <option value="0">Juri</option>
                                             <option value="1">Revisor</option>
                                             <option value="2">Juri e Revisor</option>
@@ -174,7 +174,7 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="70" required>
+                                        <input type="text" id="nome" name="nome" class="form-control" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
@@ -185,7 +185,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
-                                        <select name="tipo" id="tipo">
+                                        <select name="tipo" id="tipo" class="form-control">
                                             <option value="0">Juri</option>
                                             <option value="1">Revisor</option>
                                             <option value="2">Juri e Revisor</option>

@@ -10,12 +10,15 @@ class ExcelImport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            //0 => new EstabelecimentosEnsinoSolidarioImport(),
-            //1 => new IlustradorSolidarioImport(),
+            0 => new EstabelecimentosEnsinoSolidarioImport(),
+            1 => new IlustradorSolidarioImport(),
+            2 => new ContadoresHistoriasImport(),
+            3 => new RBEImport(),
             4 => new Revisao_JuriImport(),
-            //5 => new EntidadesOficiaisImport(),
-            //6 => new ParceirosImport(),
-            //7 => new UniversidadesImport(),
+            5 => new EntidadesOficiaisImport(),
+            6 => new ParceirosImport(),
+            7 => new UniversidadesImport(),
+            8 => new TrocasAgrupamentoImport(),
         ];
     }
 }

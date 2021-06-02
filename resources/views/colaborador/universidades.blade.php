@@ -81,7 +81,7 @@
                                     <br><br>
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" name="nome" class="form-control" placeholder="Nome da universidade" maxlength="70" required>
+                                        <input type="text" name="nome" class="form-control" placeholder="Nome da universidade" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Tipo</label>
@@ -175,7 +175,7 @@
                                     <br><br>
                                 <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome da universidade" maxlength="70" required>
+                                        <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome da universidade" maxlength="85" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Tipo</label>
