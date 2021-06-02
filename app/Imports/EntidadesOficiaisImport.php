@@ -24,11 +24,6 @@ class EntidadesOficiaisImport implements ToCollection
 
         //CRIAÇÃO DOS ARRAYS PARA O JURI
         $entidadeInseridas = array();
-        
-        
-        //PARA TESTAR SÓ PARA A PRIMEIRA LINHA - REMOVER QUANDO COCLUÍDO E DESCOMENTAR O FOREACH
-        $row = $rows[3];
-        //var_dump($row);
 
         //CRIAÇÃO DO PROJETO AO QUAL OS PARTICIPANTES SERÃO ASSOCIADOS
         $idProjeto = -1;

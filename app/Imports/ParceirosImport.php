@@ -21,11 +21,6 @@ class ParceirosImport implements ToCollection
         
         //CRIAÇÃO DOS ARRAYS PARA O JURI
         $parceirosInseridos = array();
-        
-        
-        //PARA TESTAR SÓ PARA A PRIMEIRA LINHA - REMOVER QUANDO COCLUÍDO E DESCOMENTAR O FOREACH
-        $row = $rows[1];
-        //var_dump($row);
 
         //CRIAÇÃO DO PROJETO AO QUAL OS PARTICIPANTES SERÃO ASSOCIADOS
         $idProjeto = -1;
@@ -41,12 +36,25 @@ class ParceirosImport implements ToCollection
 
             /* OBTENÇÃO DAS INFORMAÇÕES DE UM JURI */
 
-            if($row[0] != null) {
-                $nomeEntidade = $row[0];
-                $nome = $row[1];
-                $categoria = "\nCategoria: ".$row[9];
+            $nomeEntidade = $row[0];
+            if(strlen($nomeEntidade) > 70) {
+                    $nomeEntidade = null;
+                }
+            if($nomeEntidade != null) {
+                $nome = $row[2];
+                $categoria = "\nCategoria: ".$row[9]."\n";
                 $observacoes = $categoria.$row[10];
                 $rua = $row[5];
+                $rua = $row[1];
+                if($rua != null) {
+                    if(sizeof(explode(",", $rua)) > 1) {
+                        $ruaArray = explode(",", $rua);
+                        $rua = $ruaArray[0];
+                    }
+                    if(strlen($rua) > 70) {
+                        $rua = null;
+                    }    
+                }
                 $codPostal = null;
                 $codPostalRua = null;
                 if($row[6] != null) {
@@ -58,9 +66,6 @@ class ParceirosImport implements ToCollection
                         }
                     }   
                 }
-                //$codArray = explode("-", $row[6], 2);
-                //$codPostal = $codArray[0];
-                //$codPostalRua = $codArray[1];
                 $localidade = $row[7];
                 $distrito = $row[8];
                 $telefone = $row[3];
@@ -80,7 +85,7 @@ class ParceirosImport implements ToCollection
                 $idParceiro = -1;
                 $existe = false;
                 foreach($parceirosInseridos as $parceiro) {
-                    if($parceiro["nome"] == $nome) {
+                    if($parceiro["nome"] == $nomeEntidade) {
                         $existe = true;
                         $idParceiro = $parceiro["id"];
                         break;
@@ -100,7 +105,7 @@ class ParceirosImport implements ToCollection
                     $parceiro->save();
     
                     $idParceiro = $parceiro->getKey();
-                    $parceiroInserido = array("id" => $idParceiro,"nome" => $nome);
+                    $parceiroInserido = array("id" => $idParceiro,"nome" => $nomeEntidade);
                     array_push($parceirosInseridos, $parceiroInserido);
                 }
                 else {

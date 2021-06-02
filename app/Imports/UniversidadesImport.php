@@ -21,11 +21,6 @@ class UniversidadesImport implements ToCollection
         //CRIAÇÃO DOS ARRAYS PARA O JURI
         $universidadesInseridas = array();
         $professoresFaculInseridos = array();
-        
-        
-        //PARA TESTAR SÓ PARA A PRIMEIRA LINHA - REMOVER QUANDO COCLUÍDO E DESCOMENTAR O FOREACH
-        $row = $rows[1];
-        //var_dump($row);
 
         //CRIAÇÃO DO PROJETO AO QUAL OS PARTICIPANTES SERÃO ASSOCIADOS
         $idProjeto = -1;
@@ -270,7 +265,6 @@ class UniversidadesImport implements ToCollection
     
                     if($existeAssociacao == null){
                         $profFac = new UniversidadeProfFaculdade();
-    
                         $profFac->id_universidade = intval($idUniversidades);
                         $profFac->id_professorFaculdade = intval($idProfessorFacul);
                         $profFac->save();
