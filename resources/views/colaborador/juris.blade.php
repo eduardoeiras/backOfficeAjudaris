@@ -91,7 +91,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Tipo de Participação</label>
-                                        <select name="tipo" id="tipoAdd">
+                                        <select name="tipo" id="tipoAdd" class="form-control">
                                             <option value="0">Juri</option>
                                             <option value="1">Revisor</option>
                                             <option value="2">Juri e Revisor</option>
@@ -185,7 +185,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Disponibilidade</label>
-                                        <select name="tipo" id="tipo">
+                                        <select name="tipo" id="tipo" class="form-control">
                                             <option value="0">Juri</option>
                                             <option value="1">Revisor</option>
                                             <option value="2">Juri e Revisor</option>

@@ -65,9 +65,11 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
                     $nomeAgrup = substr($nomeAgrup,0,150);
                 }
                 $rua = $row[1];
-                if(sizeof(explode(",", $rua)) > 1) {
-                    $ruaArray = explode(",", $rua);
-                    $rua = $ruaArray[0];
+                if($rua != null) {
+                    if(sizeof(explode(",", $rua)) > 1) {
+                        $ruaArray = explode(",", $rua);
+                        $rua = $ruaArray[0];
+                    }    
                 }
                 $codPostal = null;
                 $codPostalRua = null;
