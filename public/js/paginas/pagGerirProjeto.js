@@ -522,7 +522,15 @@ function criarLinha(elemento, tipo) {
                 linha = linha + '</tr>'
                 break;
             case 'juri':
-                linha = linha + `<td>Juri</td>`
+                if(entidade.tipoJuri == 0) {
+                    linha = linha + `<td>Juri</td>`  
+                }
+                if(entidade.tipoJuri == 1) {
+                    linha = linha + `<td>Revisor</td>`
+                }
+                if(entidade.tipoJuri == 2) {
+                    linha = linha + `<td>Juri e Revisor</td>`
+                }
                 linha = linha + `<td>Participante</td>`
                 linha = linha + `<td>${entidade.anoParticipacao}</td>`
                 linha = linha + `<td>
