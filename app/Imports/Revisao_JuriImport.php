@@ -105,7 +105,7 @@ class Revisao_JuriImport implements ToCollection
                     if(strtolower($anoArray[0]) == "júri") {
                         $tipoJuri = 0;
                     }
-                    if(strtolower($anoArray[0]) == "revisão") {
+                    if(strtolower($anoArray[0]) == "revisão" || strtolower($anoArray[0]) == "revisor" ) {
                         $tipoJuri = 1;
                     }
                     $ano = $anoArray[1];
@@ -124,6 +124,7 @@ class Revisao_JuriImport implements ToCollection
                             }
                             else {
                                 if($inseriu) {
+                                    $inseriu = false;
                                    $projuri = DB::table('projeto_juri')
                                     ->where([
                                         ['projeto_juri.id_projeto', '=', $idProjeto],
