@@ -21,15 +21,23 @@
 				<div>
 					<h2>Migração de Dados</h2>
 					<br>
-					<span>Se desejar realizar a migração de dados, selecione o ficheiro <b>Excel</b> a utilizar.<br>Seguem-se 
+					<span>Para realizar a migração de dados, selecione o ficheiro <b>Excel</b> a utilizar. Seguem-se 
 						algumas indicações referentes ao processo:</span>
 					<ol>
 						<br>
-						<li style="font-size: 14px;margin-left: 15px">O ficheiro deverá ser do tipo <b>Excel</b></li>
+						<li style="font-size: 14px;margin-left: 15px">Não desligue o computador durante o processo.</li>
 						<br>
-						<li style="font-size: 14px;margin-left: 15px">Não desligue o computador durante o processo</li>
+						<li style="font-size: 14px;margin-left: 15px">As moradas devem seguir o formato, separado por vírgula:<i> Rua, Nº Porta, Código Postal,
+						Localidade, Distrito</i>.<br> As que não o seguirem não poderão ser importadas.</li>
 						<br>
-						<li style="font-size: 14px;margin-left: 15px">Pressione o botão em baixo e selecione o ficheiro da base de dados</li>
+						<li style="font-size: 14px;margin-left: 15px">Registos no Excel de Colaboradores sem indicação de <b>nome</b>,<br>
+						ou com nomes <b>maiores que 150 caracteres</b> não poderão ser inseridos.</li>
+						<br>
+						<li style="font-size: 14px;margin-left: 15px">Registos de colaboradores repetidos ou endereços de email<br>
+						repetidos, serão adicionados nos campos de Observações para esses casos.</li>
+						<br>
+						<li style="font-size: 14px;margin-left: 15px">A execução da migração, não dispensa a verificação ou inserção<br>
+						manual de certos registos, que não possam ser importados.</li>
 						<br>
 					</ol>  
 					<form id="formMigracao" method="POST" enctype="multipart/form-data" action="iniciarMigracao"> 
