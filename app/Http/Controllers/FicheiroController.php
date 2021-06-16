@@ -76,24 +76,4 @@ class FicheiroController extends Controller
         }
         return response()->json($resposta);
     }
-
-    public function getPdf($id){
-        //Obter projeto e caminho do pdf
-        $projeto = DB::table('projeto')
-                    ->select('projeto.regulamento')
-                    ->where('projeto.id_projeto', $id)
-                    ->first();
-
-        if($projeto != null) {
-            if($projeto->regulamento != null) {
-                echo url($projeto->regulamento);
-            }
-            else {
-                return null;
-            }
-        }
-        else {
-            return null;
-        }
-    }
 }

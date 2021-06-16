@@ -26,7 +26,7 @@ class TrocaAgrupamentoController extends Controller
         
     }
     
-    public function store(Request $request)
+    /* public function store(Request $request)
     {
         $trocas = new TrocaAgrupamento();
 
@@ -68,7 +68,7 @@ class TrocaAgrupamentoController extends Controller
                 return redirect()->route("trocasAgrupamentoColaborador");
             }
         }
-    }
+    } */
     
     public function destroy($id)
     {
