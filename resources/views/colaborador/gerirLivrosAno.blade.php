@@ -102,9 +102,9 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group row">
-                                        <label for="anoAdd" class="col-2 col-form-label">Data de Comunicação:</label>
+                                        <label for="anoAdd" class="col-2 col-form-label">Ano:</label>
                                         <div class="col-10">
-                                          <input class="form-control" type="text" name="anoLivros" id="anoAdd" autocomplete="false" required>
+                                          <input class="form-control" type="text" name="anoLivros" id="anoAdd" autocomplete="no" required>
                                           <label style="color: red" id="erroAnoExiste"></label>
                                         </div>
                                     </div>
@@ -141,9 +141,9 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group row">
-                                        <label for="anoEdit" class="col-2 col-form-label">Data de Comunicação:</label>
+                                        <label for="anoEdit" class="col-2 col-form-label">Ano:</label>
                                         <div class="col-10">
-                                            <input class="date-own form-control" type="text" id="anoEdit" autocomplete="false" readonly required>
+                                            <input class="date-own form-control" type="text" id="anoEdit" autocomplete="no" readonly required>
                                         </div>
                                     </div>
                                     <div class="form-group row">

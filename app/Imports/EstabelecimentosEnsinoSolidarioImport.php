@@ -272,22 +272,24 @@ class EstabelecimentosEnsinoSolidarioImport implements ToCollection
 
                 /* OBTER AS INFORMAÇÕES DA COMUNICAÇÃO, REALIZANDO A SUA CRIAÇÃO
                 SE ESTA EXISTIR E SE POSSÍVEL */
-                $observacoes = str_split($row[18]);
-                if($observacoes != null) {
-                    $data = self::obterData($observacoes);
-                    $obs = $row[18];
-                    
-                    $comunicacao = new Comunicacao();
-                    if($data != null) {
-                        $comunicacao->data = $data;    
-                    }
-                    else {
-                        $comunicacao->data = null;
-                    }
-                    $comunicacao->observacoes = $obs;
-                    $comunicacao->id_colaborador = $idColabEscola;
-                    $comunicacao->save();        
-                }    
+                if($row[18] != null) {
+                    $observacoes = str_split($row[18]);
+                    if($observacoes != null) {
+                        $data = self::obterData($observacoes);
+                        $obs = $row[18];
+                        
+                        $comunicacao = new Comunicacao();
+                        if($data != null) {
+                            $comunicacao->data = $data;    
+                        }
+                        else {
+                            $comunicacao->data = null;
+                        }
+                        $comunicacao->observacoes = $obs;
+                        $comunicacao->id_colaborador = $idColabEscola;
+                        $comunicacao->save();        
+                    }     
+                }  
             }
             
 

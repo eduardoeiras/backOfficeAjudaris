@@ -7,10 +7,19 @@ $(document).ready(function () {
     }
 
     inicializarDataTable();
-    $("#dataComunicacaoAdd").datepicker({
-        format: " yyyy",
+    $("#anoAdd").datepicker({
+        format: "yyyy",
         viewMode: "years", 
-        minViewMode: "years"
+        minViewMode: "years",
+        autoclose: true,
+        date: '',
+    });
+    $("#anoEdit").datepicker({
+        format: "yyyy",
+        viewMode: "years", 
+        minViewMode: "years",
+        autoclose: true,
+        date: '',
     });
 
     $('#anoAdd').on('keyup', function(e) {
