@@ -144,6 +144,13 @@ $(document).ready(function () {
                             if (!response) {
                                 $('#formAdd').attr('action', 'projetoJuri/add')
                                 existe = false;
+                                var inputCargo = `<br><br><label>Cargo do juri no projeto:</label>
+                                                <select name="cargo" id="cargos">
+                                                    <option value="0">Juri</option>
+                                                    <option value="1">Revisor</option>
+                                                    <option value="2">Juri e Revisor</option>
+                                                </select>`
+                                        $('#divForm').append(inputCargo);
                             }
                             else {
                                 var msg = '<h4>Participante selecionado a adicionar ao projeto:</h4><p style="font-size: 20px; color: red;">O participante selecionado já se encontra associado ao projeto!</p>'
@@ -521,6 +528,7 @@ function criarLinha(elemento, tipo) {
                 linha = linha + '</tr>'
                 break;
             case 'juri':
+                console.log(entidade);
                 if(entidade.tipoParticipacao == 0) {
                     linha = linha + `<td>Juri</td>`  
                 }

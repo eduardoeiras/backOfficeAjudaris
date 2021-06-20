@@ -16,6 +16,7 @@ class ProjetoJuriController extends Controller
         $projjuri->id_projeto = intval($request->id_projeto);
         $projjuri->id_juri = intval($request->id_elemento);
         $projjuri->anoParticipacao = intval($request->anoParticipacao);
+        $projjuri->tipoParticipacao = intval($request->cargo);
 
         $projjuri->save();
         
