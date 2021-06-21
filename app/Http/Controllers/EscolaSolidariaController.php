@@ -9,6 +9,10 @@ use App\Models\Professor;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\EscolaSolidariaProf;
+use App\Models\Agrupamento;
+use App\Models\TrocaAgrupamento;
+use DateTimeZone;
+use DateTime;
 use DataTables;
 
 class EscolaSolidariaController extends Controller
@@ -276,18 +280,42 @@ class EscolaSolidariaController extends Controller
     }
 
     public function associarProfessor(Request $request) {
-        $novaAssoc = new EscolaSolidariaProf();
+        $escola = EscolaSolidaria::find($request->id_escola);
+        $professor = Professor::find($request->id_professor);
+        $numAgrupamentos = DB::table('escola_professor')
+        ->join('escola_solidaria', 'escola_professor.id_escola', 'escola_solidaria.id_escolaSolidaria')
+        ->select('escola_solidaria.id_agrupamento')
+        ->where('escola_professor.id_professor', $request->id_professor)->distinct('escola_solidaria.id_agrupamento')->count('escola_solidaria.id_agrupamento');
+        if($professor->id_agrupamento != null) {
+            if($numAgrupamentos == 1) {
+                $idAgrupamentoOld = $professor->id_agrupamento; 
+                $nomeAgrupamentoOld = DB::table('agrupamento')
+                ->join('colaborador', 'agrupamento.id_colaborador', 'colaborador.id_colaborador')
+                ->select('colaborador.nome')
+                ->where('id_agrupamento', $idAgrupamentoOld)->first()->nome;
 
+                $nomeAgrupamentoNew = DB::table('agrupamento')
+                ->join('colaborador', 'agrupamento.id_colaborador', 'colaborador.id_colaborador')
+                ->select('colaborador.nome')
+                ->where('id_agrupamento', $escola->id_agrupamento)->first()->nome;
+
+                $date = new DateTime( 'now', new DateTimeZone("Europe/Lisbon") );
+
+                $trocas = new TrocaAgrupamento();
+                $trocas->agrupamentoAntigo = $nomeAgrupamentoOld;
+                $trocas->data = $date->format('Y-m-d H:i:s');
+                $trocas->novoAgrupamento = $nomeAgrupamentoNew;
+                $trocas->id_professor = $request->id_professor;
+                $trocas->save();
+
+            }    
+        }
+        $novaAssoc = new EscolaSolidariaProf();
         $novaAssoc->id_escola = $request->id_escola;
         $novaAssoc->id_professor = $request->id_professor;
         $novaAssoc->interlocutor = 0;
-
         $novaAssoc->save();
-
-        $professor = Professor::find($request->id_professor);
-        $escola = EscolaSolidaria::find($request->id_escola);
-        $professor->id_agrupamento = $escola->id_agrupamento;
-        $professor->save();
+        $professor->update(['id_agrupamento' => $escola->id_agrupamento]);
 
         $user = session()->get("utilizador");
         if($user->tipoUtilizador == 0) {
